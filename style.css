@@ -11,11 +11,11 @@ body{
     justify-content: center;
     align-items: center;
     margin: 0;
-    background-color: #000000;
+    background-color: #FFFFFF;
 }
 
 #gameboard{
-    background-color: #FFFFFF;
+    background-color: #000000;
     width: 900px;
     height: 600px;
 }
