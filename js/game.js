@@ -1,11 +1,14 @@
 const canvas = document.getElementById('gameboard');
 const ctx = canvas.getContext('2d');
 console.log(ctx);
+const scoreboard = document.getElementById('score');
 
 canvas.width = 900;
 canvas.height = 600;
 
 let score = 0;
+scoreboard.innerHTML = `Score: ${score}`; //trying to implement scoreboard
+
 let gameFrame = 0;
 
 ctx.font = '50px Georgia';
@@ -33,14 +36,15 @@ playerImg.src = 'sprites/player.png';
 
 class Player{
     constructor(){
-        this.width = canvas.width / 2;
-        this.height = canvas.height / 2;
-        this.radius = 10;
-        this.frameX = 0;
-        this.frameY = 0;
-        this.frame = 0;
-        this.spriteWidth = 500;
-        this.spriteHeight = 500;
+        let me = this;
+        me.x = canvas.width / 2;
+        me.y = canvas.height / 2;
+        me.radius = 10;
+        me.frameX = 0;
+        me.frameY = 0;
+        me.frame = 0;
+        me.spriteWidth = 500;
+        me.spriteHeight = 500;
     }
 
     update(){
@@ -48,10 +52,10 @@ class Player{
         const dy = this.y - mouse.y;
 
         if(mouse.x != this.x){
-            this.x -= dx/30;
+            this.x -= dx/20;
         }
         if(mouse.y != this.y){
-            this.y -= dy/30;
+            this.y -= dy/20;
         }
     }
 
@@ -66,22 +70,70 @@ class Player{
         }
 
         //draw circle around player
-        ctx.fillStyle = "red";
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = "green";
         ctx.fill();
         ctx.closePath();
     }
 }
 
+class Enemy{
+    constructor(){
+        let me = this;
+        me.x = 100;
+        me.y = 100;
+        me.radius = 10;
+        me.speed = 4;
+        me.xVel = 0;
+        me.yVel = 0;
+        me.frameX = 0;
+        me.frameY = 0;
+        me.frame = 0;
+        me.spriteWidth = 500;
+        me.spriteHeight = 500;
+    }
+
+    update(){
+        hone();
+    }
+
+    draw(){
+        ctx.lineWidth = 0.2;
+        ctx.beginPath();
+        ctx.moveTo(player.x, player.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = "red";
+        ctx.fill();
+        ctx.closePath();
+    }
+}
+
+const hone = () => {
+        let dx = player.x - enemy.x;
+        let dy = player.y - enemy.y;
+        let honeAngle = Math.atan2(dy, dx);
+
+        enemy.x += enemy.speed * Math.cos(honeAngle);
+        enemy.y += enemy.speed * Math.sin(honeAngle);
+}
 
 const player = new Player();
+const enemy = new Enemy();
 
 const animate = () => {
-    //ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     player.update();
     player.draw();
 
+    enemy.update();
+    enemy.draw();
+    //drawSomething();
     gameFrame++;
     //creates animation loop through recursion
     requestAnimationFrame(animate);
