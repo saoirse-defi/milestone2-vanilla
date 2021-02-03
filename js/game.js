@@ -2,13 +2,14 @@ const canvas = document.getElementById('gameboard');
 const ctx = canvas.getContext('2d');
 console.log(ctx);
 
-canvas.width = 900;
+canvas.width = 1000;
 canvas.height = 600;
 
-let score = 0;
 let gameOver = false;
 
 let gameFrame = 0;
+
+let score = 0;
 
 ctx.font = '50px Georgia';
 
@@ -78,41 +79,76 @@ class Player{
     }
 }
 
-const enemies = {
+const enemies = { //thinking of changing object name to game due to it's interaction with all classes.
 
     enemyArray: [],
 
+    gateArray: [],
+
     //enemies will spawn from a different corner each time
     //corners are numbered clockwise starting from the top left
-    corners: [
+    enemySpawnLoc: [
         {x: 100, y: 100},
         {x: canvas.width - 100, y: 100},
         {x: 100, y: canvas.height - 100},
         {x: canvas.width - 100, y: canvas.height - 100}
     ],
 
-    spawnEnemy: function(){
+    gateSpawnLoc: {x: canvas.width - 200, y: canvas.height - 200},
+
+    handleEnemy: function(){
 
         if(gameFrame % 50 == 0){
             //every 50 frames a new enemy spawns at a random corner
-            this.enemyArray.push(new Enemy(this.corners[Math.floor(Math.random() * 4)]['x'], this.corners[Math.floor(Math.random() * 4)]['y']));
-        }   
+            this.enemyArray.push(new Enemy(this.enemySpawnLoc[Math.floor(Math.random() * 4)]['x'], this.enemySpawnLoc[Math.floor(Math.random() * 4)]['y']));
+        }
+    
         for(let i = 0; i < this.enemyArray.length; i++){
-            if(this.enemyArray[i].distance < this.enemyArray[i].radius + player.radius){
-                gameOver = true;
+            this.enemyArray[i].update();
+            this.enemyArray[i].draw();
+        }
+    
+        for(let i = 0; i < this.enemyArray.length; i++){
+            for(let j = 0; j < this.gateArray.length; j++){
+                if(this.gateArray[j]){
+                    if(this.gateArray[j].distance < player.radius && this.enemyArray[i].distance < 1000){
+                        for(let k = 0; k < this.enemyArray.length; k++){
+                            this.enemyArray[k].dead = true;
+                            this.enemyArray.splice(k, 1);
+                            this.gateArray.splice(j, 1);
+                            score += 50;
+                        }
+                    }
+                }
             }
+            //ends game once collision is detected
+            if(this.enemyArray[i]){
+                if(this.enemyArray[i].distance < this.enemyArray[i].radius + player.radius){
+                    gameOver = true;
+                }  
+            }
+        }        
         
-        this.enemyArray[i].update();
+    },
+
+    handleGate: function(){
+        if(gameFrame % 150 == 0){
+            this.gateArray.push(new Gate(Math.random() * (canvas.width - 300), Math.random() * (canvas.height - 300)));
+        }
+        for(let i = 0; i < this.gateArray.length; i++){
+            this.gateArray[i].update();
+            this.gateArray[i].draw();
         }
     },
 
-    draw: function(){
+    /*draw: function(){
         for(let j = 0; j < this.enemyArray.length; j++){
             this.enemyArray[j].draw();
         }
-    },
+    },*/
 
     noverlap: function(){
+        // not functional yet
         for(let m = 0; m < this.enemyArray.length; m++){
             for(let n = 0; n < this.enemyArray[m].length; n++){
                 noOverlap(this.enemyArray[m], this.enemyArray[n]);
@@ -127,6 +163,7 @@ class Enemy{
         me.x = x;
         me.y = y;
         me.radius = 10;
+        me.dead = false;
         me.distance;
         me.speed = 3;
         me.xVel = 0;
@@ -143,9 +180,11 @@ class Enemy{
         let dy = player.y - this.y;
         let honeAngle = Math.atan2(dy, dx);
 
+        //tracks player
         this.x += this.speed * Math.cos(honeAngle);
         this.y += this.speed * Math.sin(honeAngle);
 
+        //calculates the distance from the player
         this.distance = Math.sqrt(dx*dx + dy*dy);
     }
 
@@ -158,6 +197,33 @@ class Enemy{
     }
 }
 
+class Gate{
+    constructor(x, y){
+        let me = this;
+        me.x = x; //sprite hitbox is only the top-left corner of the square, withdrawing width & height /2
+        me.y = y;
+        me.radius = 30;
+        me.distance;
+        me.width = 40;
+        me.height = 40;
+    }
+
+    update(){
+        let dx = player.x - this.x - 20;
+        let dy = player.y - this.y -20;        
+        this.distance = Math.sqrt(dx*dx + dy*dy);
+    } 
+
+    draw(){
+        ctx.fillStyle = 'orange';
+        ctx.beginPath();
+        ctx.rect(this.x, this.y, this.width, this.height);
+        ctx.fill();
+        ctx.closePath();
+    }
+}
+
+
 const collisionCircle = (i, j) => {
         let vx = i.x - j.x;
         let vy = i.y - j.y;
@@ -169,7 +235,7 @@ const collisionCircle = (i, j) => {
         return mag < (totalRad * totalRad);
     }
 
-    const noOverlap = (i, j) => {
+const noOverlap = (i, j) => {
         let vx = i.x - j.x;
         let vy = i.y - j.y;
 
@@ -192,26 +258,29 @@ const player = new Player();
 
 const animate = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    enemies.spawnEnemy();
+
+    enemies.handleEnemy();
+    enemies.handleGate();
     enemies.noverlap();
-    enemies.draw();
 
     player.update();
     player.draw();
 
     if(gameOver){
         ctx.fillStyle = 'red';
-        ctx.fillText('Dead', 10, 50, 200, 100);
-        ctx.fillText(gameFrame/60, canvas.width - 100, 50);
+        ctx.fillText('Score: '+ score, 10, 50, 200, 100);
+        ctx.fillText((gameFrame/60).toFixed(2), canvas.width - 125, 50);
         console.log(gameFrame); //uses gameframe as score counter
     }else{
         ctx.fillStyle = 'green';
-        ctx.fillText(gameFrame/60, canvas.width - 100, 50);
-        ctx.fillText('Alive', 10, 50, 200, 100);
+        ctx.fillText((gameFrame/60).toFixed(2), canvas.width - 125, 50);
+        ctx.fillText('Score: '+ score, 10, 50, 200, 100);
         gameFrame++;
     }
     //creates animation loop through recursion
-    requestAnimationFrame(animate);
+    if(!gameOver){
+        requestAnimationFrame(animate);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function() { 
