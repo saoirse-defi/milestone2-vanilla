@@ -79,13 +79,13 @@ class Player{
     }
 }
 
-const enemies = { //thinking of changing object name to game due to it's interaction with all classes.
+const game = { //thinking of changing object name to game due to it's interaction with all classes.
 
     enemyArray: [],
 
     gateArray: [],
 
-    //enemies will spawn from a different corner each time
+    //Enemies will spawn from a different corner each time
     //corners are numbered clockwise starting from the top left
     enemySpawnLoc: [
         {x: 100, y: 100},
@@ -96,62 +96,56 @@ const enemies = { //thinking of changing object name to game due to it's interac
 
     gateSpawnLoc: {x: canvas.width - 200, y: canvas.height - 200},
 
-    handleEnemy: function(){
+    gameLoop: function(){
 
         if(gameFrame % 50 == 0){
             //every 50 frames a new enemy spawns at a random corner
             this.enemyArray.push(new Enemy(this.enemySpawnLoc[Math.floor(Math.random() * 4)]['x'], this.enemySpawnLoc[Math.floor(Math.random() * 4)]['y']));
         }
+        
+        if(gameFrame % 150 == 0){
+            this.gateArray.push(new Gate(Math.random() * (canvas.width - 300), Math.random() * (canvas.height - 300)));
+        }
     
         for(let i = 0; i < this.enemyArray.length; i++){
             this.enemyArray[i].update();
             this.enemyArray[i].draw();
+            /*for(let m = 0; m < this.enemyArray.length; m++){
+                noOverlap(this.enemyArray[i], this.enemyArray[m]); still trying to get the no overlap function working 
+            }  */      
+        }
+
+        for(let i = 0; i < this.gateArray.length; i++){
+            this.gateArray[i].update();
+            this.gateArray[i].draw();
         }
     
-        for(let i = 0; i < this.enemyArray.length; i++){
-            for(let j = 0; j < this.gateArray.length; j++){
-                if(this.gateArray[j]){
-                    if(this.gateArray[j].distance < player.radius && this.enemyArray[i].distance < 1000){
-                        for(let k = 0; k < this.enemyArray.length; k++){
-                            this.enemyArray[k].dead = true;
-                            this.enemyArray.splice(k, 1);
-                            this.gateArray.splice(j, 1);
-                            score += 50;
-                        }
+        for(let i = 0; i < this.gateArray.length; i++){
+            if(this.gateArray[i].distance < (player.radius *2)){
+                for(let j = 0; j < this.enemyArray.length; j++){
+                    if(this.enemyArray[j].distance < 200){
+                        this.enemyArray[j].dead = true;
+                        this.enemyArray.splice(j, 1);
+                        j--;
+                        score += 50;
                     }
                 }
+                this.gateArray.splice(i, 1);
             }
-            //ends game once collision is detected
-            if(this.enemyArray[i]){
-                if(this.enemyArray[i].distance < this.enemyArray[i].radius + player.radius){
+            for(let k = 0; k < this.enemyArray.length; k++){
+                if(this.enemyArray[k].distance < this.enemyArray[k].radius + player.radius){
                     gameOver = true;
-                }  
+                }
             }
         }        
         
     },
 
-    handleGate: function(){
-        if(gameFrame % 150 == 0){
-            this.gateArray.push(new Gate(Math.random() * (canvas.width - 300), Math.random() * (canvas.height - 300)));
-        }
-        for(let i = 0; i < this.gateArray.length; i++){
-            this.gateArray[i].update();
-            this.gateArray[i].draw();
-        }
-    },
-
-    /*draw: function(){
-        for(let j = 0; j < this.enemyArray.length; j++){
-            this.enemyArray[j].draw();
-        }
-    },*/
-
     noverlap: function(){
         // not functional yet
         for(let m = 0; m < this.enemyArray.length; m++){
-            for(let n = 0; n < this.enemyArray[m].length; n++){
-                noOverlap(this.enemyArray[m], this.enemyArray[n]);
+            for(let n = 0; n < this.enemyArray.length; n++){
+                noOverlap(this.enemyArray[n], this.enemyArray[m]);
             }
         }
     }
@@ -204,13 +198,13 @@ class Gate{
         me.y = y;
         me.radius = 30;
         me.distance;
-        me.width = 40;
-        me.height = 40;
+        me.width = 10;
+        me.height = 80;
     }
 
     update(){
-        let dx = player.x - this.x - 20;
-        let dy = player.y - this.y -20;        
+        let dx = player.x - this.x - 5; //sprite hitbox relocation fixed
+        let dy = player.y - this.y -40;        
         this.distance = Math.sqrt(dx*dx + dy*dy);
     } 
 
@@ -259,9 +253,7 @@ const player = new Player();
 const animate = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    enemies.handleEnemy();
-    enemies.handleGate();
-    enemies.noverlap();
+    game.gameLoop();
 
     player.update();
     player.draw();
