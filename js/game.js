@@ -2,14 +2,43 @@ const canvas = document.getElementById('gameboard');
 const ctx = canvas.getContext('2d');
 console.log(ctx);
 
+const highscore = document.getElementById('highscore');
+
 canvas.width = 1000;
 canvas.height = 600;
+
+const background = new Image();
+
+background.src = 'sprites/stars.png';
+
+const BG = {
+    x1: 0, 
+    x2: canvas.width,
+    y: 0,
+    width: canvas.width,
+    height: canvas.height
+};
+
+const drawBackground = () => {
+    ctx.drawImage(background, BG.x1, BG.y, BG.width, BG.height);
+}
+
 
 let gameOver = false;
 
 let gameFrame = 0;
 
 let score = 0;
+let highScore = localStorage.getItem('highscore1') || 0;
+highscore.textContent = "High Score: " + highScore;
+
+const checkRecordScore = () => {
+    if(score > localStorage.getItem('highscore1')){
+        localStorage.setItem('highscore1', score);
+        highScore = score;
+        highscore.textContent = "High Score: " + highScore;
+    }
+}
 
 ctx.font = '50px Georgia';
 
@@ -32,9 +61,6 @@ canvas.addEventListener('mouseup', () => {
     mouse.click = false;
 })
 
-const playerImg = new Image();
-playerImg.src = 'sprites/player.png';
-
 class Player{
     constructor(){
         let me = this;
@@ -44,13 +70,21 @@ class Player{
         me.frameX = 0;
         me.frameY = 0;
         me.frame = 0;
-        me.spriteWidth = 500;
-        me.spriteHeight = 500;
+        me.width = 50;
+        me.height = 50;
+        me.img = new Image();
+        me.angle = 0;
     }
 
     update(){
-        let dx = this.x - mouse.x;
-        let dy = this.y - mouse.y;
+        let dx = this.x - 25 - mouse.x;
+        let dy = this.y - 25 - mouse.y;
+
+        let radAngle  = Math.atan2(dy, dx);
+
+        this.angle = radAngle;
+
+        this.img.src = 'sprites/player_left.png';
 
         if(mouse.x != this.x){
             this.x -= dx/20;
@@ -71,11 +105,15 @@ class Player{
         }
 
         //draw circle around player
-        ctx.beginPath();
+       /* ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = "green";
         ctx.fill();
-        ctx.closePath();
+        ctx.closePath();*/
+        
+        ctx.drawImage(this.img, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+        
+        
     }
 }
 
@@ -94,8 +132,6 @@ const game = { //thinking of changing object name to game due to it's interactio
         {x: canvas.width - 100, y: canvas.height - 100}
     ],
 
-    gateSpawnLoc: {x: canvas.width - 200, y: canvas.height - 200},
-
     gameLoop: function(){
 
         if(gameFrame % 50 == 0){
@@ -103,8 +139,9 @@ const game = { //thinking of changing object name to game due to it's interactio
             this.enemyArray.push(new Enemy(this.enemySpawnLoc[Math.floor(Math.random() * 4)]['x'], this.enemySpawnLoc[Math.floor(Math.random() * 4)]['y']));
         }
         
-        if(gameFrame % 150 == 0){
-            this.gateArray.push(new Gate(Math.random() * (canvas.width - 300), Math.random() * (canvas.height - 300)));
+        if(gameFrame % 250 == 0){
+            //gates seem to be spawning more in the top left of canvas, need gates to be more centrally spawned.
+            this.gateArray.push(new Gate(((Math.random() * (canvas.width - 100)) - 100), ((Math.random() * (canvas.height - 100)) -100)));
         }
     
         for(let i = 0; i < this.enemyArray.length; i++){
@@ -148,6 +185,12 @@ const game = { //thinking of changing object name to game due to it's interactio
                 noOverlap(this.enemyArray[n], this.enemyArray[m]);
             }
         }
+    },
+
+    speedUp: function(){
+        for(let i = 0; i < this.enemyArray.length; i++){
+            this.enemyArray[i].speed + 1;
+        }
     }
 }
 
@@ -159,14 +202,15 @@ class Enemy{
         me.radius = 10;
         me.dead = false;
         me.distance;
-        me.speed = 3;
+        me.speed = 2;
         me.xVel = 0;
         me.yVel = 0;
         me.frameX = 0;
         me.frameY = 0;
         me.frame = 0;
-        me.spriteWidth = 500;
-        me.spriteHeight = 500;
+        me.width = 40;
+        me.height = 40;
+        me.img = new Image();
     }
 
     update(){
@@ -183,11 +227,14 @@ class Enemy{
     }
 
     draw(){
-        ctx.beginPath();
+       /* ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = "red";
         ctx.fill();
-        ctx.closePath();
+        ctx.closePath(); */
+        ctx.drawImage(this.img, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
+        this.img.src = 'sprites/enemy.png';
+
     }
 }
 
@@ -198,22 +245,21 @@ class Gate{
         me.y = y;
         me.radius = 30;
         me.distance;
-        me.width = 10;
-        me.height = 80;
+        me.width = 75;
+        me.height = 133;
+        me.angle = Math.random() * 360;
+        me.img = new Image();
     }
 
     update(){
-        let dx = player.x - this.x - 5; //sprite hitbox relocation fixed
-        let dy = player.y - this.y -40;        
+        let dx = player.x - this.x - 37.5; //sprite hitbox relocation fixed
+        let dy = player.y - this.y - 66.5;        
         this.distance = Math.sqrt(dx*dx + dy*dy);
     } 
 
     draw(){
-        ctx.fillStyle = 'orange';
-        ctx.beginPath();
-        ctx.rect(this.x, this.y, this.width, this.height);
-        ctx.fill();
-        ctx.closePath();
+        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+        this.img.src = 'sprites/gate5.png';
     }
 }
 
@@ -253,20 +299,35 @@ const player = new Player();
 const animate = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    game.gameLoop();
+    drawBackground();
 
     player.update();
     player.draw();
 
+    game.gameLoop();
+
+    if(score > 8000){
+        game.speedUp();
+    }else if(score > 6000){
+        game.speedUp();
+    }else if(score > 4000){
+        game.speedUp();
+    }else if(score > 2000){
+        game.speedUp();
+    }else if(score > 1000){
+        game.speedUp();
+    }
+        
     if(gameOver){
         ctx.fillStyle = 'red';
-        ctx.fillText('Score: '+ score, 10, 50, 200, 100);
+        ctx.fillText('Score: '+ score + ` (${highScore})`, 10, 50, 200, 100);
         ctx.fillText((gameFrame/60).toFixed(2), canvas.width - 125, 50);
         console.log(gameFrame); //uses gameframe as score counter
+        checkRecordScore();
     }else{
         ctx.fillStyle = 'green';
         ctx.fillText((gameFrame/60).toFixed(2), canvas.width - 125, 50);
-        ctx.fillText('Score: '+ score, 10, 50, 200, 100);
+        ctx.fillText('Score: '+ score + ` (${highScore})`, 10, 50, 200, 100);
         gameFrame++;
     }
     //creates animation loop through recursion
