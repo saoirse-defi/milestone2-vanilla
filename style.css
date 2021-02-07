@@ -19,3 +19,8 @@ body{
     width: 1000px;
     height: 600px;
 }
+
+#highscore{
+    position: absolute;
+    bottom: 2000px;
+}
