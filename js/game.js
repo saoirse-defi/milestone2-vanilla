@@ -23,6 +23,10 @@ const drawBackground = () => {
     ctx.drawImage(background, BG.x1, BG.y, BG.width, BG.height);
 }
 
+const playerL = new Image();
+playerL.src = 'sprites/player_left.png';
+const playerR = new Image();
+playerR.src = 'sprites/player_right.png';
 
 let gameOver = false;
 
@@ -72,7 +76,6 @@ class Player{
         me.frame = 0;
         me.width = 50;
         me.height = 50;
-        me.img = new Image();
         me.angle = 0;
     }
 
@@ -83,8 +86,6 @@ class Player{
         let radAngle  = Math.atan2(dy, dx);
 
         this.angle = radAngle;
-
-        this.img.src = 'sprites/player_left.png';
 
         if(mouse.x != this.x){
             this.x -= dx/20;
@@ -110,10 +111,15 @@ class Player{
         ctx.fillStyle = "green";
         ctx.fill();
         ctx.closePath();*/
-        
-        ctx.drawImage(this.img, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
-        
-        
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
+        if(this.x >= mouse.x){
+            ctx.drawImage(playerL, 0 - this.width / 2, 0 - this.height / 2, this.width, this.height);
+        }else{
+            ctx.drawImage(playerR, 0 - this.width / 2, 0 - this.height / 2, this.width, this.height);
+        }
+        ctx.restore();
     }
 }
 
@@ -141,7 +147,7 @@ const game = { //thinking of changing object name to game due to it's interactio
         
         if(gameFrame % 250 == 0){
             //gates seem to be spawning more in the top left of canvas, need gates to be more centrally spawned.
-            this.gateArray.push(new Gate(((Math.random() * (canvas.width - 100)) - 100), ((Math.random() * (canvas.height - 100)) -100)));
+            this.gateArray.push(new Gate(((Math.random() * canvas.width) - 200), ((Math.random() * canvas.height) - 200)));
         }
     
         for(let i = 0; i < this.enemyArray.length; i++){
@@ -247,7 +253,8 @@ class Gate{
         me.distance;
         me.width = 75;
         me.height = 133;
-        me.angle = Math.random() * 360;
+        me.theta = 0;
+        me.rotationSpeed = 0.001;
         me.img = new Image();
     }
 
@@ -255,13 +262,22 @@ class Gate{
         let dx = player.x - this.x - 37.5; //sprite hitbox relocation fixed
         let dy = player.y - this.y - 66.5;        
         this.distance = Math.sqrt(dx*dx + dy*dy);
+
+        this.theta += this.rotationSpeed;
     } 
 
     draw(){
-        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.theta * Math.PI / 180);
+        ctx.drawImage(this.img, 0, 0, this.width, this.height);
+        ctx.restore();
         this.img.src = 'sprites/gate5.png';
     }
 }
+
+            Math.cos(this.theta)*this.x + Math.sin(this.theta)*this.y, 
+            -Math.sin(this.theta)*this.x + Math.cos(this.theta)*this.y
 
 
 const collisionCircle = (i, j) => {
