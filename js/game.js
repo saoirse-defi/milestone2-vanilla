@@ -106,11 +106,12 @@ class Player{
         }
 
         //draw circle around player
-       /* ctx.beginPath();
+        /*ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = "green";
         ctx.fill();
-        ctx.closePath();*/
+        ctx.closePath(); */
+
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.rotate(this.angle);
@@ -147,7 +148,7 @@ const game = { //thinking of changing object name to game due to it's interactio
         
         if(gameFrame % 250 == 0){
             //gates seem to be spawning more in the top left of canvas, need gates to be more centrally spawned.
-            this.gateArray.push(new Gate(((Math.random() * canvas.width) - 200), ((Math.random() * canvas.height) - 200)));
+            this.gateArray.push(new Gate(random(200, 800), random(100, 500)));
         }
     
         for(let i = 0; i < this.enemyArray.length; i++){
@@ -249,36 +250,56 @@ class Gate{
         let me = this;
         me.x = x; //sprite hitbox is only the top-left corner of the square, withdrawing width & height /2
         me.y = y;
-        me.radius = 30;
+        me.endX;
+        me.endY;
+        me.radius;
         me.distance;
         me.width = 75;
         me.height = 133;
-        me.theta = 0;
-        me.rotationSpeed = 0.001;
+        me.theta;
+        me.rotation = 0;
+        me.rotationSpeed = 0.02;
         me.img = new Image();
     }
 
     update(){
-        let dx = player.x - this.x - 37.5; //sprite hitbox relocation fixed
-        let dy = player.y - this.y - 66.5;        
-        this.distance = Math.sqrt(dx*dx + dy*dy);
+        //rotational velocity added to rotation angle (radians)
+        this.rotation += this.rotationSpeed;
 
-        this.theta += this.rotationSpeed;
+        //rotation angle in degrees
+        this.theta = this.rotation * Math.PI / 180;
+
+        //radius of rotation equals the rectangle's hypotenus 
+        this.radius = Math.sqrt(this.x * this.x + this.y * this.y);
+        
+        //using linear rotational transformation to find x,y after rotation
+        this.x = this.radius * Math.cos(this.theta);
+        this.y = this.radius * Math.sin(this.theta);
+        
+        let dx = player.x - this.x - 37.5; //sprite hitbox relocation fixed
+        let dy = player.y - this.y - 66.5;    
+
+        //calculates the distance from player using new x,y
+        this.distance = Math.sqrt(dx*dx + dy*dy);
     } 
 
     draw(){
         ctx.save();
         ctx.translate(this.x, this.y);
-        ctx.rotate(this.theta * Math.PI / 180);
+        ctx.rotate(this.rotation * Math.PI / 180);
         ctx.drawImage(this.img, 0, 0, this.width, this.height);
         ctx.restore();
         this.img.src = 'sprites/gate5.png';
     }
 }
+        //new x,y = this.radius * Math.cos(this.theta), this.radius * Math.sin(this.theta)
 
-            Math.cos(this.theta)*this.x + Math.sin(this.theta)*this.y, 
-            -Math.sin(this.theta)*this.x + Math.cos(this.theta)*this.y
+        //    Math.cos(this.theta)*this.x + Math.sin(this.theta)*this.y, 
+        //    -Math.sin(this.theta)*this.x + Math.cos(this.theta)*this.y
 
+const random = (min, max) => {
+    return Math.random() * (max - min) + min;
+}
 
 const collisionCircle = (i, j) => {
         let vx = i.x - j.x;
@@ -322,6 +343,7 @@ const animate = () => {
 
     game.gameLoop();
 
+    //game speed increases with score
     if(score > 8000){
         game.speedUp();
     }else if(score > 6000){
