@@ -150,13 +150,11 @@ const game = { //thinking of changing object name to game due to it's interactio
             //gates seem to be spawning more in the top left of canvas, need gates to be more centrally spawned.
             this.gateArray.push(new Gate(random(200, 800), random(100, 500)));
         }
-    
+
+
         for(let i = 0; i < this.enemyArray.length; i++){
             this.enemyArray[i].update();
-            this.enemyArray[i].draw();
-            /*for(let m = 0; m < this.enemyArray.length; m++){
-                noOverlap(this.enemyArray[i], this.enemyArray[m]); still trying to get the no overlap function working 
-            }  */      
+            this.enemyArray[i].draw(); 
         }
 
         for(let i = 0; i < this.gateArray.length; i++){
@@ -181,17 +179,20 @@ const game = { //thinking of changing object name to game due to it's interactio
                     gameOver = true;
                 }
             }
-        }        
+        }
         
     },
 
     noverlap: function(){
         // not functional yet
-        for(let m = 0; m < this.enemyArray.length; m++){
-            for(let n = 0; n < this.enemyArray.length; n++){
-                noOverlap(this.enemyArray[n], this.enemyArray[m]);
+        
+            for(let i = 0; i < this.enemyArray.length; i++){
+                let curr = this.enemyArray[i];
+                for(let j = 0; j < this.enemyArray.length; j++){
+                    noOverlap(curr, this.enemyArray[j]);
+                }
             }
-        }
+        
     },
 
     speedUp: function(){
@@ -206,9 +207,10 @@ class Enemy{
         let me = this;
         me.x = x;
         me.y = y;
-        me.radius = 10;
+        me.radius;
         me.dead = false;
         me.distance;
+        me.touching = false;
         me.speed = 2;
         me.xVel = 0;
         me.yVel = 0;
@@ -221,6 +223,8 @@ class Enemy{
     }
 
     update(){
+        this.radius = Math.sqrt(this.width * this.width + this.height * this.height) / 2;
+
         let dx = player.x - this.x;
         let dy = player.y - this.y;
         let honeAngle = Math.atan2(dy, dx);
