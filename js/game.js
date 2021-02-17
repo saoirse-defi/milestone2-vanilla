@@ -156,14 +156,13 @@ const game = { //thinking of changing object name to game due to it's interactio
 
         for(let i = 0; i < this.enemyArray.length; i++){
             let curr = this.enemyArray[i];
-
             curr.update();
 
-            /* if(this.enemyArray.length > 1){
+            if(this.enemyArray.length > 1){
                 for(let j = 0; j < this.enemyArray.length; j++){
                     curr.interects(this.enemyArray[j]);
                 }
-            } */
+            }
 
             curr.draw(); 
         }
