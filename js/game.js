@@ -27,6 +27,8 @@ const playerL = new Image();
 playerL.src = 'sprites/player_left.png';
 const playerR = new Image();
 playerR.src = 'sprites/player_right.png';
+const spacestation = new Image();
+spacestation.src = 'sprites/spacestation.png';
 
 let gameOver = false;
 
@@ -58,7 +60,6 @@ canvas.addEventListener('mousedown', (event) => {
     mouse.click = true;
     mouse.x = event.x - canvasPosition.left;
     mouse.y = event.y - canvasPosition.top;
-    console.log(mouse.x, mouse.y);
 })
 
 canvas.addEventListener('mouseup', () => {
@@ -115,11 +116,12 @@ class Player{
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.rotate(this.angle);
-        if(this.x >= mouse.x){
+        ctx.drawImage(spacestation, 0 - this.width / 2, 0 - this.height / 2, this.width, this.height);
+        /*if(this.x >= mouse.x){
             ctx.drawImage(playerL, 0 - this.width / 2, 0 - this.height / 2, this.width, this.height);
         }else{
             ctx.drawImage(playerR, 0 - this.width / 2, 0 - this.height / 2, this.width, this.height);
-        }
+        }*/
         ctx.restore();
     }
 }
@@ -147,23 +149,36 @@ const game = { //thinking of changing object name to game due to it's interactio
         }
         
         if(gameFrame % 250 == 0){
-            //gates seem to be spawning more in the top left of canvas, need gates to be more centrally spawned.
-            this.gateArray.push(new Gate(random(200, 800), random(100, 500)));
+            //gates not spawning at x,y outlined below, all appearing around (600, 150)
+            this.gateArray.push(new Gate(random(200, 800), random(150, 450)));
         }
 
 
         for(let i = 0; i < this.enemyArray.length; i++){
-            this.enemyArray[i].update();
-            this.enemyArray[i].draw(); 
+            let curr = this.enemyArray[i];
+
+            curr.update();
+
+            /* if(this.enemyArray.length > 1){
+                for(let j = 0; j < this.enemyArray.length; j++){
+                    curr.interects(this.enemyArray[j]);
+                }
+            } */
+
+            curr.draw(); 
         }
 
         for(let i = 0; i < this.gateArray.length; i++){
             this.gateArray[i].update();
+
+            if(this.gateArray.indexOf(this.gateArray[i]) % 2){
+                this.gateArray[i].changeRotation();
+            }
             this.gateArray[i].draw();
         }
     
         for(let i = 0; i < this.gateArray.length; i++){
-            if(this.gateArray[i].distance < (player.radius *2)){
+            if(this.gateArray[i].distance < (player.radius * 3)){
                 for(let j = 0; j < this.enemyArray.length; j++){
                     if(this.enemyArray[j].distance < 200){
                         this.enemyArray[j].dead = true;
@@ -175,23 +190,11 @@ const game = { //thinking of changing object name to game due to it's interactio
                 this.gateArray.splice(i, 1);
             }
             for(let k = 0; k < this.enemyArray.length; k++){
-                if(this.enemyArray[k].distance < this.enemyArray[k].radius + player.radius){
+                if(this.enemyArray[k].distance < this.enemyArray[k].radius / 2 + player.radius){
                     gameOver = true;
                 }
             }
         }
-        
-    },
-
-    noverlap: function(){
-        // not functional yet
-        
-            for(let i = 0; i < this.enemyArray.length; i++){
-                let curr = this.enemyArray[i];
-                for(let j = 0; j < this.enemyArray.length; j++){
-                    noOverlap(curr, this.enemyArray[j]);
-                }
-            }
         
     },
 
@@ -203,10 +206,10 @@ const game = { //thinking of changing object name to game due to it's interactio
 }
 
 class Enemy{
-    constructor(x, y){
+    constructor(_x, _y){
         let me = this;
-        me.x = x;
-        me.y = y;
+        me.x = _x;
+        me.y = _y;
         me.radius;
         me.dead = false;
         me.distance;
@@ -220,6 +223,28 @@ class Enemy{
         me.width = 40;
         me.height = 40;
         me.img = new Image();
+    }
+
+    interects(drone){
+        let d = Math.sqrt((this.x - drone.x)*(this.x - drone.x) + (this.y - drone.y)*(this.y - drone.y));
+
+        let vx = this.x - drone.x;
+        let vy = this.y - drone.y;
+
+        let mag = vx * vx + vy * vy;
+
+        let totalRad = this.radius + drone.radius;
+
+        if(d < totalRad){
+            let overlap = totalRad - mag;
+
+            let dx = vx / mag;
+            let dy = vy / mag;
+
+            this.x += overlap * dx;
+            this.y += overlap * dy;
+        }
+
     }
 
     update(){
@@ -250,10 +275,10 @@ class Enemy{
 }
 
 class Gate{
-    constructor(x, y){
+    constructor(_x, _y){
         let me = this;
-        me.x = x; //sprite hitbox is only the top-left corner of the square, withdrawing width & height /2
-        me.y = y;
+        me.x = _x; //sprite hitbox is only the top-left corner of the square, withdrawing width & height /2
+        me.y = _y;
         me.endX;
         me.endY;
         me.radius;
@@ -262,8 +287,13 @@ class Gate{
         me.height = 133;
         me.theta;
         me.rotation = 0;
-        me.rotationSpeed = 0.02;
+        me.rotationSpeed = random(0.02, 0.025);
         me.img = new Image();
+    }
+
+    changeRotation(){
+        this.x = this.radius * Math.cos(-this.theta);
+        this.y = this.radius * Math.sin(-this.theta);
     }
 
     update(){
@@ -305,7 +335,7 @@ const random = (min, max) => {
     return Math.random() * (max - min) + min;
 }
 
-const collisionCircle = (i, j) => {
+/* const collisionCircle = (i, j) => {
         let vx = i.x - j.x;
         let vy = i.y - j.y;
 
@@ -333,7 +363,7 @@ const noOverlap = (i, j) => {
             i.x += overlap * dx;
             i.y += overlap * dy;
         }
-    }
+    } */
 
 const player = new Player();
 
