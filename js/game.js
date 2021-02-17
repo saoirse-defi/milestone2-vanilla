@@ -21,7 +21,7 @@ const BG = {
 
 const drawBackground = () => {
     ctx.drawImage(background, BG.x1, BG.y, BG.width, BG.height);
-}
+};
 
 const playerL = new Image();
 playerL.src = 'sprites/player_left.png';
@@ -44,7 +44,7 @@ const checkRecordScore = () => {
         highScore = score;
         highscore.textContent = "High Score: " + highScore;
     }
-}
+};
 
 ctx.font = '50px Georgia';
 
@@ -60,11 +60,11 @@ canvas.addEventListener('mousedown', (event) => {
     mouse.click = true;
     mouse.x = event.x - canvasPosition.left;
     mouse.y = event.y - canvasPosition.top;
-})
+});
 
 canvas.addEventListener('mouseup', () => {
     mouse.click = false;
-})
+});
 
 class Player{
     constructor(){
@@ -112,7 +112,7 @@ class Player{
         ctx.drawImage(spacestation, 0 - this.width / 2, 0 - this.height / 2, this.width, this.height);
         ctx.restore();
     }
-}
+};
 
 const game = { //thinking of changing object name to game due to it's interaction with all classes.
 
@@ -147,16 +147,15 @@ const game = { //thinking of changing object name to game due to it's interactio
 
         for(let i = 0; i < this.enemyArray.length; i++){
             this.enemyArray[i].update();
-
-            if(this.enemyArray.length > 1){
-                for(let j = 0; j < this.enemyArray.length; j++){
-                    this.enemyArray[i].intersects(this.enemyArray[j]);
-                }
-            }
-
             this.enemyArray[i].draw();
         }
-    
+
+        for(let i = 0; i < this.enemyArray.length; i++){
+            async(this.enemyArray, function(){
+                    this.enemyArray[i].intersects(this.enemyArray[j]);
+            })
+        }
+
         for(let i = 0; i < this.gateArray.length; i++){
             this.gateArray[i].update();
              this.gateArray[i].draw();
@@ -181,7 +180,7 @@ const game = { //thinking of changing object name to game due to it's interactio
 
             for(let k = 0; k < this.enemyArray.length; k++){
                 if(this.enemyArray[k].distance < this.enemyArray[k].radius / 2 + player.radius){
-                    gameOver = true; //if enemy gets too close, game over!
+                    //gameOver = true; //if enemy gets too close, game over!
                 }
             }
         }
@@ -193,7 +192,7 @@ const game = { //thinking of changing object name to game due to it's interactio
             this.enemyArray[i].speed + 1; //increases enemy speed
         }
     }
-}
+};
 
 class Enemy{
     constructor(_x, _y){
@@ -251,7 +250,7 @@ class Enemy{
         }
 
     }
-}
+};
 
 class Gate{
     constructor(_x, _y){
@@ -304,13 +303,19 @@ class Gate{
         ctx.restore();
         this.img.src = 'sprites/gate5.png';
     }
-}
+};
 
 const random = (min, max) => {
     return Math.random() * (max - min) + min;
-}
+};
 
-/* const collisionCircle = (i, j) => {
+const asyncForEach = (array, callback) => {
+        array.forEach(() => {
+            setTimeout(callback, 0);
+        })
+};
+
+const collisionCircle = (i, j) => {
         let vx = i.x - j.x;
         let vy = i.y - j.y;
 
@@ -319,7 +324,7 @@ const random = (min, max) => {
         let totalRad = i.radius + j.radius;
 
         return mag < (totalRad * totalRad);
-    }
+};
 
 const noOverlap = (i, j) => {
         let vx = i.x - j.x;
@@ -338,7 +343,7 @@ const noOverlap = (i, j) => {
             i.x += overlap * dx;
             i.y += overlap * dy;
         }
-    } */
+};
 
 const player = new Player();
 
@@ -379,7 +384,7 @@ const animate = () => {
     if(!gameOver){
         requestAnimationFrame(animate);
     }
-}
+};
 
 document.addEventListener("DOMContentLoaded", function() { 
   animate();
