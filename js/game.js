@@ -106,22 +106,10 @@ class Player{
             ctx.stroke();
         }
 
-        //draw circle around player
-        /*ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = "green";
-        ctx.fill();
-        ctx.closePath(); */
-
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.rotate(this.angle);
         ctx.drawImage(spacestation, 0 - this.width / 2, 0 - this.height / 2, this.width, this.height);
-        /*if(this.x >= mouse.x){
-            ctx.drawImage(playerL, 0 - this.width / 2, 0 - this.height / 2, this.width, this.height);
-        }else{
-            ctx.drawImage(playerR, 0 - this.width / 2, 0 - this.height / 2, this.width, this.height);
-        }*/
         ctx.restore();
     }
 }
@@ -143,6 +131,9 @@ const game = { //thinking of changing object name to game due to it's interactio
 
     gameLoop: function(){
 
+        player.update();
+        player.draw();
+
         if(gameFrame % 50 == 0){
             //every 50 frames a new enemy spawns at a random corner
             this.enemyArray.push(new Enemy(this.enemySpawnLoc[Math.floor(Math.random() * 4)]['x'], this.enemySpawnLoc[Math.floor(Math.random() * 4)]['y']));
@@ -150,34 +141,31 @@ const game = { //thinking of changing object name to game due to it's interactio
         
         if(gameFrame % 250 == 0){
             //gates not spawning at x,y outlined below, all appearing around (600, 150)
-            this.gateArray.push(new Gate(random(200, 800), random(150, 450)));
+            this.gateArray.push(new Gate(random(0, 1000), random(0, 666)));
         }
 
 
         for(let i = 0; i < this.enemyArray.length; i++){
-            let curr = this.enemyArray[i];
-            curr.update();
+            this.enemyArray[i].update();
 
             if(this.enemyArray.length > 1){
                 for(let j = 0; j < this.enemyArray.length; j++){
-                    curr.interects(this.enemyArray[j]);
+                    this.enemyArray[i].intersects(this.enemyArray[j]);
                 }
             }
 
-            curr.draw(); 
-        }
-
-        for(let i = 0; i < this.gateArray.length; i++){
-            this.gateArray[i].update();
-
-            if(this.gateArray.indexOf(this.gateArray[i]) % 2){
-                this.gateArray[i].changeRotation();
-            }
-            this.gateArray[i].draw();
+            this.enemyArray[i].draw();
         }
     
         for(let i = 0; i < this.gateArray.length; i++){
-            if(this.gateArray[i].distance < (player.radius * 3)){
+            this.gateArray[i].update();
+             this.gateArray[i].draw();
+
+            if(this.gateArray.indexOf(this.gateArray[i]) % 2){ //changing the rotation every second gate
+                this.gateArray[i].changeRotation();
+            }
+
+            if(this.gateArray[i].distance < (player.radius * 3)){ //when player passes through gate, enemies with distance < 200 are killed
                 for(let j = 0; j < this.enemyArray.length; j++){
                     if(this.enemyArray[j].distance < 200){
                         this.enemyArray[j].dead = true;
@@ -186,11 +174,14 @@ const game = { //thinking of changing object name to game due to it's interactio
                         score += 50;
                     }
                 }
-                this.gateArray.splice(i, 1);
+                this.gateArray.splice(i, 1); //gate is removed once passed through
+                i--;
+                score += 25;
             }
+
             for(let k = 0; k < this.enemyArray.length; k++){
                 if(this.enemyArray[k].distance < this.enemyArray[k].radius / 2 + player.radius){
-                    gameOver = true;
+                    gameOver = true; //if enemy gets too close, game over!
                 }
             }
         }
@@ -199,7 +190,7 @@ const game = { //thinking of changing object name to game due to it's interactio
 
     speedUp: function(){
         for(let i = 0; i < this.enemyArray.length; i++){
-            this.enemyArray[i].speed + 1;
+            this.enemyArray[i].speed + 1; //increases enemy speed
         }
     }
 }
@@ -224,28 +215,6 @@ class Enemy{
         me.img = new Image();
     }
 
-    interects(drone){
-        let d = Math.sqrt((this.x - drone.x)*(this.x - drone.x) + (this.y - drone.y)*(this.y - drone.y));
-
-        let vx = this.x - drone.x;
-        let vy = this.y - drone.y;
-
-        let mag = vx * vx + vy * vy;
-
-        let totalRad = this.radius + drone.radius;
-
-        if(d < totalRad){
-            let overlap = totalRad - mag;
-
-            let dx = vx / mag;
-            let dy = vy / mag;
-
-            this.x += overlap * dx;
-            this.y += overlap * dy;
-        }
-
-    }
-
     update(){
         this.radius = Math.sqrt(this.width * this.width + this.height * this.height) / 2;
 
@@ -262,13 +231,24 @@ class Enemy{
     }
 
     draw(){
-       /* ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = "red";
-        ctx.fill();
-        ctx.closePath(); */
         ctx.drawImage(this.img, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
         this.img.src = 'sprites/enemy.png';
+    }
+
+    intersects(drone){
+        let distance = Math.sqrt((this.x - drone.x)*(this.x - drone.x) + (this.y - drone.y)*(this.y - drone.y));
+
+        let totalRad = this.radius + drone.radius;
+
+        if(distance < totalRad){
+            let overlap = totalRad - distance;
+
+            let dx = (this.x - drone.x) / distance;
+            let dy = (this.y - drone.y) / distance;
+
+            this.x += overlap * dx;
+            this.y += overlap * dy;
+        }
 
     }
 }
@@ -286,7 +266,7 @@ class Gate{
         me.height = 133;
         me.theta;
         me.rotation = 0;
-        me.rotationSpeed = random(0.02, 0.025);
+        me.rotationSpeed = random(0.02, 0.03);
         me.img = new Image();
     }
 
@@ -325,10 +305,6 @@ class Gate{
         this.img.src = 'sprites/gate5.png';
     }
 }
-        //new x,y = this.radius * Math.cos(this.theta), this.radius * Math.sin(this.theta)
-
-        //    Math.cos(this.theta)*this.x + Math.sin(this.theta)*this.y, 
-        //    -Math.sin(this.theta)*this.x + Math.cos(this.theta)*this.y
 
 const random = (min, max) => {
     return Math.random() * (max - min) + min;
@@ -371,13 +347,11 @@ const animate = () => {
 
     drawBackground();
 
-    player.update();
-    player.draw();
-
     game.gameLoop();
 
     //game speed increases with score
-    if(score > 8000){
+
+    /*if(score > 8000){
         game.speedUp();
     }else if(score > 6000){
         game.speedUp();
@@ -387,7 +361,7 @@ const animate = () => {
         game.speedUp();
     }else if(score > 1000){
         game.speedUp();
-    }
+    } */
         
     if(gameOver){
         ctx.fillStyle = 'red';
