@@ -24,3 +24,12 @@ body{
     position: absolute;
     bottom: 2000px;
 }
+
+.content{
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center center;
+    background-image: url("sprites/stars.png");
+}
