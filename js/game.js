@@ -136,7 +136,8 @@ const game = { //thinking of changing object name to game due to it's interactio
 
         if(gameFrame % 50 == 0){
             //every 50 frames a new enemy spawns at a random corner
-            this.enemyArray.push(new Enemy(this.enemySpawnLoc[Math.floor(Math.random() * 4)]['x'], this.enemySpawnLoc[Math.floor(Math.random() * 4)]['y']));
+            let cornerIndex = Math.floor(Math.random() * 4);
+            this.enemyArray.push(new Enemy(this.enemySpawnLoc[cornerIndex]['x'], this.enemySpawnLoc[cornerIndex]['y']));
         }
         
         if(gameFrame % 250 == 0){
@@ -144,17 +145,27 @@ const game = { //thinking of changing object name to game due to it's interactio
             this.gateArray.push(new Gate(random(0, 1000), random(0, 666)));
         }
 
+        if(this.enemyArray.length > 1){
+            this.swarm2();
+        }
 
         for(let i = 0; i < this.enemyArray.length; i++){
             this.enemyArray[i].update();
             this.enemyArray[i].draw();
+
+            /*if(this.enemyArray.length > 1){
+                for(let j = 0; j < this.enemyArray.length; j++){
+                    this.enemyArray[i].intersects(this.enemyArray[j]);
+                }
+            }*/
         }
 
-        for(let i = 0; i < this.enemyArray.length; i++){
-            async(this.enemyArray, function(){
-                    this.enemyArray[i].intersects(this.enemyArray[j]);
-            })
-        }
+        /* for(let i = 0; i < this.enemyArray.length; i++){
+            setTimeout(() => {
+                this.enemyArray[i].draw();
+            }, 0);
+        } */
+
 
         for(let i = 0; i < this.gateArray.length; i++){
             this.gateArray[i].update();
@@ -184,7 +195,46 @@ const game = { //thinking of changing object name to game due to it's interactio
                 }
             }
         }
-        
+    
+    },
+
+    swarm: function(){ //Test function for overlap/swarm
+            for(let i = 0; i < this.enemyArray.length; i++){
+                for(let j = 0; j < this.enemyArray.length; j++){
+                    let vx = this.enemyArray[i].x - this.enemyArray[j].x;
+                    let vy = this.enemyArray[i].y - this.enemyArray[j].y;
+                    let prox = Math.sqrt(vx*vx + vy*vy); //distance between enemies
+                    let totalRad =  this.enemyArray[i].radius * 2;
+                    let overlap = totalRad - prox;
+                    let dx = vx / prox;
+                    let dy = vy / prox;
+
+                    if(prox < totalRad){
+                        //this.enemyArray[j].spread(overlap, dx, dy);
+                        this.enemyArray[i].x += overlap * dx;
+                        this.enemyArray[i].y += overlap * dy;
+                    }
+                }
+            }
+    },
+
+    swarm2: function(){ //Most promising swarm function yet
+            for(let i = 0; i < this.enemyArray.length; i++){
+                for(let j = 0; j < this.enemyArray.length; j++){
+                    let vx = this.enemyArray[i].x - this.enemyArray[j].x;
+                    let vy = this.enemyArray[i].y - this.enemyArray[j].y;
+                    let prox = Math.sqrt(vx*vx + vy*vy);
+                    let totalRad =  this.enemyArray[i].radius * 2;
+                    let overlap = totalRad - prox;
+                    let dx = vx / prox;
+                    let dy = vy / prox;
+
+                    if(prox < totalRad){
+                        this.enemyArray[j].x += 0.4;
+                        this.enemyArray[j].y += 0.4;
+                    }
+                }
+            }
     },
 
     speedUp: function(){
@@ -234,7 +284,7 @@ class Enemy{
         this.img.src = 'sprites/enemy.png';
     }
 
-    intersects(drone){
+    intersects(drone){ //Test function for overlap/swarm
         let distance = Math.sqrt((this.x - drone.x)*(this.x - drone.x) + (this.y - drone.y)*(this.y - drone.y));
 
         let totalRad = this.radius + drone.radius;
@@ -249,6 +299,11 @@ class Enemy{
             this.y += overlap * dy;
         }
 
+    }
+
+    spread(overlap, dx, dy){ //Test function for overlap/swarm
+        this.x += overlap * dx;
+        this.y += overlap * dy;
     }
 };
 
