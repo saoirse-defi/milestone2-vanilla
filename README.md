@@ -217,7 +217,7 @@ Used to create custom event ticket container
 
 ## Bugs Discovered:
 
-##### Overlap detection for swarm
+##### Overlap detection for swarm behaviour
 
 ##### Hitbox not following Gate rotation
 
