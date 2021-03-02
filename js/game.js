@@ -68,48 +68,50 @@ canvas.addEventListener('mouseup', () => {
 
 class Player{
     constructor(){
-        let me = this;
-        me.x = canvas.width / 2;
-        me.y = canvas.height / 2;
-        me.radius = 10;
-        me.frameX = 0;
-        me.frameY = 0;
-        me.frame = 0;
-        me.width = 50;
-        me.height = 50;
-        me.angle = 0;
+        this.x = canvas.width / 2;
+        this.y = canvas.height / 2;
+        this.radius = 10;
+        this.frameX = 0;
+        this.frameY = 0;
+        this.frame = 0;
+        this.width = 50;
+        this.height = 50;
+        this.angle = 0;
     }
 
     update(){
-        let dx = this.x - 25 - mouse.x;
-        let dy = this.y - 25 - mouse.y;
+        let me = this;
+
+        let dx = me.x - 25 - mouse.x;
+        let dy = me.y - 25 - mouse.y;
 
         let radAngle  = Math.atan2(dy, dx);
 
-        this.angle = radAngle;
+        me.angle = radAngle;
 
-        if(mouse.x != this.x){
-            this.x -= dx/20;
+        if(mouse.x != me.x){
+            me.x -= dx/20;
         }
-        if(mouse.y != this.y){
-            this.y -= dy/20;
+        if(mouse.y != me.y){
+            me.y -= dy/20;
         }
     }
 
     draw(){
+        let me = this;
         //sprite moves to where mouse is clicked
         if(mouse.click){ 
             ctx.lineWidth = 0.2;
             ctx.beginPath();
-            ctx.moveTo(this.x, this.y);
+            ctx.moveTo(me.x, me.y);
             ctx.lineTo(mouse.x, mouse.y);
             ctx.stroke();
         }
 
         ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(this.angle);
-        ctx.drawImage(spacestation, 0 - this.width / 2, 0 - this.height / 2, this.width, this.height);
+        ctx.translate(me.x, me.y);
+        ctx.rotate(me.angle);
+        ctx.drawImage(spacestation, 0 - me.width / 2, 0 - me.height / 2, me.width, me.height);
         ctx.restore();
     }
 };
@@ -145,19 +147,14 @@ const game = { //thinking of changing object name to game due to it's interactio
             this.gateArray.push(new Gate(random(0, 1000), random(0, 666)));
         }
 
-        if(this.enemyArray.length > 1){
+        /*if(this.enemyArray.length > 1){
             this.swarm2();
-        }
+        }*/
 
         for(let i = 0; i < this.enemyArray.length; i++){
             this.enemyArray[i].update();
             this.enemyArray[i].draw();
 
-            /*if(this.enemyArray.length > 1){
-                for(let j = 0; j < this.enemyArray.length; j++){
-                    this.enemyArray[i].intersects(this.enemyArray[j]);
-                }
-            }*/
         }
 
         /* for(let i = 0; i < this.enemyArray.length; i++){
@@ -171,16 +168,13 @@ const game = { //thinking of changing object name to game due to it's interactio
             this.gateArray[i].update();
              this.gateArray[i].draw();
 
-            if(this.gateArray.indexOf(this.gateArray[i]) % 2){ //changing the rotation every second gate
-                this.gateArray[i].changeRotation();
-            }
 
             if(this.gateArray[i].distance < (player.radius * 3)){ //when player passes through gate, enemies with distance < 200 are killed
-                for(let j = 0; j < this.enemyArray.length; j++){
-                    if(this.enemyArray[j].distance < 200){
-                        this.enemyArray[j].dead = true;
-                        this.enemyArray.splice(j, 1);
-                        j--;
+                for(let m = 0; m < this.enemyArray.length; m++){
+                    if(this.enemyArray[m].distance < 200){
+                        this.enemyArray[m].dead = true;
+                        this.enemyArray.splice(m, 1);
+                        m--;
                         score += 50;
                     }
                 }
@@ -199,28 +193,31 @@ const game = { //thinking of changing object name to game due to it's interactio
     },
 
     swarm: function(){ //Test function for overlap/swarm
-            for(let i = 0; i < this.enemyArray.length; i++){
-                for(let j = 0; j < this.enemyArray.length; j++){
-                    let vx = this.enemyArray[i].x - this.enemyArray[j].x;
-                    let vy = this.enemyArray[i].y - this.enemyArray[j].y;
-                    let prox = Math.sqrt(vx*vx + vy*vy); //distance between enemies
-                    let totalRad =  this.enemyArray[i].radius * 2;
-                    let overlap = totalRad - prox;
-                    let dx = vx / prox;
-                    let dy = vy / prox;
+            for(let i = 0; i = this.enemyArray.length; i++){
+                this.enemyArray[i].update();
+                this.enemyArray[i].draw();
 
-                    if(prox < totalRad){
+                for(let j = 0; j = this.enemyArray.length; j++){
+                    let distanceX = this.enemyArray[i].x - this.enemyArray[j].x; //distance between in the x axis
+                    let distanceY = this.enemyArray[i].y - this.enemyArray[j].y; //distance between in the y axis
+                    let distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY); //pythagorian to solve for distance between to objects
+                    let diameter =  this.enemyArray[i].radius * 2;
+                    let overlap = diameter - distance;
+                    let dx = distanceX / distance;
+                    let dy = distanceY / distance;
+
+                    if(distance < diameter){
                         //this.enemyArray[j].spread(overlap, dx, dy);
-                        this.enemyArray[i].x += overlap * dx;
-                        this.enemyArray[i].y += overlap * dy;
+                        this.enemyArray[j].x += overlap * dx;
+                        this.enemyArray[j].y += overlap * dy;
                     }
                 }
             }
     },
 
     swarm2: function(){ //Most promising swarm function yet
-            for(let i = 0; i < this.enemyArray.length; i++){
-                for(let j = 0; j < this.enemyArray.length; j++){
+            for(let i = 0, j = this.enemyArray.length; i < j; i++){
+                for(let j = 0, k = this.enemyArray.length; j < k; j++){
                     let vx = this.enemyArray[i].x - this.enemyArray[j].x;
                     let vy = this.enemyArray[i].y - this.enemyArray[j].y;
                     let prox = Math.sqrt(vx*vx + vy*vy);
@@ -230,8 +227,9 @@ const game = { //thinking of changing object name to game due to it's interactio
                     let dy = vy / prox;
 
                     if(prox < totalRad){
-                        this.enemyArray[j].x += 0.4;
-                        this.enemyArray[j].y += 0.4;
+                        this.enemyArray[j].x += random(-1, 1);
+                        this.enemyArray[j].y += random(-1, 1);
+                        //creates nice swarm effect, could look like insects, unfortunately drags enemies away from player.
                     }
                 }
             }
@@ -246,122 +244,123 @@ const game = { //thinking of changing object name to game due to it's interactio
 
 class Enemy{
     constructor(_x, _y){
-        let me = this;
-        me.x = _x;
-        me.y = _y;
-        me.radius;
-        me.dead = false;
-        me.distance;
-        me.touching = false;
-        me.speed = 2;
-        me.xVel = 0;
-        me.yVel = 0;
-        me.frameX = 0;
-        me.frameY = 0;
-        me.frame = 0;
-        me.width = 40;
-        me.height = 40;
-        me.img = new Image();
+        this.x = _x;
+        this.y = _y;
+        this.radius = 20;
+        this.diameter = 40;
+        this.dead = false;
+        this.distance;
+        this.touching = false;
+        this.speed = 2;
+        this.xVel = 0;
+        this.yVel = 0;
+        this.frameX = 0;
+        this.frameY = 0;
+        this.frame = 0;
+        this.img = new Image();
     }
 
     update(){
-        this.radius = Math.sqrt(this.width * this.width + this.height * this.height) / 2;
+        let me = this;
 
-        let dx = player.x - this.x;
-        let dy = player.y - this.y;
+        let dx = player.x - me.x;
+        let dy = player.y - me.y;
         let honeAngle = Math.atan2(dy, dx);
 
         //tracks player
-        this.x += this.speed * Math.cos(honeAngle);
-        this.y += this.speed * Math.sin(honeAngle);
+        me.x += me.speed * Math.cos(honeAngle);
+        me.y += me.speed * Math.sin(honeAngle);
 
         //calculates the distance from the player
-        this.distance = Math.sqrt(dx*dx + dy*dy);
+        me.distance = Math.sqrt(dx*dx + dy*dy);
     }
 
     draw(){
-        ctx.drawImage(this.img, this.x - this.width / 2, this.y - this.height / 2, this.width, this.height);
-        this.img.src = 'sprites/enemy.png';
+        let me = this;
+        
+        ctx.drawImage(me.img, me.x - me.radius, me.y - me.radius, me.diameter, me.diameter);
+        me.img.src = 'sprites/enemy.png';
     }
 
     intersects(drone){ //Test function for overlap/swarm
-        let distance = Math.sqrt((this.x - drone.x)*(this.x - drone.x) + (this.y - drone.y)*(this.y - drone.y));
+        let me = this;
 
-        let totalRad = this.radius + drone.radius;
+        let distance = Math.sqrt((me.x - drone.x)*(me.x - drone.x) + (me.y - drone.y)*(me.y - drone.y));
+
+        let totalRad = me.radius + drone.radius;
 
         if(distance < totalRad){
             let overlap = totalRad - distance;
 
-            let dx = (this.x - drone.x) / distance;
-            let dy = (this.y - drone.y) / distance;
+            let dx = (me.x - drone.x) / distance;
+            let dy = (me.y - drone.y) / distance;
 
-            this.x += overlap * dx;
-            this.y += overlap * dy;
+            me.x += overlap * dx;
+            me.y += overlap * dy;
         }
 
     }
 
     spread(overlap, dx, dy){ //Test function for overlap/swarm
-        this.x += overlap * dx;
-        this.y += overlap * dy;
+        let me = this;
+
+        me.x += overlap * dx;
+        me.y += overlap * dy;
     }
 };
 
 class Gate{
     constructor(_x, _y){
-        let me = this;
-        me.x = _x; //sprite hitbox is only the top-left corner of the square, withdrawing width & height /2
-        me.y = _y;
-        me.endX;
-        me.endY;
-        me.radius;
-        me.distance;
-        me.width = 75;
-        me.height = 133;
-        me.theta;
-        me.rotation = 0;
-        me.rotationSpeed = random(0.02, 0.03);
-        me.img = new Image();
-    }
-
-    changeRotation(){
-        this.x = this.radius * Math.cos(-this.theta);
-        this.y = this.radius * Math.sin(-this.theta);
+        this.x = _x; //sprite hitbox is only the top-left corner of the square, withdrawing width & height /2
+        this.y = _y;
+        this.endX;
+        this.endY;
+        this.radius;
+        this.distance;
+        this.width = 75;
+        this.height = 133;
+        this.theta;
+        this.rotation = random(0, 1);
+        this.rotationSpeed = random(0.02, 0.035);
+        this.img = new Image();
     }
 
     update(){
+        let me = this;
         //rotational velocity added to rotation angle (radians)
-        this.rotation += this.rotationSpeed;
+        me.rotation += me.rotationSpeed;
 
         //rotation angle in degrees
-        this.theta = this.rotation * Math.PI / 180;
+        me.theta = me.rotation * Math.PI / 180;
 
         //radius of rotation equals the rectangle's hypotenus 
-        this.radius = Math.sqrt(this.x * this.x + this.y * this.y);
+        me.radius = Math.sqrt(me.x * me.x + me.y * me.y);
         
         //using linear rotational transformation to find x,y after rotation
-        this.x = this.radius * Math.cos(this.theta);
-        this.y = this.radius * Math.sin(this.theta);
+        me.x = me.radius * Math.cos(me.theta);
+        me.y = me.radius * Math.sin(me.theta);
         
-        let dx = player.x - this.x - 37.5; //sprite hitbox relocation fixed
-        let dy = player.y - this.y - 66.5;    
+        let dx = player.x - me.x - 37.5; //sprite hitbox relocation fixed
+        let dy = player.y - me.y - 66.5;    
 
         //calculates the distance from player using new x,y
-        this.distance = Math.sqrt(dx*dx + dy*dy);
+        me.distance = Math.sqrt(dx*dx + dy*dy);
     } 
 
     draw(){
+        let me = this;
+
         ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(this.rotation * Math.PI / 180);
-        ctx.drawImage(this.img, 0, 0, this.width, this.height);
+        ctx.translate(me.x, me.y);
+        ctx.rotate(me.rotation * Math.PI / 180);
+        ctx.drawImage(me.img, 0, 0, me.width, me.height);
         ctx.restore();
-        this.img.src = 'sprites/gate5.png';
+        me.img.src = 'sprites/gate5.png';
     }
 };
 
 const random = (min, max) => {
-    return Math.random() * (max - min) + min;
+    return Math.random() * ((max - min) + min);
 };
 
 const asyncForEach = (array, callback) => {
@@ -444,3 +443,5 @@ const animate = () => {
 document.addEventListener("DOMContentLoaded", function() { 
   animate();
 });
+
+
