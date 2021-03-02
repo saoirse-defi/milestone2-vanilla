@@ -3,14 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css"/>
     <title>Against All Odds - Vanilla</title>
 </head>
 <body>
-    <div id="highscore"></div>
-    <canvas id="gameboard">
-        Your browser doesn't include support for the canvas element.
-    </canvas>
-   <script type="module" src="../js/game.js"></script> 
+    <div class="container">
+        <div id="highscore"></div>
+        <canvas id="gameboard">
+            Your browser doesn't include support for the canvas element.
+        </canvas>
+        <!-- <div class="intro">
+            <h2 class="fadeIntro">How long will you survive?</h2>
+        </div> -->
+    </div>
+    <!-- <script>
+        const intro = document.querySelector('.intro');
+        document.addEventListener('DOMContentLoaded', e => {
+            setTimeout(() => {
+                intro.classList.add('display-none');
+            }, 2000);
+        })
+    </script> -->
+   <!--<script type="module" src="../js/start.js"></script>-->
+   <script type="module" src="../js/game.js"></script>
 </body>
 </html>
