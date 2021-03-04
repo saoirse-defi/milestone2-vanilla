@@ -14,6 +14,8 @@ const spacestation = new Image();
 spacestation.src = 'sprites/spacestation.png';
 
 let hue = 0;
+let start = true; //whether startscreen is active
+const gameStateArr = [0, 1, 2]; //0:start; 1:game; 2:game over;
 
 const BG = {
     x1: 0, 
@@ -189,8 +191,8 @@ class Gate{
         this.width = 75;
         this.height = 133;
         this.theta;
-        this.rotation = random(0, 1);
-        this.rotationSpeed = random(0.02, 0.035);
+        this.rotation = random(0, 360);
+        this.rotationSpeed = random(0.03, 0.05);
         this.img = new Image();
     }
 
@@ -221,7 +223,7 @@ class Gate{
 
         ctx.save();
         ctx.translate(me.x, me.y);
-        ctx.rotate(me.rotation * Math.PI / 180);
+        ctx.rotate(me.rotation * Math.PI / 180); //switch to neg rotation for better movement, edit to translation needed though
         ctx.drawImage(me.img, 0, 0, me.width, me.height);
         ctx.restore();
         me.img.src = 'sprites/gate5.png';
@@ -254,9 +256,9 @@ const game = { //thinking of changing object name to game due to it's interactio
             this.enemyArray.push(new Enemy(this.enemySpawnLoc[cornerIndex]['x'], this.enemySpawnLoc[cornerIndex]['y']));
         }
         
-        if(gameFrame % 250 == 0){
+        if(gameFrame % 100 == 0){
             //gates not spawning at x,y outlined below, all appearing around (600, 150)
-            this.gateArray.push(new Gate(random(0, 1000), random(0, 666)));
+            this.gateArray.push(new Gate(random(200, 1000), random(50, 450)));
         }
 
         /*if(this.enemyArray.length > 1){
@@ -281,7 +283,7 @@ const game = { //thinking of changing object name to game due to it's interactio
              this.gateArray[i].draw();
 
 
-            if(this.gateArray[i].distance < (player.radius * 3)){ //when player passes through gate, enemies with distance < 200 are killed
+            if(this.gateArray[i].distance < (player.radius * 2)){ //when player passes through gate, enemies with distance < 200 are killed
                 for(let m = 0; m < this.enemyArray.length; m++){
                     if(this.enemyArray[m].distance < 200){
                         this.enemyArray[m].dead = true;
@@ -354,33 +356,41 @@ const game = { //thinking of changing object name to game due to it's interactio
     }
 };
 
+const random = (min, max) => {
+    return Math.random() * ((max - min) + min);
+};
+
 const player = new Player();
 
 const startScreen = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    drawBackground();
+    if(start){
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.font = '22.5px DotGothic16';
-    ctx.fillStyle = 'white';
-    ctx.fillText('Energy weapons are down!', canvas.width / 2 - 150, canvas.height / 2 + 100, 900);
-    ctx.fillText('Pass through gates to manage the enemy horde.', canvas.width / 2 - 265, canvas.height / 2 + 150, 900);
+        drawBackground();
 
-    ctx.font = '20px Orbitron'
-    ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
-    ctx.fillText('Click to move. Spacebar to start.', canvas.width / 2 - 175, canvas.height / 2 + 250, 900);
+        ctx.font = '22.5px DotGothic16';
+        ctx.fillStyle = 'white';
+        ctx.fillText('Energy weapons are down!', canvas.width / 2 - 150, canvas.height / 2 + 100, 900);
+        ctx.fillText('Pass through gates to manage the enemy horde.', canvas.width / 2 - 265, canvas.height / 2 + 150, 900);
 
-    player.update(); //player methods placed here to create z-index effect
-    player.draw();
+        ctx.font = '20px Orbitron'
+        ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
+        ctx.fillText('Click to move. Spacebar to start.', canvas.width / 2 - 175, canvas.height / 2 + 250, 900);
 
-    ctx.font = '80px Orbitron'; //player sprite is hidden behind title but not other text
-    ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
-    ctx.fillText('AGAINST ALL ODDS', canvas.width / 2 - 400, canvas.height / 2 - 100, 800, 200);
+        player.update(); //player methods placed here to create z-index effect
+        player.draw();
 
-    hue++; //changes hsl value every animation frame
+        ctx.font = '80px Orbitron'; //player sprite is hidden behind title but not other text
+        ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
+        ctx.fillText('AGAINST ALL ODDS', canvas.width / 2 - 400, canvas.height / 2 - 100, 800, 200);
 
-    requestAnimationFrame(startScreen);
+        hue++; //changes hsl value every animation frame
 
+        requestAnimationFrame(startScreen);
+    }else{
+        animate();
+    }
     
 };
 
@@ -408,27 +418,28 @@ const animate = () => {
     if(gameOver){
         ctx.fillStyle = 'red';
         ctx.fillText('Score: '+ score + ` (${highScore})`, 10, 50, 200, 100);
-        ctx.fillText((gameFrame/60).toFixed(2), canvas.width - 125, 50);
+        ctx.fillText((gameFrame/60).toFixed(2), canvas.width - 125, 50, 200, 100);
         console.log(gameFrame); //uses gameframe as score counter
         checkRecordScore();
     }else{
         ctx.fillStyle = 'green';
-        ctx.fillText((gameFrame/60).toFixed(2), canvas.width - 125, 50);
-        ctx.fillText('Score: '+ score + ` (${highScore})`, 10, 50, 200, 100);
+        ctx.fillText((gameFrame/60).toFixed(2), canvas.width - 125, 75, 100, 100);
+        ctx.fillText('Score: '+ score + ` (${highScore})`, 10, 75, 200, 100);
         gameFrame++;
-    }
-    //creates animation loop through recursion
-    if(!gameOver){
+
+        //creates animation loop through recursion
         requestAnimationFrame(animate);
     }
 };
 
 window.addEventListener('keyup', e => {
     if(e.keyCode === 32){
-        animate();
+        start = false;
     }
 }); //not working
 
 document.addEventListener("DOMContentLoaded", function() { 
     startScreen();
 });
+
+
