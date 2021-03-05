@@ -52,6 +52,8 @@ Happy coding!
 
 A 2D spaceship survival game built using vanilla Javascript and HTML Canvas. I have taken inspritation from a childhood video game called Geometery Wars, specifically a game mode called Pacifism.
 As a kid, I spend countless hours on this mode trying to beat my friend's high scores. The concept is simple, you don't have any projectiles so the only way to survive is to pass through gates in order to destroy nearby ships and to thin the ever increasing hoarde.
+The goal is to survive for as long as possible. Similarly to other arcade games, there is no possible way to beat the game. You must simply try and survive for as long as you can.
+Enemy speed increases when your score passes certain increments. This will be outlined to the user using custom sound effects.
 
 
 ## UX
@@ -63,12 +65,29 @@ I decided to browse several game developement marketplaces to see which sprites 
 
 ###### Player Sprite
 
-As mentioned above, the point and click method was chosen as user input. This introduced a UX issue that would look disconcerting to the end user. Depending on where the user clicked, the sprite would appear either upside down or at the incorrect angle. 
-Due to this, circular sprite was chosen for the player.
+As mentioned above, the point and click method was chosen as user input. This introduced a UX issue that would look disconcerting to the end user. 
+Depending on where the user clicked, the sprite would appear either upside down or at the incorrect angle. Due to this, circular sprite was chosen for the player.
 
 ###### Enemy Sprite
 
+When choosing the enemy sprite, I wanted the design to give the user a sense of mortality and dread. 
+
 ###### Gate Sprite
+
+## Sound
+
+Custom sound effects were recorded for this project.
+
+#### Gate Effect
+
+#### Enemy Speed Increase Effect
+
+#### Start Menu Soundtrack
+
+#### Game Soundtrack
+
+#### Enemy Spawn Noise
+
 
 
 
