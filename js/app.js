@@ -1,28 +1,20 @@
 const canvas = document.getElementById('gameboard'); //defining canvas element
 const ctx = canvas.getContext('2d');
-console.log(ctx);
-
-const highscore = document.getElementById('highscore'); //defining score container
 
 canvas.width = 1000;
 canvas.height = 600;
 
 const random = (min, max) => {
     return Math.random() * ((max - min) + min);
-};
+}; //provides random decimal between min and max
 
 const stars = ['sprites/stars.png', 'sprites/stars1.png', 'sprites/stars2.png', 'sprites/stars3.png', 'sprites/stars4.png'];
+//array of background image locations
 
 let starsInt = Math.floor(random(0, 4)); //chooses random background source every time the app is loaded
 
 const background = new Image();
 background.src = `sprites/stars${starsInt}.png`; //applies random source
-
-const spacestation = new Image();
-spacestation.src = 'sprites/spacestation.png';
-
-let hue = 0; //used in conjunction with requestionAnimationFrame to create hsl color change effect
-let menuActive = true; //whether startscreen is active
 
 const BG = {
     x1: 0, 
@@ -30,37 +22,36 @@ const BG = {
     y: 0,
     width: canvas.width,
     height: canvas.height
-}; 
+}; //background dimensions to match canvas size
 
 const drawBackground = () => {
     ctx.drawImage(background, BG.x1, BG.y, BG.width, BG.height);
 };
 
-let gameOver = false;
+let hue = 0; //used in conjunction with requestionAnimationFrame to create hsl color change effect
+let menuActive = true; //tracks whether startscreen is active
+let gameOver = false; //tracks whether player has been killed by enemy
+let gameFrame = 0; //tracks number of frames that pass
+let score = 0; 
 
-let gameFrame = 0;
+let highScore = localStorage.getItem('highscore1') || 0; //gets highScore from local storage
 
-let score = 0;
-let highScore = localStorage.getItem('highscore1') || 0;
-highscore.textContent = "High Score: " + highScore;
-
-const checkRecordScore = () => {
+const checkRecordScore = () => { //if user beats score, update high score
     if(score > localStorage.getItem('highscore1')){
         localStorage.setItem('highscore1', score);
         highScore = score;
-        highscore.textContent = "High Score: " + highScore;
     }
 };
 
-let canvasPosition = canvas.getBoundingClientRect();
+let canvasPosition = canvas.getBoundingClientRect(); //calculating canvas size relative to viewport
 
-const mouse = {
+const mouse = { //set mouse properties on application start
     x: canvas.width / 2,
     y: canvas.height / 2,
     click: false
 };
 
-canvas.addEventListener('mousedown', (event) => {
+canvas.addEventListener('mousedown', (event) => { //used to control player sprite with click to move to
     mouse.click = true;
     mouse.x = event.x - canvasPosition.left;
     mouse.y = event.y - canvasPosition.top;
@@ -72,15 +63,13 @@ canvas.addEventListener('mouseup', () => {
 
 class Player{
     constructor(){
-        this.x = canvas.width / 2;
+        this.x = canvas.width / 2; //starting point the center of canvas
         this.y = canvas.height / 2;
-        this.radius = 10;
-        this.frameX = 0;
-        this.frameY = 0;
-        this.frame = 0;
         this.width = 50;
         this.height = 50;
+        this.radius = 10;
         this.angle = 0;
+        this.img = new Image();
     }
 
     update(){
@@ -115,7 +104,8 @@ class Player{
         ctx.save();
         ctx.translate(me.x, me.y);
         ctx.rotate(me.angle);
-        ctx.drawImage(spacestation, 0 - me.width / 2, 0 - me.height / 2, me.width, me.height);
+        ctx.drawImage(me.img, 0 - me.width / 2, 0 - me.height / 2, me.width, me.height);
+        me.img.src = "sprites/spacestation.png";
         ctx.restore();
     }
 };
@@ -128,13 +118,7 @@ class Enemy{
         this.diameter = 40;
         this.dead = false;
         this.distance;
-        this.touching = false;
         this.speed = 2;
-        this.xVel = 0;
-        this.yVel = 0;
-        this.frameX = 0;
-        this.frameY = 0;
-        this.frame = 0;
         this.img = new Image();
     }
 
@@ -239,13 +223,15 @@ class Gate{
 
 const game = { //thinking of changing object name to game due to it's interaction with all classes.
 
-    enemyArray: [],
+    enemyArray: [], 
+
+    enemyCache: [], //dead enemies cached for later use
 
     gateArray: [],
 
-    //Enemies will spawn from a different corner each time
-    //corners are numbered clockwise starting from the top left
-    enemySpawnLoc: [
+    gateCache: [], //destroyed gates cached for later use
+
+    enemySpawnLoc: [ //Enemies will spawn from a different corner each time, corners are numbered clockwise starting from the top left
         {x: 100, y: 100},
         {x: canvas.width - 100, y: 100},
         {x: 100, y: canvas.height - 100},
@@ -260,12 +246,30 @@ const game = { //thinking of changing object name to game due to it's interactio
         if(gameFrame % 50 == 0){
             //every 50 frames a new enemy spawns at a random corner
             let cornerIndex = Math.floor(Math.random() * 4);
-            this.enemyArray.push(new Enemy(this.enemySpawnLoc[cornerIndex]['x'], this.enemySpawnLoc[cornerIndex]['y']));
+            let newEnemy;
+
+            if(this.enemyCache.length == 0){
+                newEnemy = new Enemy(this.enemySpawnLoc[cornerIndex]['x'], this.enemySpawnLoc[cornerIndex]['y']);
+                //if enemy cache is empty, create new instance of Enemy
+            }else{
+                newEnemy = this.enemyCache.pop();
+                newEnemy.x = this.enemySpawnLoc[cornerIndex]['x'];
+                newEnemy.y = this.enemySpawnLoc[cornerIndex]['y'];
+            }
+
+            this.enemyArray.push(newEnemy);
         }
         
         if(gameFrame % 100 == 0){
+            let newGate;
+
+            if(this.enemyCache.length == 0){
+                newGate = new Gate(random(200, 1000), random(50, 450));
+            }else{
+                newGate = this.gateCache.pop();
+            }
             //gates not spawning at x,y outlined below, all appearing around (600, 150)
-            this.gateArray.push(new Gate(random(200, 1000), random(50, 450)));
+            this.gateArray.push(newGate);
         }
 
         /*if(this.enemyArray.length > 1){
@@ -294,12 +298,12 @@ const game = { //thinking of changing object name to game due to it's interactio
                 for(let m = 0; m < this.enemyArray.length; m++){
                     if(this.enemyArray[m].distance < 200){
                         this.enemyArray[m].dead = true;
-                        this.enemyArray.splice(m, 1);
+                        this.enemyArray.splice(m, 1).concat(this.enemyCache); //add dead enemies to enemy cache, need to check if working...
                         m--;
                         score += 50;
                     }
                 }
-                this.gateArray.splice(i, 1); //gate is removed once passed through
+                this.gateArray.splice(i, 1).concat(this.gateCache); //gate is removed and added to the gate cache for later use, need to check if working...
                 i--;
                 score += 25;
             }
