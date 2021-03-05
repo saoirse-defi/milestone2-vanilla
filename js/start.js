@@ -1,21 +1,28 @@
-const canvas = document.getElementById('gameboard');
+const canvas = document.getElementById('gameboard'); //defining canvas element
 const ctx = canvas.getContext('2d');
 console.log(ctx);
 
-const highscore = document.getElementById('highscore');
+const highscore = document.getElementById('highscore'); //defining score container
 
 canvas.width = 1000;
 canvas.height = 600;
 
+const random = (min, max) => {
+    return Math.random() * ((max - min) + min);
+};
+
+const stars = ['sprites/stars.png', 'sprites/stars1.png', 'sprites/stars2.png', 'sprites/stars3.png', 'sprites/stars4.png'];
+
+let starsInt = Math.floor(random(0, 4)); //chooses random background source every time the app is loaded
+
 const background = new Image();
-background.src = 'sprites/stars.png';
+background.src = `sprites/stars${starsInt}.png`; //applies random source
 
 const spacestation = new Image();
 spacestation.src = 'sprites/spacestation.png';
 
-let hue = 0;
-let start = true; //whether startscreen is active
-const gameStateArr = [0, 1, 2]; //0:start; 1:game; 2:game over;
+let hue = 0; //used in conjunction with requestionAnimationFrame to create hsl color change effect
+let menuActive = true; //whether startscreen is active
 
 const BG = {
     x1: 0, 
@@ -23,7 +30,7 @@ const BG = {
     y: 0,
     width: canvas.width,
     height: canvas.height
-};
+}; 
 
 const drawBackground = () => {
     ctx.drawImage(background, BG.x1, BG.y, BG.width, BG.height);
@@ -356,17 +363,14 @@ const game = { //thinking of changing object name to game due to it's interactio
     }
 };
 
-const random = (min, max) => {
-    return Math.random() * ((max - min) + min);
-};
-
 const player = new Player();
 
 const startScreen = () => {
 
-    if(start){
+    if(menuActive){
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+        //changeBackground();
         drawBackground();
 
         ctx.font = '22.5px DotGothic16';
@@ -397,6 +401,7 @@ const startScreen = () => {
 const animate = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    //changeBackground();
     drawBackground();
 
     game.gameLoop();
@@ -434,9 +439,9 @@ const animate = () => {
 
 window.addEventListener('keyup', e => {
     if(e.keyCode === 32){
-        start = false;
+        menuActive = false;
     }
-}); //not working
+});
 
 document.addEventListener("DOMContentLoaded", function() { 
     startScreen();
