@@ -17,7 +17,7 @@ I decided to browse several game development marketplaces to see which sprite im
 
 ###### Player Sprite
 
-![Player Sprite](sprites/player.png)
+![Player Sprite](sprites/spacestation.png)
 
 As mentioned above, the point and click method was chosen as user input. This introduced a UX issue that would look disconcerting to the end user. 
 Depending on where the user clicked, the sprite would appear either upside down or at the incorrect angle. Due to this, circular sprite was chosen for the player.
@@ -26,11 +26,12 @@ Depending on where the user clicked, the sprite would appear either upside down 
 
 ![Enemy Sprite](sprites/enemy.png)
 
-When choosing the enemy sprite, I wanted the design to give the user a sense of mortality and dread.
+When choosing the enemy sprite, I wanted the design to give the user a sense of mortality and dread. The ship had to look like it belonged to a terrifying alien race.
+
 
 ###### Gate Sprite
 
-![Gate Sprite](sprites/gate.png)
+![Gate Sprite](sprites/gate5.png)
 
 ## Sound
 
