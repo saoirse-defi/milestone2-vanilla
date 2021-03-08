@@ -1,56 +1,8 @@
-![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
-
-Welcome saoirse-defi,
-
-This is the Code Institute student template for Gitpod. We have preinstalled all of the tools you need to get started. You can safely delete this README.md file, or change it for your own project. Please do read it at least once, though! It contains some important information about Gitpod and the extensions we use.
-
-## Gitpod Reminders
-
-To run a frontend (HTML, CSS, Javascript only) application in Gitpod, in the terminal, type:
-
-`python3 -m http.server`
-
-A blue button should appear to click: *Make Public*,
-
-Another blue button should appear to click: *Open Browser*.
-
-To run a backend Python file, type `python3 app.py`, if your Python file is named `app.py` of course.
-
-A blue button should appear to click: *Make Public*,
-
-Another blue button should appear to click: *Open Browser*.
-
-In Gitpod you have superuser security privileges by default. Therefore you do not need to use the `sudo` (superuser do) command in the bash terminal in any of the lessons.
-
-## Updates Since The Instructional Video
-
-We continually tweak and adjust this template to help give you the best experience. Here is the version history:
-
-**October 21 2020:** Versions of the HTMLHint, Prettier, Bootstrap4 CDN and Auto Close extensions updated. The Python extension needs to stay the same version for now.
-
-**October 08 2020:** Additional large Gitpod files (`core.mongo*` and `core.python*`) are now hidden in the Explorer, and have been added to the `.gitignore` by default.
-
-**September 22 2020:** Gitpod occasionally creates large `core.Microsoft` files. These are now hidden in the Explorer. A `.gitignore` file has been created to make sure these files will not be committed, along with other common files.
-
-**April 16 2020:** The template now automatically installs MySQL instead of relying on the Gitpod MySQL image. The message about a Python linter not being installed has been dealt with, and the set-up files are now hidden in the Gitpod file explorer.
-
-**April 13 2020:** Added the _Prettier_ code beautifier extension instead of the code formatter built-in to Gitpod.
-
-**February 2020:** The initialisation files now _do not_ auto-delete. They will remain in your project. You can safely ignore them. They just make sure that your workspace is configured correctly each time you open it. It will also prevent the Gitpod configuration popup from appearing.
-
-**December 2019:** Added Eventyret's Bootstrap 4 extension. Type `!bscdn` in a HTML file to add the Bootstrap boilerplate. Check out the <a href="https://github.com/Eventyret/vscode-bcdn" target="_blank">README.md file at the official repo</a> for more options.
-
---------
-
-Happy coding!
-
-
-
 # Against All Odds Milestone Project
 
 ## Introduction
 
-A 2D spaceship survival game built using vanilla Javascript and HTML Canvas. I have taken inspritation from a childhood video game called Geometery Wars, specifically a game mode called Pacifism.
+A 2D spaceship survival game built using Javascript and HTML Canvas. Developed using vanilla Javascript, no additional libraries were used. I have taken inspritation from a childhood video game called Geometery Wars, specifically a game mode called Pacifism.
 As a kid, I spend countless hours on this mode trying to beat my friend's high scores. The concept is simple, you don't have any projectiles so the only way to survive is to pass through gates in order to destroy nearby ships and to thin the ever increasing hoarde.
 The goal is to survive for as long as possible. Similarly to other arcade games, there is no possible way to beat the game. You must simply try and survive for as long as you can.
 Enemy speed increases when your score passes certain increments. This will be outlined to the user using custom sound effects.
@@ -60,19 +12,25 @@ Enemy speed increases when your score passes certain increments. This will be ou
 
 #### Sprites
 
-When designing UX for a game, selecting the correct sprite images is essential as it can dramatically change the appearance of your finished product.
-I decided to browse several game developement marketplaces to see which sprites were available for free.
+When designing UX for a game, selecting the correct sprite image is essential as it can dramatically change the appearance & feel of your finished application.
+I decided to browse several game development marketplaces to see which sprite images were available for free.
 
 ###### Player Sprite
+
+![Player Sprite](sprites/player.png)
 
 As mentioned above, the point and click method was chosen as user input. This introduced a UX issue that would look disconcerting to the end user. 
 Depending on where the user clicked, the sprite would appear either upside down or at the incorrect angle. Due to this, circular sprite was chosen for the player.
 
 ###### Enemy Sprite
 
-When choosing the enemy sprite, I wanted the design to give the user a sense of mortality and dread. 
+![Enemy Sprite](sprites/enemy.png)
+
+When choosing the enemy sprite, I wanted the design to give the user a sense of mortality and dread.
 
 ###### Gate Sprite
+
+![Gate Sprite](sprites/gate.png)
 
 ## Sound
 
