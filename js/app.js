@@ -11,10 +11,10 @@ const random = (min, max) => {
 const stars = ['sprites/stars.png', 'sprites/stars1.png', 'sprites/stars2.png', 'sprites/stars3.png', 'sprites/stars4.png'];
 //array of background image locations
 
-let starsInt = Math.floor(random(0, 4)); //chooses random background source every time the app is loaded
-
-const background = new Image();
-background.src = `sprites/stars${starsInt}.png`; //applies random source
+const randomBackground = () => {
+    let starsInt = Math.floor(random(0, 4));
+    return starsInt;
+};
 
 const BG = {
     x1: 0, 
@@ -25,11 +25,21 @@ const BG = {
 }; //background dimensions to match canvas size
 
 const drawBackground = () => {
+    let background = new Image();
+    background.src = stars[0];
     ctx.drawImage(background, BG.x1, BG.y, BG.width, BG.height);
+};
+
+const changeBackground = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let custom = new Image();
+    custom.src = `sprites/stars${randomBackground()}.png`;
+    ctx.drawImage(custom, BG.x1, BG.y, BG.width, BG.height);
 };
 
 let hue = 0; //used in conjunction with requestionAnimationFrame to create hsl color change effect
 let menuActive = true; //tracks whether startscreen is active
+let change = false;
 let gameOver = false; //tracks whether player has been killed by enemy
 let gameFrame = 0; //tracks number of frames that pass
 let score = 0; 
@@ -272,22 +282,11 @@ const game = { //thinking of changing object name to game due to it's interactio
             this.gateArray.push(newGate);
         }
 
-        /*if(this.enemyArray.length > 1){
-            this.swarm2();
-        }*/
-
         for(let i = 0; i < this.enemyArray.length; i++){
             this.enemyArray[i].update();
             this.enemyArray[i].draw();
 
         }
-
-        /* for(let i = 0; i < this.enemyArray.length; i++){
-            setTimeout(() => {
-                this.enemyArray[i].draw();
-            }, 0);
-        } */
-
 
         for(let i = 0; i < this.gateArray.length; i++){
             this.gateArray[i].update();
@@ -298,14 +297,16 @@ const game = { //thinking of changing object name to game due to it's interactio
                 for(let m = 0; m < this.enemyArray.length; m++){
                     if(this.enemyArray[m].distance < 200){
                         this.enemyArray[m].dead = true;
-                        this.enemyArray.splice(m, 1).concat(this.enemyCache); //add dead enemies to enemy cache, need to check if working...
+                        this.enemyArray.splice(m, 1, ...this.enemyCache); //add dead enemies to enemy cache, need to check if working...
                         m--;
                         score += 50;
+                        console.log(this.enemyCache.length);
                     }
                 }
-                this.gateArray.splice(i, 1).concat(this.gateCache); //gate is removed and added to the gate cache for later use, need to check if working...
+                this.gateArray.splice(i, 1, ...this.gateCache); //gate is removed and added to the gate cache for later use, need to check if working...
                 i--;
                 score += 25;
+                console.log(this.gateCache.length);
             }
 
             for(let k = 0; k < this.enemyArray.length; k++){
@@ -317,7 +318,7 @@ const game = { //thinking of changing object name to game due to it's interactio
     
     },
 
-    swarm: function(){ //Test function for overlap/swarm
+    swarm: function(){ //Test function for overlap/swarm **NOT FUNCTIONAL**
             for(let i = 0; i = this.enemyArray.length; i++){
                 this.enemyArray[i].update();
                 this.enemyArray[i].draw();
@@ -339,8 +340,8 @@ const game = { //thinking of changing object name to game due to it's interactio
                 }
             }
     },
-
-    swarm2: function(){ //Most promising swarm function yet
+ 
+    swarm2: function(){ //Most promising swarm function yet ***NOT FUNCTIONAL***
             for(let i = 0, j = this.enemyArray.length; i < j; i++){
                 for(let j = 0, k = this.enemyArray.length; j < k; j++){
                     let vx = this.enemyArray[i].x - this.enemyArray[j].x;
@@ -374,8 +375,11 @@ const startScreen = () => {
     if(menuActive){
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        //changeBackground();
         drawBackground();
+
+        if(change){
+            changeBackground();
+        }
 
         ctx.font = '22.5px DotGothic16';
         ctx.fillStyle = 'white';
@@ -384,7 +388,7 @@ const startScreen = () => {
 
         ctx.font = '20px Orbitron'
         ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
-        ctx.fillText('Click to move. Spacebar to start.', canvas.width / 2 - 175, canvas.height / 2 + 250, 900);
+        ctx.fillText('Click to move. Spacebar to start. M to change background.', canvas.width / 2 - 340, canvas.height / 2 + 250, 900);
 
         player.update(); //player methods placed here to create z-index effect
         player.draw();
@@ -405,14 +409,12 @@ const startScreen = () => {
 const animate = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    //changeBackground();
     drawBackground();
 
     game.gameLoop();
 
     //game speed increases with score
-
-    /*if(score > 8000){
+    if(score > 8000){
         game.speedUp();
     }else if(score > 6000){
         game.speedUp();
@@ -422,7 +424,7 @@ const animate = () => {
         game.speedUp();
     }else if(score > 1000){
         game.speedUp();
-    } */
+    }
         
     if(gameOver){
         ctx.fillStyle = 'red';
@@ -443,12 +445,15 @@ const animate = () => {
 
 window.addEventListener('keyup', e => {
     if(e.keyCode === 32){
-        menuActive = false;
+        menuActive = false; //triggers game start event
+    }
+    if(e.keyCode === 77){
+        change = true;
     }
 });
 
 document.addEventListener("DOMContentLoaded", function() { 
-    startScreen();
+    startScreen(); 
 });
 
 
