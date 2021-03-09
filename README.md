@@ -15,23 +15,29 @@ Enemy speed increases when your score passes certain increments. This will be ou
 When designing UX for a game, selecting the correct sprite image is essential as it can dramatically change the appearance & feel of your finished application.
 I decided to browse several game development marketplaces to see which sprite images were available for free.
 
-###### Player Sprite
+###### Player Sprite (Human Mining Station)
 
 ![Player Sprite](sprites/spacestation.png)
 
 As mentioned above, the point and click method was chosen as user input. This introduced a UX issue that would look disconcerting to the end user. 
 Depending on where the user clicked, the sprite would appear either upside down or at the incorrect angle. Due to this, circular sprite was chosen for the player.
 
-###### Enemy Sprite
+###### Enemy Sprite (Alien Drone Ship)
 
 ![Enemy Sprite](sprites/enemy.png)
 
 When choosing the enemy sprite, I wanted the design to give the user a sense of mortality and dread. The ship had to look like it belonged to a terrifying alien race.
 
 
-###### Gate Sprite
+###### Gate Sprite (Used to thin Alien hoarde)
 
 ![Gate Sprite](sprites/gate5.png)
+
+#### Background
+
+###### Default Background
+
+###### User Customisation (Background Choice)
 
 ## Sound
 
@@ -49,10 +55,6 @@ Custom sound effects were recorded for this project.
 
 
 
-
-
-![alt text goes here](assets/img/logo4.jpg)
-
 ### Project Goals
 
 
@@ -67,18 +69,19 @@ Custom sound effects were recorded for this project.
 #### User Input Choices
 
 Due to the nature of Javascript's event listening system, a choice between 2 player input methods had to be made. 
-Either between the traditional WASD directional input and using the mouse click to move to position. After testing both methods, 'point and click' was chosen due to increased accuracy.
+I had to decide between either the traditional WASD directional input or using the mouse click to move to position. After testing both methods, 'point and click' was chosen due to increased accuracy and ease of use.
 
 #### Fonts
 
 ##### Hero Title Font
 
-
+Orbitron
 
 ##### Secondary Font
 
+Dot Gothic 16
 
-#### icons
+#### Icons
 
 #### Colours
 
@@ -96,30 +99,6 @@ Either between the traditional WASD directional input and using the mouse click 
 #### Autoprefixing
 
 ## Technologies Used
-
-[JQuery](https://jquery.com/) - The Jquery script tag is required in order to load Bootstrap.
-
-[Bootstrap](https://getbootstrap.com/)
-Bootstrap was one of the technologies that was requested for us to use for our milestone project. 
-I decided to use this framework to implement several features on the site including the navbar, a carousel and a grid containing 4 cards (each having an image, some text and a link).
-
-[Youtube Video Embedding tool](https://www.classynemesis.com/projects/ytembed/)
-This technology was used to convert Youtube videos into html iframe elements.
-
-[Image Resizer](https://picresize.com/)
-At times, working with images can be a difficult task. This free website was used mainly to crop images into square profile photos.
-
-[Image Compression](https://tinyjpg.com/)
-Used to decrease Time to Live & application weight.
-
-[Google Fonts](https://fonts.google.com/)
-The site used to choose and implement custom fonts.
-
-[Icons](https://fontawesome.com/)
-Website used to source footer icons
-
-[Photo Editing Software](https://www.gimp.org/)
-Used to create custom event ticket container
 
 
 ## Testing
@@ -213,7 +192,13 @@ Used to create custom event ticket container
 
 ##### Hitbox not following Gate rotation
 
-##### Gates spawn without image
+##### Gates spawn without image (solved)
+
+##### Gate detection not consistant
+
+##### Framerate slowing down 
+
+##### Memory Leaks
 
 #### Solved bugs
 
