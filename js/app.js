@@ -42,16 +42,34 @@ let menuActive = true; //tracks whether startscreen is active
 let change = false;
 let gameOver = false; //tracks whether player has been killed by enemy
 let gameFrame = 0; //tracks number of frames that pass
-let score = 0; 
+let score = 0;
+let multiplier = 1;
+let total = 0; //total score is score x multiplier
 
 let highScore = localStorage.getItem('highscore1') || 0; //gets highScore from local storage
 
 const checkRecordScore = () => { //if user beats score, update high score
     if(score > localStorage.getItem('highscore1')){
-        localStorage.setItem('highscore1', score);
-        highScore = score;
+        localStorage.setItem('highscore1', total);
+        highScore = total;
     }
 };
+
+const removeObjectFromArray = (obj, arr) => {
+    let i = arr.indexOf(obj);
+    if (i !== -1) {
+        let _obj = arr[i];
+        arr.splice(i, 1);
+		return _obj;
+    }
+};
+
+const enemySpawnLoc = [ //Enemies will spawn from a different corner each time, corners are numbered clockwise starting from the top left
+        {x: 100, y: 100},
+        {x: canvas.width - 100, y: 100},
+        {x: 100, y: canvas.height - 100},
+        {x: canvas.width - 100, y: canvas.height - 100}
+];
 
 let canvasPosition = canvas.getBoundingClientRect(); //calculating canvas size relative to viewport
 
@@ -181,6 +199,44 @@ class Enemy{
     }
 };
 
+class Particle{
+    constructor(_x, _y){
+        this.x = _x;
+        this.y = _y;
+        this.radius = 5;
+        this.diameter = 10;
+        this.dead = false;
+        this.distance; //distance from player
+        this.cooldown = 2000; //particle will dissapear when cooldown hits
+    }
+
+    update(){
+        let me = this;
+        let dx = player.x - me.x;
+        let dy = player.y - me.y;
+        me.distance = Math.sqrt(dx*dx + dy*dy);
+        me.cooldown--;
+    }
+
+    draw(){
+        let me = this;
+        ctx.save();
+        ctx.moveTo(me.x, me.y);
+        // top left edge
+        ctx.lineTo(me.x - me.radius, me.y + me.radius);
+        // bottom left edge
+        ctx.lineTo(me.x, me.y + me.diameter); 
+        // bottom right edge
+        ctx.lineTo(me.x + me.radius, me.y + me.radius); 
+        // closing the path automatically creates
+        // the top right edge
+        ctx.closePath(); 
+        ctx.fillStyle = "green";
+        ctx.fill();
+        ctx.restore();
+    }
+}
+
 class Gate{
     constructor(_x, _y){
         this.x = _x; //sprite hitbox is only the top-left corner of the square, withdrawing width & height /2
@@ -195,6 +251,13 @@ class Gate{
         this.rotation = random(0, 360);
         this.rotationSpeed = random(0.03, 0.05);
         this.img = new Image();
+    }
+
+    respawn(){ //when reusing objects you have to reset the spawn location
+        let me = this;
+
+        me.x = random(200, 1000);
+        me.y = random(50, 450);
     }
 
     update(){
@@ -241,12 +304,9 @@ const game = { //thinking of changing object name to game due to it's interactio
 
     gateCache: [], //destroyed gates cached for later use
 
-    enemySpawnLoc: [ //Enemies will spawn from a different corner each time, corners are numbered clockwise starting from the top left
-        {x: 100, y: 100},
-        {x: canvas.width - 100, y: 100},
-        {x: 100, y: canvas.height - 100},
-        {x: canvas.width - 100, y: canvas.height - 100}
-    ],
+    particleArray: [],
+
+    particleCache: [],
 
     gameLoop: function(){
 
@@ -258,25 +318,26 @@ const game = { //thinking of changing object name to game due to it's interactio
             let cornerIndex = Math.floor(Math.random() * 4);
             let newEnemy;
 
-            if(this.enemyCache.length == 0){
-                newEnemy = new Enemy(this.enemySpawnLoc[cornerIndex]['x'], this.enemySpawnLoc[cornerIndex]['y']);
+            if(this.enemyCache.length == 0){ //not working
+                newEnemy = new Enemy(enemySpawnLoc[cornerIndex]['x'], enemySpawnLoc[cornerIndex]['y']);
                 //if enemy cache is empty, create new instance of Enemy
             }else{
                 newEnemy = this.enemyCache.pop();
-                newEnemy.x = this.enemySpawnLoc[cornerIndex]['x'];
-                newEnemy.y = this.enemySpawnLoc[cornerIndex]['y'];
+                newEnemy.x = enemySpawnLoc[cornerIndex]['x'];
+                newEnemy.y = enemySpawnLoc[cornerIndex]['y'];
             }
 
             this.enemyArray.push(newEnemy);
         }
         
-        if(gameFrame % 100 == 0){
+        if(gameFrame % 250 == 0){
             let newGate;
 
-            if(this.enemyCache.length == 0){
+            if(this.gateCache.length == 0){
                 newGate = new Gate(random(200, 1000), random(50, 450));
             }else{
                 newGate = this.gateCache.pop();
+                newGate.respawn();
             }
             //gates not spawning at x,y outlined below, all appearing around (600, 150)
             this.gateArray.push(newGate);
@@ -291,22 +352,38 @@ const game = { //thinking of changing object name to game due to it's interactio
         for(let i = 0; i < this.gateArray.length; i++){
             this.gateArray[i].update();
              this.gateArray[i].draw();
-
+            //too much logic in this nested loop, reducing framerate
 
             if(this.gateArray[i].distance < (player.radius * 2)){ //when player passes through gate, enemies with distance < 200 are killed
                 for(let m = 0; m < this.enemyArray.length; m++){
                     if(this.enemyArray[m].distance < 200){
-                        this.enemyArray[m].dead = true;
-                        this.enemyArray.splice(m, 1, ...this.enemyCache); //add dead enemies to enemy cache, need to check if working...
+                        let currEnemy = this.enemyArray[m];
+                        currEnemy.dead = true;
+                        let newParticle = new Particle(currEnemy.x, currEnemy.y);
+                        this.particleArray.push(newParticle); //creates particle every time enemy dies, adds to array
+                        this.enemyCache.push(removeObjectFromArray(currEnemy, this.enemyArray)); //add dead enemies to enemy cache, need to check if working...
                         m--;
                         score += 50;
                         console.log(this.enemyCache.length);
                     }
                 }
-                this.gateArray.splice(i, 1, ...this.gateCache); //gate is removed and added to the gate cache for later use, need to check if working...
+                this.gateCache.push(removeObjectFromArray(this.gateArray[i], this.gateArray)); //gate is removed and added to the gate cache for later use, need to check if working...
                 i--;
                 score += 25;
                 console.log(this.gateCache.length);
+            }
+
+            for(let i = 0; i < this.particleArray.length; i++){
+                this.particleArray[i].update();
+                this.particleArray[i].draw();
+
+                if(this.particleArray[i].distance < (player.radius * 2) || this.particleArray[i].cooldown === 0){
+                    this.particleArray[i].dead = true;
+                    this.particleCache.push(removeObjectFromArray(this.particleArray[i], this.particleArray));
+                    i--;
+                    multiplier++;
+                    console.log(this.particleCache.length);
+                }
             }
 
             for(let k = 0; k < this.enemyArray.length; k++){
@@ -316,6 +393,7 @@ const game = { //thinking of changing object name to game due to it's interactio
             }
         }
     
+        total = multiplier * score; //adding the true total score
     },
 
     swarm: function(){ //Test function for overlap/swarm **NOT FUNCTIONAL**
@@ -414,28 +492,28 @@ const animate = () => {
     game.gameLoop();
 
     //game speed increases with score
-    if(score > 8000){
+    if(score > 100000000){
         game.speedUp();
-    }else if(score > 6000){
+    }else if(score > 10000000){
         game.speedUp();
-    }else if(score > 4000){
+    }else if(score > 1000000){
         game.speedUp();
-    }else if(score > 2000){
+    }else if(score > 100000){
         game.speedUp();
-    }else if(score > 1000){
+    }else if(score > 50000){
         game.speedUp();
     }
         
     if(gameOver){
         ctx.fillStyle = 'red';
-        ctx.fillText('Score: '+ score + ` (${highScore})`, 10, 50, 200, 100);
-        ctx.fillText((gameFrame/60).toFixed(2), canvas.width - 125, 50, 200, 100);
+        ctx.fillText(`Score: ${total}(${highScore})`, 10, 75, 200, 100);
+        ctx.fillText(`${multiplier}x`, canvas.width - 150, 75, 100, 50);
         console.log(gameFrame); //uses gameframe as score counter
         checkRecordScore();
     }else{
         ctx.fillStyle = 'green';
-        ctx.fillText((gameFrame/60).toFixed(2), canvas.width - 125, 75, 100, 100);
-        ctx.fillText('Score: '+ score + ` (${highScore})`, 10, 75, 200, 100);
+        ctx.fillText(`Score: ${total}(${highScore})`, 10, 75, 200, 100);
+        ctx.fillText(`${multiplier}x`, canvas.width - 150, 75, 100, 50);
         gameFrame++;
 
         //creates animation loop through recursion
@@ -448,7 +526,7 @@ window.addEventListener('keyup', e => {
         menuActive = false; //triggers game start event
     }
     if(e.keyCode === 77){
-        change = true;
+        change = true; //triggers background change
     }
 });
 
