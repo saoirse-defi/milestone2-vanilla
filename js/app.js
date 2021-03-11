@@ -144,7 +144,6 @@ class Enemy{
         this.y = _y;
         this.radius = 20;
         this.diameter = 40;
-        this.dead = false;
         this.distance;
         this.speed = 2;
         this.img = new Image();
@@ -203,37 +202,36 @@ class Particle{
     constructor(_x, _y){
         this.x = _x;
         this.y = _y;
-        this.radius = 5;
-        this.diameter = 10;
-        this.dead = false;
+        this.radius = 8;
+        this.diameter = 16;
+        this.speed = 5;
         this.distance; //distance from player
-        this.cooldown = 2000; //particle will dissapear when cooldown hits
+        this.cooldown = 2000; //particle will dissapear when cooldown hits 0 
+        this.img = new Image();
     }
 
     update(){
         let me = this;
+
         let dx = player.x - me.x;
         let dy = player.y - me.y;
+        let honeAngle = Math.atan2(dy, dx);
+
         me.distance = Math.sqrt(dx*dx + dy*dy);
-        me.cooldown--;
+
+        if(me.distance < 100){ //gems get attracted to player when they are less than 100 away
+            me.x += me.speed * Math.cos(honeAngle);
+            me.y += me.speed * Math.sin(honeAngle);
+        }
+
+        me.cooldown--; //using gameframe as a timer
     }
 
     draw(){
         let me = this;
-        ctx.save();
-        ctx.moveTo(me.x, me.y);
-        // top left edge
-        ctx.lineTo(me.x - me.radius, me.y + me.radius);
-        // bottom left edge
-        ctx.lineTo(me.x, me.y + me.diameter); 
-        // bottom right edge
-        ctx.lineTo(me.x + me.radius, me.y + me.radius); 
-        // closing the path automatically creates
-        // the top right edge
-        ctx.closePath(); 
-        ctx.fillStyle = "green";
-        ctx.fill();
-        ctx.restore();
+
+        ctx.drawImage(me.img, me.x - me.radius, me.y - me.radius, me.diameter, me.diameter);
+        me.img.src = 'sprites/gem.png';
     }
 }
 
@@ -318,7 +316,7 @@ const game = { //thinking of changing object name to game due to it's interactio
             let cornerIndex = Math.floor(Math.random() * 4);
             let newEnemy;
 
-            if(this.enemyCache.length == 0){ //not working
+            if(this.enemyCache.length == 0){
                 newEnemy = new Enemy(enemySpawnLoc[cornerIndex]['x'], enemySpawnLoc[cornerIndex]['y']);
                 //if enemy cache is empty, create new instance of Enemy
             }else{
@@ -326,7 +324,6 @@ const game = { //thinking of changing object name to game due to it's interactio
                 newEnemy.x = enemySpawnLoc[cornerIndex]['x'];
                 newEnemy.y = enemySpawnLoc[cornerIndex]['y'];
             }
-
             this.enemyArray.push(newEnemy);
         }
         
@@ -334,19 +331,13 @@ const game = { //thinking of changing object name to game due to it's interactio
             let newGate;
 
             if(this.gateCache.length == 0){
+                //if cache is empty create new instance of enemy
                 newGate = new Gate(random(200, 1000), random(50, 450));
             }else{
                 newGate = this.gateCache.pop();
-                newGate.respawn();
+                newGate.respawn(); //resets gate co-ordinates so it doesn't just reappear in the same place
             }
-            //gates not spawning at x,y outlined below, all appearing around (600, 150)
             this.gateArray.push(newGate);
-        }
-
-        for(let i = 0; i < this.enemyArray.length; i++){
-            this.enemyArray[i].update();
-            this.enemyArray[i].draw();
-
         }
 
         for(let i = 0; i < this.gateArray.length; i++){
@@ -358,13 +349,17 @@ const game = { //thinking of changing object name to game due to it's interactio
                 for(let m = 0; m < this.enemyArray.length; m++){
                     if(this.enemyArray[m].distance < 200){
                         let currEnemy = this.enemyArray[m];
-                        currEnemy.dead = true;
-                        let newParticle = new Particle(currEnemy.x, currEnemy.y);
+                        let newParticle;
+                        if(this.particleCache.length == 0){
+                            newParticle = new Particle(currEnemy.x, currEnemy.y);
+                        }
+                        else{
+                            newParticle = this.particleCache.pop();
+                        }
                         this.particleArray.push(newParticle); //creates particle every time enemy dies, adds to array
                         this.enemyCache.push(removeObjectFromArray(currEnemy, this.enemyArray)); //add dead enemies to enemy cache, need to check if working...
                         m--;
                         score += 50;
-                        console.log(this.enemyCache.length);
                     }
                 }
                 this.gateCache.push(removeObjectFromArray(this.gateArray[i], this.gateArray)); //gate is removed and added to the gate cache for later use, need to check if working...
@@ -372,28 +367,30 @@ const game = { //thinking of changing object name to game due to it's interactio
                 score += 25;
                 console.log(this.gateCache.length);
             }
+        }
 
-            for(let i = 0; i < this.particleArray.length; i++){
+        for(let i = 0; i < this.particleArray.length; i++){
                 this.particleArray[i].update();
                 this.particleArray[i].draw();
 
                 if(this.particleArray[i].distance < (player.radius * 2) || this.particleArray[i].cooldown === 0){
-                    this.particleArray[i].dead = true;
                     this.particleCache.push(removeObjectFromArray(this.particleArray[i], this.particleArray));
                     i--;
                     multiplier++;
-                    console.log(this.particleCache.length);
                 }
-            }
+        }
 
-            for(let k = 0; k < this.enemyArray.length; k++){
+        for(let k = 0; k < this.enemyArray.length; k++){
+                this.enemyArray[k].update();
+                this.enemyArray[k].draw();
+
                 if(this.enemyArray[k].distance < this.enemyArray[k].radius / 2 + player.radius){
                     //gameOver = true; //if enemy gets too close, game over!
                 }
-            }
         }
     
         total = multiplier * score; //adding the true total score
+        console.log(this.particleCache.length);
     },
 
     swarm: function(){ //Test function for overlap/swarm **NOT FUNCTIONAL**
