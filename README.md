@@ -194,9 +194,9 @@ Dot Gothic 16
 
 ##### Gates spawn without image (solved)
 
-##### Gate detection not consistant
+##### Gate detection not consistent
 
-##### Framerate slowing down 
+##### Framerate slowing down (I believe due to nested loops)
 
 ##### Memory Leaks
 
