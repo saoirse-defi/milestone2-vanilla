@@ -76,10 +76,21 @@ let canvasPosition = canvas.getBoundingClientRect(); //calculating canvas size r
 const mouse = { //set mouse properties on application start
     x: canvas.width / 2,
     y: canvas.height / 2,
-    click: false
 };
 
-canvas.addEventListener('mousedown', (event) => { //used to control player sprite with click to move to
+const mouseMoveHandler = (e) => {
+    let relX = e.x - canvasPosition.left;
+    let relY = e.y - canvasPosition.top;
+
+    if(relX > 0 && relX < canvas.width){
+        mouse.x = event.x - canvasPosition.left;
+        mouse.y = event.y - canvasPosition.top;
+    }
+};
+
+canvas.addEventListener("mousemove", mouseMoveHandler, false);
+
+/*canvas.addEventListener('mousedown', (event) => { //used to control player sprite with click to move to
     mouse.click = true;
     mouse.x = event.x - canvasPosition.left;
     mouse.y = event.y - canvasPosition.top;
@@ -87,7 +98,17 @@ canvas.addEventListener('mousedown', (event) => { //used to control player sprit
 
 canvas.addEventListener('mouseup', () => {
     mouse.click = false;
-});
+}); */
+
+let enemy_Cache = new Array(50);
+let gate_Cache = new Array(50);
+
+const initialSpawn = () => {
+    for(let i = 0; i < 50; i++){
+        enemy_Cache.push(new Enemy(0, 0));
+        gate_Cache.push(new Gate(0, 0));
+    }
+};
 
 class Player{
     constructor(){
@@ -146,6 +167,7 @@ class Enemy{
         this.diameter = 40;
         this.distance;
         this.speed = 2;
+        this.isParticle = false;
         this.img = new Image();
     }
 
@@ -156,19 +178,32 @@ class Enemy{
         let dy = player.y - me.y;
         let honeAngle = Math.atan2(dy, dx);
 
-        //tracks player
-        me.x += me.speed * Math.cos(honeAngle);
-        me.y += me.speed * Math.sin(honeAngle);
-
-        //calculates the distance from the player
         me.distance = Math.sqrt(dx*dx + dy*dy);
+
+        if(me.isParticle){
+            if(me.distance < 150){
+                me.x += me.speed * Math.cos(honeAngle);
+                me.y += me.speed * Math.sin(honeAngle);
+            }else{
+                me.x = me.x; //if particle and distance to player is less than 100, gem is stationary
+                me.y = me.y;
+            }
+        }else{
+            me.x += me.speed * Math.cos(honeAngle);
+            me.y += me.speed * Math.sin(honeAngle);
+        }
     }
 
     draw(){
         let me = this;
-        
-        ctx.drawImage(me.img, me.x - me.radius, me.y - me.radius, me.diameter, me.diameter);
-        me.img.src = 'sprites/enemy.png';
+
+        if(me.isParticle){
+            ctx.drawImage(me.img, me.x - me.radius, me.y - me.radius, me.diameter, me.diameter);
+            me.img.src = 'sprites/gem.png';
+        }else{
+            ctx.drawImage(me.img, me.x - me.radius, me.y - me.radius, me.diameter, me.diameter);
+            me.img.src = 'sprites/enemy.png';
+        }
     }
 
     intersects(drone){ //Test function for overlap/swarm
@@ -208,6 +243,13 @@ class Particle{
         this.distance; //distance from player
         this.cooldown = 2000; //particle will dissapear when cooldown hits 0 
         this.img = new Image();
+    }
+
+    reposition(a, b){ //when reusing objects you have to reset the spawn location
+        let me = this;
+
+        me.x = a;
+        me.y = b;
     }
 
     update(){
@@ -251,7 +293,7 @@ class Gate{
         this.img = new Image();
     }
 
-    respawn(){ //when reusing objects you have to reset the spawn location
+    reposition(){ //when reusing objects you have to reset the spawn location
         let me = this;
 
         me.x = random(200, 1000);
@@ -316,27 +358,19 @@ const game = { //thinking of changing object name to game due to it's interactio
             let cornerIndex = Math.floor(Math.random() * 4);
             let newEnemy;
 
-            if(this.enemyCache.length == 0){
-                newEnemy = new Enemy(enemySpawnLoc[cornerIndex]['x'], enemySpawnLoc[cornerIndex]['y']);
-                //if enemy cache is empty, create new instance of Enemy
-            }else{
-                newEnemy = this.enemyCache.pop();
-                newEnemy.x = enemySpawnLoc[cornerIndex]['x'];
-                newEnemy.y = enemySpawnLoc[cornerIndex]['y'];
-            }
+            newEnemy = enemy_Cache.pop();
+            newEnemy.x = enemySpawnLoc[cornerIndex]['x'];
+            newEnemy.y = enemySpawnLoc[cornerIndex]['y'];
+            
             this.enemyArray.push(newEnemy);
         }
         
-        if(gameFrame % 250 == 0){
+        if(gameFrame % 50 == 0){
             let newGate;
 
-            if(this.gateCache.length == 0){
-                //if cache is empty create new instance of enemy
-                newGate = new Gate(random(200, 1000), random(50, 450));
-            }else{
-                newGate = this.gateCache.pop();
-                newGate.respawn(); //resets gate co-ordinates so it doesn't just reappear in the same place
-            }
+            newGate = gate_Cache.pop();
+            newGate.reposition(); //resets gate co-ordinates so it doesn't just reappear in the same place
+            
             this.gateArray.push(newGate);
         }
 
@@ -348,49 +382,35 @@ const game = { //thinking of changing object name to game due to it's interactio
             if(this.gateArray[i].distance < (player.radius * 2)){ //when player passes through gate, enemies with distance < 200 are killed
                 for(let m = 0; m < this.enemyArray.length; m++){
                     if(this.enemyArray[m].distance < 200){
-                        let currEnemy = this.enemyArray[m];
-                        let newParticle;
-                        if(this.particleCache.length == 0){
-                            newParticle = new Particle(currEnemy.x, currEnemy.y);
-                        }
-                        else{
-                            newParticle = this.particleCache.pop();
-                        }
-                        this.particleArray.push(newParticle); //creates particle every time enemy dies, adds to array
-                        this.enemyCache.push(removeObjectFromArray(currEnemy, this.enemyArray)); //add dead enemies to enemy cache, need to check if working...
-                        m--;
+                        this.enemyArray[m].isParticle = true;
+                        this.enemyArray[m].speed = 7;
                         score += 50;
                     }
                 }
-                this.gateCache.push(removeObjectFromArray(this.gateArray[i], this.gateArray)); //gate is removed and added to the gate cache for later use, need to check if working...
+                gate_Cache.unshift(removeObjectFromArray(this.gateArray[i], this.gateArray)); //gate is removed and added to the gate cache for later use, need to check if working...
                 i--;
                 score += 25;
-                console.log(this.gateCache.length);
             }
-        }
-
-        for(let i = 0; i < this.particleArray.length; i++){
-                this.particleArray[i].update();
-                this.particleArray[i].draw();
-
-                if(this.particleArray[i].distance < (player.radius * 2) || this.particleArray[i].cooldown === 0){
-                    this.particleCache.push(removeObjectFromArray(this.particleArray[i], this.particleArray));
-                    i--;
-                    multiplier++;
-                }
         }
 
         for(let k = 0; k < this.enemyArray.length; k++){
                 this.enemyArray[k].update();
                 this.enemyArray[k].draw();
 
-                if(this.enemyArray[k].distance < this.enemyArray[k].radius / 2 + player.radius){
-                    //gameOver = true; //if enemy gets too close, game over!
+                if(this.enemyArray[k].isParticle && this.enemyArray[k].distance < 20){
+                    this.enemyArray[k].isParticle = false;
+                    this.enemyArray[k].speed = 2;
+                    enemy_Cache.unshift(removeObjectFromArray(this.enemyArray[k], this.enemyArray));
+                    multiplier++;
                 }
+
+                /*if(!this.enemyArray[k].isParticle && this.enemyArray[k].distance < this.enemyArray[k].radius / 2 + player.radius){
+                    //gameOver = true; //if enemy gets too close, game over!
+                }*/
         }
     
         total = multiplier * score; //adding the true total score
-        console.log(this.particleCache.length);
+        console.log(gate_Cache.length);
     },
 
     swarm: function(){ //Test function for overlap/swarm **NOT FUNCTIONAL**
@@ -446,6 +466,8 @@ const game = { //thinking of changing object name to game due to it's interactio
 const player = new Player();
 
 const startScreen = () => {
+
+    initialSpawn();
 
     if(menuActive){
         ctx.clearRect(0, 0, canvas.width, canvas.height);
