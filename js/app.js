@@ -41,6 +41,7 @@ let hue = 0; //used in conjunction with requestionAnimationFrame to create hsl c
 let menuActive = true; //tracks whether startscreen is active
 let change = false;
 let gameOver = false; //tracks whether player has been killed by enemy
+let killedByMine = false;
 let gameFrame = 0; //tracks number of frames that pass
 let score = 0;
 let multiplier = 1;
@@ -55,7 +56,7 @@ const checkRecordScore = () => { //if user beats score, update high score
     }
 };
 
-const removeObjectFromArray = (obj, arr) => {
+const removeObjectFromArray = (obj, arr) => { 
     let i = arr.indexOf(obj);
     if (i !== -1) {
         let _obj = arr[i];
@@ -90,21 +91,11 @@ const mouseMoveHandler = (e) => {
 
 canvas.addEventListener("mousemove", mouseMoveHandler, false);
 
-/*canvas.addEventListener('mousedown', (event) => { //used to control player sprite with click to move to
-    mouse.click = true;
-    mouse.x = event.x - canvasPosition.left;
-    mouse.y = event.y - canvasPosition.top;
-});
-
-canvas.addEventListener('mouseup', () => {
-    mouse.click = false;
-}); */
-
-let enemy_Cache = new Array(50);
-let gate_Cache = new Array(50);
+let enemy_Cache = new Array(500);
+let gate_Cache = new Array(500);
 
 const initialSpawn = () => {
-    for(let i = 0; i < 50; i++){
+    for(let i = 0; i < 500; i++){
         enemy_Cache.push(new Enemy(0, 0));
         gate_Cache.push(new Gate(0, 0));
     }
@@ -205,77 +196,7 @@ class Enemy{
             me.img.src = 'sprites/enemy.png';
         }
     }
-
-    intersects(drone){ //Test function for overlap/swarm
-        let me = this;
-
-        let distance = Math.sqrt((me.x - drone.x)*(me.x - drone.x) + (me.y - drone.y)*(me.y - drone.y));
-
-        let totalRad = me.radius + drone.radius;
-
-        if(distance < totalRad){
-            let overlap = totalRad - distance;
-
-            let dx = (me.x - drone.x) / distance;
-            let dy = (me.y - drone.y) / distance;
-
-            me.x += overlap * dx;
-            me.y += overlap * dy;
-        }
-
-    }
-
-    spread(overlap, dx, dy){ //Test function for overlap/swarm
-        let me = this;
-
-        me.x += overlap * dx;
-        me.y += overlap * dy;
-    }
 };
-
-class Particle{
-    constructor(_x, _y){
-        this.x = _x;
-        this.y = _y;
-        this.radius = 8;
-        this.diameter = 16;
-        this.speed = 5;
-        this.distance; //distance from player
-        this.cooldown = 2000; //particle will dissapear when cooldown hits 0 
-        this.img = new Image();
-    }
-
-    reposition(a, b){ //when reusing objects you have to reset the spawn location
-        let me = this;
-
-        me.x = a;
-        me.y = b;
-    }
-
-    update(){
-        let me = this;
-
-        let dx = player.x - me.x;
-        let dy = player.y - me.y;
-        let honeAngle = Math.atan2(dy, dx);
-
-        me.distance = Math.sqrt(dx*dx + dy*dy);
-
-        if(me.distance < 100){ //gems get attracted to player when they are less than 100 away
-            me.x += me.speed * Math.cos(honeAngle);
-            me.y += me.speed * Math.sin(honeAngle);
-        }
-
-        me.cooldown--; //using gameframe as a timer
-    }
-
-    draw(){
-        let me = this;
-
-        ctx.drawImage(me.img, me.x - me.radius, me.y - me.radius, me.diameter, me.diameter);
-        me.img.src = 'sprites/gem.png';
-    }
-}
 
 class Gate{
     constructor(_x, _y){
@@ -284,7 +205,9 @@ class Gate{
         this.endX;
         this.endY;
         this.radius;
-        this.distance;
+        this.distance; //distance from player to center of gate
+        this.distance1; //distance from player to mine 1
+        this.distance2; //distance from player to mine 2
         this.width = 75;
         this.height = 133;
         this.theta;
@@ -302,6 +225,7 @@ class Gate{
 
     update(){
         let me = this;
+
         //rotational velocity added to rotation angle (radians)
         me.rotation += me.rotationSpeed;
 
@@ -315,11 +239,23 @@ class Gate{
         me.x = me.radius * Math.cos(me.theta);
         me.y = me.radius * Math.sin(me.theta);
         
-        let dx = player.x - me.x - 37.5; //sprite hitbox relocation fixed
+        //distance from player to center of gate
+        let dx = player.x - me.x - 10; //sprite hitbox relocation fixed
         let dy = player.y - me.y - 66.5;    
 
-        //calculates the distance from player using new x,y
         me.distance = Math.sqrt(dx*dx + dy*dy);
+
+        //distance from player to mine 1
+        let dx1 = player.x - me.x - 17.5; 
+        let dy1 = player.y - me.y - 26.6;    
+
+        me.distance1 = Math.sqrt(dx1*dx1 + dy1*dy1);
+
+        //distance from player to mine 2
+        let dx2 = player.x - me.x - 37.5; 
+        let dy2 = player.y - me.y - 106.6;    
+
+        me.distance2 = Math.sqrt(dx2*dx2 + dy2*dy2);
     } 
 
     draw(){
@@ -353,14 +289,16 @@ const game = { //thinking of changing object name to game due to it's interactio
         player.update();
         player.draw();
 
-        if(gameFrame % 50 == 0){
+        if(gameFrame % 500 == 0){
             //every 50 frames a new enemy spawns at a random corner
-            let cornerIndex = Math.floor(Math.random() * 4);
+            let randomCorner = Math.floor(Math.random() * 4);
             let newEnemy;
 
             newEnemy = enemy_Cache.pop();
-            newEnemy.x = enemySpawnLoc[cornerIndex]['x'];
-            newEnemy.y = enemySpawnLoc[cornerIndex]['y'];
+            newEnemy.isParticle = false;
+            newEnemy.speed = 2;
+            newEnemy.x = enemySpawnLoc[randomCorner]['x'];
+            newEnemy.y = enemySpawnLoc[randomCorner]['y'];
             
             this.enemyArray.push(newEnemy);
         }
@@ -379,6 +317,11 @@ const game = { //thinking of changing object name to game due to it's interactio
              this.gateArray[i].draw();
             //too much logic in this nested loop, reducing framerate
 
+            if(this.gateArray[i].distance1 < (player.radius * 1.5) || this.gateArray[i].distance2 < (player.radius * 1.5)){
+                gameOver = true;
+                killedByMine = true;
+            }
+
             if(this.gateArray[i].distance < (player.radius * 2)){ //when player passes through gate, enemies with distance < 200 are killed
                 for(let m = 0; m < this.enemyArray.length; m++){
                     if(this.enemyArray[m].distance < 200){
@@ -387,79 +330,29 @@ const game = { //thinking of changing object name to game due to it's interactio
                         score += 50;
                     }
                 }
-                gate_Cache.unshift(removeObjectFromArray(this.gateArray[i], this.gateArray)); //gate is removed and added to the gate cache for later use, need to check if working...
+                gate_Cache.push(removeObjectFromArray(this.gateArray[i], this.gateArray)); //gate is removed and added to the gate cache for later use, need to check if working...
                 i--;
                 score += 25;
             }
         }
 
         for(let k = 0; k < this.enemyArray.length; k++){
-                this.enemyArray[k].update();
-                this.enemyArray[k].draw();
+            this.enemyArray[k].update();
+            this.enemyArray[k].draw();
 
-                if(this.enemyArray[k].isParticle && this.enemyArray[k].distance < 20){
-                    this.enemyArray[k].isParticle = false;
-                    this.enemyArray[k].speed = 2;
-                    enemy_Cache.unshift(removeObjectFromArray(this.enemyArray[k], this.enemyArray));
-                    multiplier++;
+                if(!this.enemyArray[k].isParticle && this.enemyArray[k].distance < this.enemyArray[k].radius / 2 + player.radius){
+                    //gameOver = true; //if enemy gets too close, game over!
                 }
 
-                /*if(!this.enemyArray[k].isParticle && this.enemyArray[k].distance < this.enemyArray[k].radius / 2 + player.radius){
-                    //gameOver = true; //if enemy gets too close, game over!
-                }*/
+                if(this.enemyArray[k].isParticle && this.enemyArray[k].distance < 20){
+                    enemy_Cache.push(removeObjectFromArray(this.enemyArray[k], this.enemyArray));
+                    multiplier++;
+                }
         }
     
         total = multiplier * score; //adding the true total score
-        console.log(gate_Cache.length);
-    },
-
-    swarm: function(){ //Test function for overlap/swarm **NOT FUNCTIONAL**
-            for(let i = 0; i = this.enemyArray.length; i++){
-                this.enemyArray[i].update();
-                this.enemyArray[i].draw();
-
-                for(let j = 0; j = this.enemyArray.length; j++){
-                    let distanceX = this.enemyArray[i].x - this.enemyArray[j].x; //distance between in the x axis
-                    let distanceY = this.enemyArray[i].y - this.enemyArray[j].y; //distance between in the y axis
-                    let distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY); //pythagorian to solve for distance between to objects
-                    let diameter =  this.enemyArray[i].radius * 2;
-                    let overlap = diameter - distance;
-                    let dx = distanceX / distance;
-                    let dy = distanceY / distance;
-
-                    if(distance < diameter){
-                        //this.enemyArray[j].spread(overlap, dx, dy);
-                        this.enemyArray[j].x += overlap * dx;
-                        this.enemyArray[j].y += overlap * dy;
-                    }
-                }
-            }
-    },
- 
-    swarm2: function(){ //Most promising swarm function yet ***NOT FUNCTIONAL***
-            for(let i = 0, j = this.enemyArray.length; i < j; i++){
-                for(let j = 0, k = this.enemyArray.length; j < k; j++){
-                    let vx = this.enemyArray[i].x - this.enemyArray[j].x;
-                    let vy = this.enemyArray[i].y - this.enemyArray[j].y;
-                    let prox = Math.sqrt(vx*vx + vy*vy);
-                    let totalRad =  this.enemyArray[i].radius * 2;
-                    let overlap = totalRad - prox;
-                    let dx = vx / prox;
-                    let dy = vy / prox;
-
-                    if(prox < totalRad){
-                        this.enemyArray[j].x += random(-1, 1);
-                        this.enemyArray[j].y += random(-1, 1);
-                        //creates nice swarm effect, could look like insects, unfortunately drags enemies away from player.
-                    }
-                }
-            }
-    },
-
-    speedUp: function(){
-        for(let i = 0; i < this.enemyArray.length; i++){
-            this.enemyArray[i].speed + 1; //increases enemy speed
-        }
+        console.log('Gate Array Length', gate_Cache.length);
+        console.log('Enemy Array Length', enemy_Cache.length);
     }
 };
 
@@ -523,15 +416,25 @@ const animate = () => {
         game.speedUp();
     }
         
-    if(gameOver){
+    if(gameOver && killedByMine){
         ctx.fillStyle = 'red';
-        ctx.fillText(`Score: ${total}(${highScore})`, 10, 75, 200, 100);
+        ctx.fillText(`${total}(${highScore})`, 10, 75, 200, 100);
         ctx.fillText(`${multiplier}x`, canvas.width - 150, 75, 100, 50);
+        ctx.fillText("GAME OVER!", canvas.width / 2 - 145, canvas.height / 2 + 30, 300, 175);
+        ctx.fillText("Killed by mine.", canvas.width / 2 - 145, canvas.height / 2 + 125, 300, 25);
+        console.log(gameFrame); //uses gameframe as score counter
+        checkRecordScore();
+    }else if(gameOver){
+        ctx.fillStyle = 'red';
+        ctx.fillText(`${total}(${highScore})`, 10, 75, 200, 100);
+        ctx.fillText(`${multiplier}x`, canvas.width - 150, 75, 100, 50);
+        ctx.fillText("GAME OVER!", canvas.width / 2 - 145, canvas.height / 2 + 30, 300, 175);
+        ctx.fillText("Killed by alien.", canvas.width / 2 - 145, canvas.height / 2 + 125, 300, 25);
         console.log(gameFrame); //uses gameframe as score counter
         checkRecordScore();
     }else{
         ctx.fillStyle = 'green';
-        ctx.fillText(`Score: ${total}(${highScore})`, 10, 75, 200, 100);
+        ctx.fillText(`${total}(${highScore})`, 10, 75, 200, 100);
         ctx.fillText(`${multiplier}x`, canvas.width - 150, 75, 100, 50);
         gameFrame++;
 
