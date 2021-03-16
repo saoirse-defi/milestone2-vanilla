@@ -1,7 +1,7 @@
 const canvas = document.getElementById('gameboard'); //defining canvas element
-const ctx = canvas.getContext('2d');
+const ctx = canvas.getContext('2d'); //defining whether 2D or 3D
 
-canvas.width = 1000;
+canvas.width = 1000; //setting canvas dimensions
 canvas.height = 600;
 
 const random = (min, max) => {
@@ -16,25 +16,26 @@ const randomBackground = () => {
     return starsInt;
 };
 
-const BG = {
-    x1: 0, 
-    x2: canvas.width,
+const BG = {//defining background co-ordinates for background to match canvas size
+    x: 0, 
     y: 0,
     width: canvas.width,
     height: canvas.height
-}; //background dimensions to match canvas size
+}; 
 
-const drawBackground = () => {
+const drawBackground = () => { //applies starry night background
     let background = new Image();
     background.src = stars[0];
-    ctx.drawImage(background, BG.x1, BG.y, BG.width, BG.height);
+    ctx.drawImage(background, BG.x, BG.y, BG.width, BG.height);
 };
 
 const changeBackground = () => {
+    /*not fully functional, background swaps every frame.
+    Need to think of way to hold it outside the animation loop.*/
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     let custom = new Image();
     custom.src = `sprites/stars${randomBackground()}.png`;
-    ctx.drawImage(custom, BG.x1, BG.y, BG.width, BG.height);
+    ctx.drawImage(custom, BG.x, BG.y, BG.width, BG.height);
 };
 
 let hue = 0; //used in conjunction with requestionAnimationFrame to create hsl color change effect
@@ -56,7 +57,7 @@ const checkRecordScore = () => { //if user beats score, update high score
     }
 };
 
-const removeObjectFromArray = (obj, arr) => { 
+const removeObjectFromArray = (obj, arr) => { //needs testing as will break according to my mentor
     let i = arr.indexOf(obj);
     if (i !== -1) {
         let _obj = arr[i];
@@ -65,7 +66,9 @@ const removeObjectFromArray = (obj, arr) => {
     }
 };
 
-const enemySpawnLoc = [ //Enemies will spawn from a different corner each time, corners are numbered clockwise starting from the top left
+const enemySpawnLoc = [ 
+    /*Enemies will spawn from a different corner each time, 
+    corners are numbered clockwise starting from the top left. */
         {x: 100, y: 100},
         {x: canvas.width - 100, y: 100},
         {x: 100, y: canvas.height - 100},
@@ -74,12 +77,12 @@ const enemySpawnLoc = [ //Enemies will spawn from a different corner each time, 
 
 let canvasPosition = canvas.getBoundingClientRect(); //calculating canvas size relative to viewport
 
-const mouse = { //set mouse properties on application start
+const mouse = { //set mouse co-ordinates on application start
     x: canvas.width / 2,
     y: canvas.height / 2,
 };
 
-const mouseMoveHandler = (e) => {
+const mouseMoveHandler = (e) => { //tracks user's mouse input
     let relX = e.x - canvasPosition.left;
     let relY = e.y - canvasPosition.top;
 
@@ -91,9 +94,11 @@ const mouseMoveHandler = (e) => {
 
 canvas.addEventListener("mousemove", mouseMoveHandler, false);
 
-let enemy_Cache = new Array(500);
+//create gate/enemy cache to store sprites on init
+let enemy_Cache = new Array(500); 
 let gate_Cache = new Array(500);
 
+//fills cache with gate/enemy sprites on game start
 const initialSpawn = () => {
     for(let i = 0; i < 500; i++){
         enemy_Cache.push(new Enemy(0, 0));
