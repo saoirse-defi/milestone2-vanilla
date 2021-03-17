@@ -198,6 +198,8 @@ Dot Gothic 16
 
 ##### Framerate slowing down (I believe due to nested loops)
 
+##### Mines on the end of gates exhibiting random behaviour
+
 ##### Memory Leaks
 
 #### Solved bugs
