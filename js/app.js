@@ -245,20 +245,20 @@ class Gate{
         me.y = me.radius * Math.sin(me.theta);
         
         //distance from player to center of gate
-        let dx = player.x - me.x - 10; //sprite hitbox relocation fixed
-        let dy = player.y - me.y - 66.5;    
+        let dx = player.x - me.x - 5; //sprite hitbox relocation fixed
+        let dy = player.y - me.y - 85;    
 
         me.distance = Math.sqrt(dx*dx + dy*dy);
 
         //distance from player to mine 1
-        let dx1 = player.x - me.x - 17.5; 
-        let dy1 = player.y - me.y - 26.6;    
+        let dx1 = player.x - me.x - 25; 
+        let dy1 = player.y - me.y - 30;    
 
         me.distance1 = Math.sqrt(dx1*dx1 + dy1*dy1);
 
         //distance from player to mine 2
-        let dx2 = player.x - me.x - 37.5; 
-        let dy2 = player.y - me.y - 106.6;    
+        let dx2 = player.x - me.x - 5; 
+        let dy2 = player.y - me.y - 115;    
 
         me.distance2 = Math.sqrt(dx2*dx2 + dy2*dy2);
     } 
@@ -319,10 +319,9 @@ const game = { //thinking of changing object name to game due to it's interactio
 
         for(let i = 0; i < this.gateArray.length; i++){
             this.gateArray[i].update();
-             this.gateArray[i].draw();
             //too much logic in this nested loop, reducing framerate
 
-            if(this.gateArray[i].distance1 < (player.radius * 1.5) || this.gateArray[i].distance2 < (player.radius * 1.5)){
+            if(this.gateArray[i].distance1 < player.radius * 2 || this.gateArray[i].distance2 < player.radius * 2){
                 gameOver = true;
                 killedByMine = true;
             }
@@ -339,6 +338,7 @@ const game = { //thinking of changing object name to game due to it's interactio
                 i--;
                 score += 25;
             }
+            this.gateArray[i].draw();
         }
 
         for(let k = 0; k < this.enemyArray.length; k++){
@@ -409,7 +409,7 @@ const animate = () => {
     game.gameLoop();
 
     //game speed increases with score
-    if(score > 100000000){
+    /*if(score > 100000000){
         game.speedUp();
     }else if(score > 10000000){
         game.speedUp();
@@ -419,7 +419,7 @@ const animate = () => {
         game.speedUp();
     }else if(score > 50000){
         game.speedUp();
-    }
+    }*/
         
     if(gameOver && killedByMine){
         ctx.fillStyle = 'red';
