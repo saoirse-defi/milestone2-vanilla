@@ -11,10 +11,17 @@
 </head>
 <body>
     <div class="container">
-        <div id="highscore"></div>
-        <canvas id="gameboard">
+        <canvas id="canvas">
             Your browser doesn't include support for the canvas element.
         </canvas>
+        <div id="score"><span>Score: </span><span id="scoreElement">0</span></div>
+        <div id="multiplier"><span>Multiplier: </span><span id="multiplierElement">1x</span></div>
+
+            <div class="modal">
+                <h1 id="modalScore">0</h1><br>
+                <p id="pointsLabel">Points</p><br>
+                <button id="restartButton">Restart Game</button>
+            </div>
         <!-- <div class="intro">
             <h2 class="fadeIntro">How long will you survive?</h2>
         </div> -->
