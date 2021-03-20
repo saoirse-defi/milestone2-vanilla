@@ -200,6 +200,8 @@ Dot Gothic 16
 
 ##### Mines on the end of gates exhibiting random behaviour
 
+##### Not all gates are being drawn, leading to random deaths
+
 ##### Memory Leaks
 
 #### Solved bugs
