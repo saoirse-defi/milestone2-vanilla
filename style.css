@@ -21,11 +21,8 @@ body{
     background-position: center center;
 }
 
-#gameboard{
+#canvas{
     background-color: #000000;
-    width: 1000px;
-    height: 600px;
-    border: 5px solid cyan;
 }
 
 #highscore{
@@ -80,4 +77,54 @@ body{
 .fade-in{
     opacity: 0;
     animation: fadeIntro 1s ease-in forwards;
+}
+
+#score{
+    position: fixed;
+    color: white;
+    top: 20px;
+    left: 225px;
+    font-size: larger;
+}
+
+#multiplier{
+    position: fixed;
+    color: white;
+    top: 20px;
+    right: 175px;
+    font-size: larger;
+}
+
+
+.modal{
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    max-width: 33%;
+    max-height: 25%;
+    border-radius: 5%;
+}
+
+#score_modal{
+    font-weight: bold;
+    font-size: xx-large;
+}
+
+#pointsLabel{
+    color: gray;
+    font-weight: 700;
+}
+
+#restartButton{
+    background-color: orangered;
+    color: black;
+    width: 50%;
 }
