@@ -1,8 +1,14 @@
-const canvas = document.getElementById('gameboard'); //defining canvas element
+const canvas = document.getElementById('canvas'); //defining canvas element
 const ctx = canvas.getContext('2d'); //defining whether 2D or 3D
 
-canvas.width = 1000; //setting canvas dimensions
-canvas.height = 600;
+canvas.width = window.innerWidth; //setting canvas dimensions
+canvas.height = window.innerHeight;
+
+const scoreElement = document.getElementById('scoreElement'); //defining html elements as variables
+const modal = document.getElementsByClassName('modal');
+const modalScore = document.getElementById('modalScore');
+const multiplierElement = document.getElementById('multiplierElement');
+const restartButton = document.getElementById('restartButton');
 
 const random = (min, max) => {
     return Math.random() * ((max - min) + min);
@@ -42,7 +48,8 @@ let hue = 0; //used in conjunction with requestionAnimationFrame to create hsl c
 let menuActive = true; //tracks whether startscreen is active
 let change = false;
 let gameOver = false; //tracks whether player has been killed by enemy
-let killedByMine = false;
+let killedByMine1 = false; //tracks which mine killed player
+let killedByMine2 = false; //1 (top) 2 (bottom)
 let gameFrame = 0; //tracks number of frames that pass
 let score = 0;
 let multiplier = 1;
@@ -120,6 +127,8 @@ class Player{
     update(){
         let me = this;
 
+        me.draw();
+
         let dx = me.x - 25 - mouse.x;
         let dy = me.y - 25 - mouse.y;
 
@@ -188,6 +197,8 @@ class Enemy{
             me.x += me.speed * Math.cos(honeAngle);
             me.y += me.speed * Math.sin(honeAngle);
         }
+
+        me.draw();
     }
 
     draw(){
@@ -207,8 +218,6 @@ class Gate{
     constructor(_x, _y){
         this.x = _x; //sprite hitbox is only the top-left corner of the square, withdrawing width & height /2
         this.y = _y;
-        this.endX;
-        this.endY;
         this.radius;
         this.distance; //distance from player to center of gate
         this.distance1; //distance from player to mine 1
@@ -257,10 +266,12 @@ class Gate{
         me.distance1 = Math.sqrt(dx1*dx1 + dy1*dy1);
 
         //distance from player to mine 2
-        let dx2 = player.x - me.x - 5; 
-        let dy2 = player.y - me.y - 115;    
+        let dx2 = player.x - me.x - 37.5; 
+        let dy2 = player.y - me.y - 120;    
 
         me.distance2 = Math.sqrt(dx2*dx2 + dy2*dy2);
+
+        me.draw();
     } 
 
     draw(){
@@ -270,6 +281,8 @@ class Gate{
         ctx.translate(me.x, me.y);
         ctx.rotate(me.rotation * Math.PI / 180); //switch to neg rotation for better movement, edit to translation needed though
         ctx.drawImage(me.img, 0, 0, me.width, me.height);
+        ctx.rotate(-me.rotation * Math.PI / 180);
+        ctx.translate(-me.x, -me.y);
         ctx.restore();
         me.img.src = 'sprites/gate5.png';
     }
@@ -292,9 +305,8 @@ const game = { //thinking of changing object name to game due to it's interactio
     gameLoop: function(){
 
         player.update();
-        player.draw();
 
-        if(gameFrame % 500 == 0){
+        if(gameFrame % 50 == 0){
             //every 50 frames a new enemy spawns at a random corner
             let randomCorner = Math.floor(Math.random() * 4);
             let newEnemy;
@@ -319,11 +331,19 @@ const game = { //thinking of changing object name to game due to it's interactio
 
         for(let i = 0; i < this.gateArray.length; i++){
             this.gateArray[i].update();
+
             //too much logic in this nested loop, reducing framerate
 
-            if(this.gateArray[i].distance1 < player.radius * 2 || this.gateArray[i].distance2 < player.radius * 2){
-                gameOver = true;
-                killedByMine = true;
+            if(this.gateArray[i].distance1 < player.radius * 2){
+                //gameOver = true;
+                cancelAnimationFrame(animate);
+                killedByMine1 = true; //killed by mine 1 
+            }
+
+            if(this.gateArray[i].distance2 < player.radius * 2){
+                //gameOver = true;
+                cancelAnimationFrame(animate);
+                killedByMine2 = true; //killed by mine 2
             }
 
             if(this.gateArray[i].distance < (player.radius * 2)){ //when player passes through gate, enemies with distance < 200 are killed
@@ -338,26 +358,41 @@ const game = { //thinking of changing object name to game due to it's interactio
                 i--;
                 score += 25;
             }
-            this.gateArray[i].draw();
         }
 
         for(let k = 0; k < this.enemyArray.length; k++){
-            this.enemyArray[k].update();
-            this.enemyArray[k].draw();
+
+                this.enemyArray[k].update();
 
                 if(!this.enemyArray[k].isParticle && this.enemyArray[k].distance < this.enemyArray[k].radius / 2 + player.radius){
                     //gameOver = true; //if enemy gets too close, game over!
                 }
 
                 if(this.enemyArray[k].isParticle && this.enemyArray[k].distance < 20){
+                    let curr = this.enemyArray[k];
                     enemy_Cache.push(removeObjectFromArray(this.enemyArray[k], this.enemyArray));
+                    k--;
                     multiplier++;
                 }
         }
     
         total = multiplier * score; //adding the true total score
+        scoreElement.innerHTML = `${total} (${highScore})`; //applying score to html element
+        modalScore.innerHTML = total;
+        multiplierElement.innerHTML = `${multiplier}x`; //applying multiplier to html element
+        
         console.log('Gate Array Length', gate_Cache.length);
-        console.log('Enemy Array Length', enemy_Cache.length);
+        //should be ~500 but getting random large numbers instead, different each time
+        console.log('Enemy Array Length', enemy_Cache.length); 
+    },
+
+    restart: function(){
+        this.enemyArray.splice(0, this.enemyArray.length);
+        this.gateArray.splice(0, this.gateArray.length);
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        animate();
     }
 };
 
@@ -383,10 +418,9 @@ const startScreen = () => {
 
         ctx.font = '20px Orbitron'
         ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
-        ctx.fillText('Click to move. Spacebar to start. M to change background.', canvas.width / 2 - 340, canvas.height / 2 + 250, 900);
+        ctx.fillText('Spacebar to start. M to change background.', canvas.width / 2 - 260, canvas.height / 2 + 250, 900);
 
         player.update(); //player methods placed here to create z-index effect
-        player.draw();
 
         ctx.font = '80px Orbitron'; //player sprite is hidden behind title but not other text
         ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
@@ -401,7 +435,10 @@ const startScreen = () => {
     
 };
 
+let animationFrameId;
+
 const animate = () => {
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     drawBackground();
@@ -421,28 +458,23 @@ const animate = () => {
         game.speedUp();
     }*/
         
-    if(gameOver && killedByMine){
+    if(gameOver && killedByMine1){
         ctx.fillStyle = 'red';
-        ctx.fillText(`${total}(${highScore})`, 10, 75, 200, 100);
-        ctx.fillText(`${multiplier}x`, canvas.width - 150, 75, 100, 50);
         ctx.fillText("GAME OVER!", canvas.width / 2 - 145, canvas.height / 2 + 30, 300, 175);
-        ctx.fillText("Killed by mine.", canvas.width / 2 - 145, canvas.height / 2 + 125, 300, 25);
-        console.log(gameFrame); //uses gameframe as score counter
+        ctx.fillText("Killed by mine 1.", canvas.width / 2 - 145, canvas.height / 2 + 125, 300, 25);
+        checkRecordScore();
+    }else if(gameOver && killedByMine2){
+        ctx.fillStyle = 'red';
+        ctx.fillText("GAME OVER!", canvas.width / 2 - 145, canvas.height / 2 + 30, 300, 175);
+        ctx.fillText("Killed by mine 2.", canvas.width / 2 - 145, canvas.height / 2 + 125, 300, 25);
         checkRecordScore();
     }else if(gameOver){
         ctx.fillStyle = 'red';
-        ctx.fillText(`${total}(${highScore})`, 10, 75, 200, 100);
-        ctx.fillText(`${multiplier}x`, canvas.width - 150, 75, 100, 50);
         ctx.fillText("GAME OVER!", canvas.width / 2 - 145, canvas.height / 2 + 30, 300, 175);
         ctx.fillText("Killed by alien.", canvas.width / 2 - 145, canvas.height / 2 + 125, 300, 25);
-        console.log(gameFrame); //uses gameframe as score counter
         checkRecordScore();
     }else{
-        ctx.fillStyle = 'green';
-        ctx.fillText(`${total}(${highScore})`, 10, 75, 200, 100);
-        ctx.fillText(`${multiplier}x`, canvas.width - 150, 75, 100, 50);
         gameFrame++;
-
         //creates animation loop through recursion
         requestAnimationFrame(animate);
     }
