@@ -1,7 +1,7 @@
 const canvas = document.getElementById('canvas'); //defining canvas element
 const ctx = canvas.getContext('2d'); //defining whether 2D or 3D
 
-canvas.width = window.innerWidth; //setting canvas dimensions
+canvas.width = window.innerWidth; //setting canvas dimensions to fit viewport
 canvas.height = window.innerHeight;
 
 const scoreElement = document.getElementById('scoreElement'); //defining html elements as variables
@@ -11,16 +11,8 @@ const multiplierElement = document.getElementById('multiplierElement');
 const restartButton = document.getElementById('restartButton');
 
 const random = (min, max) => {
-    return Math.random() * ((max - min) + min);
-}; //provides random decimal between min and max
-
-const stars = ['sprites/stars.png', 'sprites/stars1.png', 'sprites/stars2.png', 'sprites/stars3.png', 'sprites/stars4.png'];
-//array of background image locations
-
-const randomBackground = () => {
-    let starsInt = Math.floor(random(0, 4));
-    return starsInt;
-};
+    return Math.floor(Math.random() * ((max - min) + min));
+}; //provides random number between min and max
 
 const BG = {//defining background co-ordinates for background to match canvas size
     x: 0, 
@@ -29,19 +21,19 @@ const BG = {//defining background co-ordinates for background to match canvas si
     height: canvas.height
 }; 
 
-const drawBackground = () => { //applies starry night background
-    let background = new Image();
-    background.src = stars[0];
-    ctx.drawImage(background, BG.x, BG.y, BG.width, BG.height);
+const randomBackground = () => {
+    let starsInt = random(0, 6);
+    return starsInt;
 };
 
-const changeBackground = () => {
-    /*not fully functional, background swaps every frame.
-    Need to think of way to hold it outside the animation loop.*/
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    let custom = new Image();
-    custom.src = `sprites/stars${randomBackground()}.png`;
-    ctx.drawImage(custom, BG.x, BG.y, BG.width, BG.height);
+const stars = ['sprites/stars.png', 'sprites/stars1.png', 'sprites/stars2.png', 'sprites/stars3.png', 'sprites/stars4.png', 'nebula01.png', 'nebula02.png'];
+//array of background image locations
+
+const _background = new Image();
+_background.src = stars[0];
+
+const drawBackground = () => { //applies starry night background
+    ctx.drawImage(_background, BG.x, BG.y, BG.width, BG.height);
 };
 
 let hue = 0; //used in conjunction with requestionAnimationFrame to create hsl color change effect
@@ -55,14 +47,14 @@ let score = 0;
 let multiplier = 1;
 let total = 0; //total score is score x multiplier
 
-let highScore = localStorage.getItem('highscore1') || 0; //gets highScore from local storage
-
 const checkRecordScore = () => { //if user beats score, update high score
-    if(score > localStorage.getItem('highscore1')){
+    if(total > localStorage.getItem('highscore1')){
         localStorage.setItem('highscore1', total);
         highScore = total;
     }
 };
+
+let highScore = localStorage.getItem('highscore1') || 0; //gets highScore from local storage
 
 const removeObjectFromArray = (obj, arr) => { //needs testing as will break according to my mentor
     let i = arr.indexOf(obj);
@@ -170,10 +162,21 @@ class Enemy{
         this.y = _y;
         this.radius = 20;
         this.diameter = 40;
+        this.startTime; //time of spawn
+        this.currTime; //current time
+        this.delta; // currTime - startTime
         this.distance;
-        this.speed = 2;
+        this.speed;
         this.isParticle = false;
         this.img = new Image();
+    }
+
+    respawn(){ //fires every time an enemy spawns giving correct start time
+        let me = this;
+
+        me.startTime = performance.now(); //create timestamp using computer's internal clock
+        me.isParticle = false;
+        me.speed = 4;
     }
 
     update(){
@@ -184,6 +187,10 @@ class Enemy{
         let honeAngle = Math.atan2(dy, dx);
 
         me.distance = Math.sqrt(dx*dx + dy*dy);
+
+        me.currTime = performance.now();
+
+        me.delta = me.currTime - me.startTime;
 
         if(me.isParticle){
             if(me.distance < 150){
@@ -222,6 +229,9 @@ class Gate{
         this.distance; //distance from player to center of gate
         this.distance1; //distance from player to mine 1
         this.distance2; //distance from player to mine 2
+        this.startTime; //time at spawn
+        this.currTime; //current time
+        this.delta; //current time - start time
         this.width = 75;
         this.height = 133;
         this.theta;
@@ -230,11 +240,13 @@ class Gate{
         this.img = new Image();
     }
 
-    reposition(){ //when reusing objects you have to reset the spawn location
+    respawn(){ //when reusing objects you have to reset the spawn location
         let me = this;
 
         me.x = random(200, 1000);
         me.y = random(50, 450);
+
+        me.startTime = performance.now();
     }
 
     update(){
@@ -266,10 +278,14 @@ class Gate{
         me.distance1 = Math.sqrt(dx1*dx1 + dy1*dy1);
 
         //distance from player to mine 2
-        let dx2 = player.x - me.x - 37.5; 
-        let dy2 = player.y - me.y - 120;    
+        let dx2 = player.x - me.x - 25; 
+        let dy2 = player.y - me.y - 125;    
 
         me.distance2 = Math.sqrt(dx2*dx2 + dy2*dy2);
+
+        me.currTime = performance.now();
+
+        me.delta = me.currTime - me.startTime;
 
         me.draw();
     } 
@@ -292,15 +308,7 @@ const game = { //thinking of changing object name to game due to it's interactio
 
     enemyArray: [], 
 
-    enemyCache: [], //dead enemies cached for later use
-
     gateArray: [],
-
-    gateCache: [], //destroyed gates cached for later use
-
-    particleArray: [],
-
-    particleCache: [],
 
     gameLoop: function(){
 
@@ -312,8 +320,7 @@ const game = { //thinking of changing object name to game due to it's interactio
             let newEnemy;
 
             newEnemy = enemy_Cache.pop();
-            newEnemy.isParticle = false;
-            newEnemy.speed = 2;
+            newEnemy.respawn(); //changes image from particle to enemy and starts timer
             newEnemy.x = enemySpawnLoc[randomCorner]['x'];
             newEnemy.y = enemySpawnLoc[randomCorner]['y'];
             
@@ -324,7 +331,7 @@ const game = { //thinking of changing object name to game due to it's interactio
             let newGate;
 
             newGate = gate_Cache.pop();
-            newGate.reposition(); //resets gate co-ordinates so it doesn't just reappear in the same place
+            newGate.respawn(); //resets gate co-ordinates so it doesn't just reappear in the same place
             
             this.gateArray.push(newGate);
         }
@@ -334,23 +341,22 @@ const game = { //thinking of changing object name to game due to it's interactio
 
             //too much logic in this nested loop, reducing framerate
 
-            if(this.gateArray[i].distance1 < player.radius * 2){
-                //gameOver = true;
-                cancelAnimationFrame(animate);
+            if(this.gateArray[i].delta > 2000 && this.gateArray[i].distance1 < player.radius * 2){
+            //The gate's mines are safe for 2 seconds after spawn
+                gameOver = true;
                 killedByMine1 = true; //killed by mine 1 
             }
 
-            if(this.gateArray[i].distance2 < player.radius * 2){
-                //gameOver = true;
-                cancelAnimationFrame(animate);
+            /*if(this.gateArray[i].distance2 < player.radius * 2){
+                gameOver = true;
                 killedByMine2 = true; //killed by mine 2
-            }
+            }*/
 
             if(this.gateArray[i].distance < (player.radius * 2)){ //when player passes through gate, enemies with distance < 200 are killed
                 for(let m = 0; m < this.enemyArray.length; m++){
                     if(this.enemyArray[m].distance < 200){
                         this.enemyArray[m].isParticle = true;
-                        this.enemyArray[m].speed = 7;
+                        this.enemyArray[m].speed = 9;
                         score += 50;
                     }
                 }
@@ -364,12 +370,13 @@ const game = { //thinking of changing object name to game due to it's interactio
 
                 this.enemyArray[k].update();
 
-                if(!this.enemyArray[k].isParticle && this.enemyArray[k].distance < this.enemyArray[k].radius / 2 + player.radius){
-                    //gameOver = true; //if enemy gets too close, game over!
+                if(!this.enemyArray[k].isParticle && 
+                    this.enemyArray[k].delta > 1000 && //allows for 1 second after spawn before becoming deadly
+                    this.enemyArray[k].distance < this.enemyArray[k].radius / 2 + player.radius){
+                    gameOver = true; //if enemy gets too close, game over!
                 }
 
                 if(this.enemyArray[k].isParticle && this.enemyArray[k].distance < 20){
-                    let curr = this.enemyArray[k];
                     enemy_Cache.push(removeObjectFromArray(this.enemyArray[k], this.enemyArray));
                     k--;
                     multiplier++;
@@ -407,9 +414,7 @@ const startScreen = () => {
 
         drawBackground();
 
-        if(change){
-            changeBackground();
-        }
+        console.log(_background.src);
 
         ctx.font = '22.5px DotGothic16';
         ctx.fillStyle = 'white';
@@ -418,7 +423,7 @@ const startScreen = () => {
 
         ctx.font = '20px Orbitron'
         ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
-        ctx.fillText('Spacebar to start. M to change background.', canvas.width / 2 - 260, canvas.height / 2 + 250, 900);
+        ctx.fillText('Spacebar to start. M to choose background.', canvas.width / 2 - 260, canvas.height / 2 + 250, 900);
 
         player.update(); //player methods placed here to create z-index effect
 
@@ -434,8 +439,6 @@ const startScreen = () => {
     }
     
 };
-
-let animationFrameId;
 
 const animate = () => {
 
@@ -485,7 +488,7 @@ window.addEventListener('keyup', e => {
         menuActive = false; //triggers game start event
     }
     if(e.keyCode === 77){
-        change = true; //triggers background change
+        _background.src = stars[randomBackground()]; //triggers background change
     }
 });
 
