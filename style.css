@@ -96,26 +96,31 @@ body{
 }
 
 
-.modal{
+#modal{
     position: fixed;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: white;
-    display: none;
+    margin: auto;
+    background-image: url('./sprites/nebula10.jpg');
+    opacity: 0.8;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    max-width: 20%;
-    max-height: 20%;
-    border-radius: 5%;
+    max-width: 33.3%;
+    max-height: 33.3%;
+    border-radius: 2.5%;
+    border: 2px solid gray;
+    visibility: hidden;
 }
 
-#score_modal{
-    font-weight: bold;
+#modalScore{
+    font-weight: 900;
     font-size: xx-large;
+    color: white;
 }
 
 #pointsLabel{
@@ -127,4 +132,13 @@ body{
     background-color: orangered;
     color: black;
     width: 50%;
+}
+
+#deathInfo{
+    position: fixed;
+    top: 75%;
+    left: 38%;
+    color: red;
+    font-size: xx-large;
+    visibility: hidden;
 }
