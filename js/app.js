@@ -1,3 +1,5 @@
+let container = document.getElementById('container');
+
 const canvas = document.getElementById('canvas'); //defining canvas element
 const ctx = canvas.getContext('2d'); //defining whether 2D or 3D
 
@@ -5,10 +7,11 @@ canvas.width = window.innerWidth; //setting canvas dimensions to fit viewport
 canvas.height = window.innerHeight;
 
 const scoreElement = document.getElementById('scoreElement'); //defining html elements as variables
-const modal = document.getElementsByClassName('modal');
+const modal = document.getElementById('modal');
 const modalScore = document.getElementById('modalScore');
 const multiplierElement = document.getElementById('multiplierElement');
 const restartButton = document.getElementById('restartButton');
+const deathInfo = document.getElementById('deathInfo');
 
 const random = (min, max) => {
     return Math.floor(Math.random() * ((max - min) + min));
@@ -22,7 +25,7 @@ const BG = {//defining background co-ordinates for background to match canvas si
 }; 
 
 const randomBackground = () => {
-    let starsInt = random(0, 6);
+    let starsInt = random(0, 5);
     return starsInt;
 };
 
@@ -103,6 +106,30 @@ const initialSpawn = () => {
         enemy_Cache.push(new Enemy(0, 0));
         gate_Cache.push(new Gate(0, 0));
     }
+};
+
+const restart = () => {
+    /*game.enemyArray.splice(0, game.enemyArray.length);
+    game.gateArray.splice(0, game.gateArray.length);
+
+    initialSpawn();
+
+    drawBackground();
+
+    container.removeChild(canvas);
+
+    document.createElement('canvas');
+    canvas.id = 'canvas';
+    container.appendChild(canvas);
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    animate();*/
+
+    window.location.reload();
+
+    modal.style.visibility = "hidden";
 };
 
 class Player{
@@ -235,8 +262,8 @@ class Gate{
         this.width = 75;
         this.height = 133;
         this.theta;
-        this.rotation = random(0, 360);
-        this.rotationSpeed = random(0.03, 0.05);
+        this.rotation;
+        this.rotationSpeed;
         this.img = new Image();
     }
 
@@ -245,6 +272,8 @@ class Gate{
 
         me.x = random(200, 1000);
         me.y = random(50, 450);
+        me.rotation = random(0, 360);
+        me.rotationSpeed = random(0.03, 0.05);
 
         me.startTime = performance.now();
     }
@@ -266,7 +295,7 @@ class Gate{
         me.y = me.radius * Math.sin(me.theta);
         
         //distance from player to center of gate
-        let dx = player.x - me.x - 5; //sprite hitbox relocation fixed
+        let dx = player.x - me.x; //sprite hitbox relocation fixed
         let dy = player.y - me.y - 85;    
 
         me.distance = Math.sqrt(dx*dx + dy*dy);
@@ -345,6 +374,9 @@ const game = { //thinking of changing object name to game due to it's interactio
             //The gate's mines are safe for 2 seconds after spawn
                 gameOver = true;
                 killedByMine1 = true; //killed by mine 1 
+                modal.style.visibility = 'visible';
+                deathInfo.innerHTML = "KILLED BY MINE 1";
+                deathInfo.style.visibility = 'visible';
             }
 
             /*if(this.gateArray[i].distance2 < player.radius * 2){
@@ -360,6 +392,8 @@ const game = { //thinking of changing object name to game due to it's interactio
                         score += 50;
                     }
                 }
+                //gate_Cache = gate_Cache.slice(0, this.gateArray[i]).concat(gate_Cache.slice(-this.gateArray[i]));
+                //gate_Cache.push(this.gateArray.slice(this.gateArray[i], 1));
                 gate_Cache.push(removeObjectFromArray(this.gateArray[i], this.gateArray)); //gate is removed and added to the gate cache for later use, need to check if working...
                 i--;
                 score += 25;
@@ -374,10 +408,15 @@ const game = { //thinking of changing object name to game due to it's interactio
                     this.enemyArray[k].delta > 1000 && //allows for 1 second after spawn before becoming deadly
                     this.enemyArray[k].distance < this.enemyArray[k].radius / 2 + player.radius){
                     gameOver = true; //if enemy gets too close, game over!
+                    modal.style.visibility = 'visible';
+                    deathInfo.innerHTML = "KILLED BY ALIEN";
+                    deathInfo.style.visibility = 'visible';
                 }
 
                 if(this.enemyArray[k].isParticle && this.enemyArray[k].distance < 20){
-                    enemy_Cache.push(removeObjectFromArray(this.enemyArray[k], this.enemyArray));
+                    //enemy_Cache = enemy_Cache.slice(0, this.enemyArray[k]).concat(enemy_Cache.slice(-this.enemyArray[k]));
+                    //enemy_Cache.push(this.enemyArray.splice(this.enemyArray[k], 1));
+                enemy_Cache.push(removeObjectFromArray(this.enemyArray[k], this.enemyArray));
                     k--;
                     multiplier++;
                 }
@@ -414,8 +453,6 @@ const startScreen = () => {
 
         drawBackground();
 
-        console.log(_background.src);
-
         ctx.font = '22.5px DotGothic16';
         ctx.fillStyle = 'white';
         ctx.fillText('Energy weapons are down!', canvas.width / 2 - 150, canvas.height / 2 + 100, 900);
@@ -423,7 +460,7 @@ const startScreen = () => {
 
         ctx.font = '20px Orbitron'
         ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
-        ctx.fillText('Spacebar to start. M to choose background.', canvas.width / 2 - 260, canvas.height / 2 + 250, 900);
+        ctx.fillText('START (S)                                                         BACKGROUND (B)', canvas.width / 2 - 340, canvas.height / 2 + 250, 900);
 
         player.update(); //player methods placed here to create z-index effect
 
@@ -461,20 +498,7 @@ const animate = () => {
         game.speedUp();
     }*/
         
-    if(gameOver && killedByMine1){
-        ctx.fillStyle = 'red';
-        ctx.fillText("GAME OVER!", canvas.width / 2 - 145, canvas.height / 2 + 30, 300, 175);
-        ctx.fillText("Killed by mine 1.", canvas.width / 2 - 145, canvas.height / 2 + 125, 300, 25);
-        checkRecordScore();
-    }else if(gameOver && killedByMine2){
-        ctx.fillStyle = 'red';
-        ctx.fillText("GAME OVER!", canvas.width / 2 - 145, canvas.height / 2 + 30, 300, 175);
-        ctx.fillText("Killed by mine 2.", canvas.width / 2 - 145, canvas.height / 2 + 125, 300, 25);
-        checkRecordScore();
-    }else if(gameOver){
-        ctx.fillStyle = 'red';
-        ctx.fillText("GAME OVER!", canvas.width / 2 - 145, canvas.height / 2 + 30, 300, 175);
-        ctx.fillText("Killed by alien.", canvas.width / 2 - 145, canvas.height / 2 + 125, 300, 25);
+    if(gameOver){
         checkRecordScore();
     }else{
         gameFrame++;
@@ -484,15 +508,19 @@ const animate = () => {
 };
 
 window.addEventListener('keyup', e => {
-    if(e.keyCode === 32){
+    if(e.keyCode === 83){
         menuActive = false; //triggers game start event
     }
-    if(e.keyCode === 77){
+    if(e.keyCode === 66){
         _background.src = stars[randomBackground()]; //triggers background change
     }
 });
 
-document.addEventListener("DOMContentLoaded", function() { 
+document.getElementById('restartButton').addEventListener('click', () => {
+    restart();
+});
+
+document.addEventListener("DOMContentLoaded", () => { 
     startScreen(); 
 });
 
