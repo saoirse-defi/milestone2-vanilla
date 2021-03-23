@@ -10,18 +10,20 @@
     <title>Against All Odds - Vanilla</title>
 </head>
 <body>
-    <div class="container">
+    <div id="container">
         <canvas id="canvas">
             Your browser doesn't include support for the canvas element.
         </canvas>
         <div id="score"><span>Score: </span><span id="scoreElement">0</span></div>
         <div id="multiplier"><span>Multiplier: </span><span id="multiplierElement">1x</span></div>
 
-            <div class="modal">
-                <h1 id="modalScore">0</h1><br>
-                <p id="pointsLabel">Points</p><br>
-                <button id="restartButton">Restart Game</button>
-            </div>
+        <div id="modal" class="visible">
+            <h1 id="modalScore">0</h1><br>
+            <p id="pointsLabel">Points</p><br>
+            <button id="restartButton">Return to Start Menu</button>
+        </div>
+
+        <div id="deathInfo" class="visible"><h2 id="deathH2"></h2></div>
         <!-- <div class="intro">
             <h2 class="fadeIntro">How long will you survive?</h2>
         </div> -->
