@@ -12,6 +12,16 @@ const modalScore = document.getElementById('modalScore');
 const multiplierElement = document.getElementById('multiplierElement');
 const restartButton = document.getElementById('restartButton');
 const deathInfo = document.getElementById('deathInfo');
+const speedSlider = document.getElementById('speedSlider');
+const speedOutput = document.getElementById('speedOutput');
+const difficultyElem = document.getElementById('difficulty');
+
+let difficulty = 5; //set default speed
+
+speedSlider.oninput = () => { //user chooses enemy speed at startscreen
+    difficulty = speedSlider.value;
+    speedOutput.innerHTML = difficulty;
+};
 
 const random = (min, max) => {
     return Math.floor(Math.random() * ((max - min) + min));
@@ -130,6 +140,8 @@ const restart = () => {
     window.location.reload();
 
     modal.style.visibility = "hidden";
+    multiplierElement.style.visibility = "hidden";
+    scoreElement.style.visibility = "hidden";
 };
 
 class Player{
@@ -193,7 +205,7 @@ class Enemy{
         this.currTime; //current time
         this.delta; // currTime - startTime
         this.distance;
-        this.speed;
+        this.speed = difficulty; //speed set to user input
         this.isParticle = false;
         this.img = new Image();
     }
@@ -203,7 +215,6 @@ class Enemy{
 
         me.startTime = performance.now(); //create timestamp using computer's internal clock
         me.isParticle = false;
-        me.speed = 4;
     }
 
     update(){
@@ -374,8 +385,8 @@ const game = { //thinking of changing object name to game due to it's interactio
             //The gate's mines are safe for 2 seconds after spawn
                 gameOver = true;
                 killedByMine1 = true; //killed by mine 1 
-                modal.style.visibility = 'visible';
-                deathInfo.innerHTML = "KILLED BY MINE 1";
+                modal.style.visibility = 'visible'; //modal popup upon death
+                deathInfo.innerHTML = "KILLED BY MINE 1"; //death info pop up upon death
                 deathInfo.style.visibility = 'visible';
             }
 
@@ -388,7 +399,7 @@ const game = { //thinking of changing object name to game due to it's interactio
                 for(let m = 0; m < this.enemyArray.length; m++){
                     if(this.enemyArray[m].distance < 200){
                         this.enemyArray[m].isParticle = true;
-                        this.enemyArray[m].speed = 9;
+                        this.enemyArray[m].speed = difficulty + 2;
                         score += 50;
                     }
                 }
@@ -430,6 +441,7 @@ const game = { //thinking of changing object name to game due to it's interactio
         console.log('Gate Array Length', gate_Cache.length);
         //should be ~500 but getting random large numbers instead, different each time
         console.log('Enemy Array Length', enemy_Cache.length); 
+        console.log('difficulty', difficulty);
     },
 
     restart: function(){
@@ -472,12 +484,16 @@ const startScreen = () => {
 
         requestAnimationFrame(startScreen);
     }else{
+
         animate();
     }
     
 };
 
 const animate = () => {
+
+    multiplierElement.style.visibility = 'visible';
+    scoreElement.style.visibility = 'visible';
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -510,6 +526,7 @@ const animate = () => {
 window.addEventListener('keyup', e => {
     if(e.keyCode === 83){
         menuActive = false; //triggers game start event
+        difficultyElem.style.visibility = "hidden";
     }
     if(e.keyCode === 66){
         _background.src = stars[randomBackground()]; //triggers background change
