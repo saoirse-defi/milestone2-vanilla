@@ -14,13 +14,21 @@
         <canvas id="canvas">
             Your browser doesn't include support for the canvas element.
         </canvas>
-        <div id="score"><span>Score: </span><span id="scoreElement">0</span></div>
-        <div id="multiplier"><span>Multiplier: </span><span id="multiplierElement">1x</span></div>
 
-        <div id="modal" class="visible">
-            <h1 id="modalScore">0</h1><br>
-            <p id="pointsLabel">Points</p><br>
-            <button id="restartButton">Return to Start Menu</button>
+        <div id="difficulty">
+            <input type="range" min="1" max="10" value="5" class="slider" id="speedSlider">
+            <span id="speedLabel">Enemy Speed</span><span id="speedOutput">5</span>
+        </div>
+
+        <div id="score"><span id="scoreElement">0</span></div>
+        <div id="multiplier"><span id="multiplierElement">1x</span></div>
+
+        <div class="modalBg">
+            <div id="modal" class="visible">
+                <h1 id="modalScore">0</h1><br>
+                <p id="pointsLabel">Points</p><br>
+                <button id="restartButton">Return to Start Menu</button>
+            </div>
         </div>
 
         <div id="deathInfo" class="visible"><h2 id="deathH2"></h2></div>
