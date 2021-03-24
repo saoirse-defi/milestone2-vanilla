@@ -79,22 +79,41 @@ body{
     animation: fadeIntro 1s ease-in forwards;
 }
 
+#difficulty{
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    max-width: 25%;
+    max-height: 25%;
+    color: white;
+    visibility: visible;
+}
+
 #score{
     position: fixed;
-    color: white;
-    top: 20px;
-    left:75px;
-    font-size: larger;
+    color: green;
+    top: 10px;
+    left: 35px;
+    font-size: xx-large;
+    visibility: hidden;
 }
 
 #multiplier{
     position: fixed;
-    color: white;
-    top: 20px;
-    right: 75px;
-    font-size: larger;
+    color: green;
+    top: 10px;
+    right: 50px;
+    font-size: xx-large;
+    visibility: hidden;
 }
-
 
 #modal{
     position: fixed;
