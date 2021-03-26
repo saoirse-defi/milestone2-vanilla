@@ -16,8 +16,9 @@
         </canvas>
 
         <div id="difficulty">
-            <input type="range" min="1" max="10" value="5" class="slider" id="speedSlider">
-            <span id="speedLabel">Enemy Speed</span><span id="speedOutput">5</span>
+            <input type="range" min="1" max="10" value="5" class="slider" id="speedSlider" onchange="gameMode(this.value)">
+            <span id="speedLabel">Difficulty</span>
+            <span id="speedOutput"></span>
         </div>
 
         <div id="score"><span id="scoreElement">0</span></div>
@@ -25,6 +26,7 @@
 
         <div class="modalBg">
             <div id="modal" class="visible">
+                <h2 id="highScoreLabel">New High Score!</h2>
                 <h1 id="modalScore">0</h1><br>
                 <p id="pointsLabel">Points</p><br>
                 <button id="restartButton">Return to Start Menu</button>
@@ -44,6 +46,7 @@
             }, 2000);
         })
     </script> -->
+    <script type="module" src="../js/utils.js"></script>
    <script type="module" src="../js/app.js"></script>
 </body>
 </html>
