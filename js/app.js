@@ -1,3 +1,5 @@
+import { gameMode, random, randomBackground, restart, removeObjectFromArray } from './utils.js';
+
 let container = document.getElementById('container');
 
 const canvas = document.getElementById('canvas'); //defining canvas element
@@ -9,23 +11,22 @@ canvas.height = window.innerHeight;
 const scoreElement = document.getElementById('scoreElement'); //defining html elements as variables
 const modal = document.getElementById('modal');
 const modalScore = document.getElementById('modalScore');
+const highScoreLabel = document.getElementById('highScoreLabel');
 const multiplierElement = document.getElementById('multiplierElement');
 const restartButton = document.getElementById('restartButton');
 const deathInfo = document.getElementById('deathInfo');
 const speedSlider = document.getElementById('speedSlider');
-const speedOutput = document.getElementById('speedOutput');
 const difficultyElem = document.getElementById('difficulty');
 
-let difficulty = 5; //set default speed
+let difficulty;
+let _difficulty; //baby, amateur, professional, god
 
 speedSlider.oninput = () => { //user chooses enemy speed at startscreen
+    
     difficulty = speedSlider.value;
-    speedOutput.innerHTML = difficulty;
-};
 
-const random = (min, max) => {
-    return Math.floor(Math.random() * ((max - min) + min));
-}; //provides random number between min and max
+    localStorage.setItem('localDifficulty', difficulty); //saves new difficulty to local storage
+};
 
 const BG = {//defining background co-ordinates for background to match canvas size
     x: 0, 
@@ -34,20 +35,16 @@ const BG = {//defining background co-ordinates for background to match canvas si
     height: canvas.height
 }; 
 
-const randomBackground = () => {
-    let starsInt = random(0, 5);
-    return starsInt;
+const drawBackground = () => { //applies starry night background
+    ctx.drawImage(_background, BG.x, BG.y, BG.width, BG.height);
 };
 
 const stars = ['sprites/stars.png', 'sprites/stars1.png', 'sprites/stars2.png', 'sprites/stars3.png', 'sprites/stars4.png', 'nebula01.png', 'nebula02.png'];
 //array of background image locations
 
-const _background = new Image();
+const _background = new Image(); //set inital background
 _background.src = stars[0];
 
-const drawBackground = () => { //applies starry night background
-    ctx.drawImage(_background, BG.x, BG.y, BG.width, BG.height);
-};
 
 let hue = 0; //used in conjunction with requestionAnimationFrame to create hsl color change effect
 let menuActive = true; //tracks whether startscreen is active
@@ -60,21 +57,12 @@ let score = 0;
 let multiplier = 1;
 let total = 0; //total score is score x multiplier
 
+let highScore = localStorage.getItem('highscore1') || 0; //gets highScore from local storage
+
 const checkRecordScore = () => { //if user beats score, update high score
     if(total > localStorage.getItem('highscore1')){
         localStorage.setItem('highscore1', total);
-        highScore = total;
-    }
-};
-
-let highScore = localStorage.getItem('highscore1') || 0; //gets highScore from local storage
-
-const removeObjectFromArray = (obj, arr) => { //needs testing as will break according to my mentor
-    let i = arr.indexOf(obj);
-    if (i !== -1) {
-        let _obj = arr[i];
-        arr.splice(i, 1);
-		return _obj;
+        highScoreLabel.style.display = 'block'; //user notified off new highscore
     }
 };
 
@@ -107,8 +95,8 @@ const mouseMoveHandler = (e) => { //tracks user's mouse input
 canvas.addEventListener("mousemove", mouseMoveHandler, false);
 
 //create gate/enemy cache to store sprites on init
-let enemy_Cache = new Array(500); 
-let gate_Cache = new Array(500);
+let enemy_Cache = new Array(); 
+let gate_Cache = new Array();
 
 //fills cache with gate/enemy sprites on game start
 const initialSpawn = () => {
@@ -116,32 +104,6 @@ const initialSpawn = () => {
         enemy_Cache.push(new Enemy(0, 0));
         gate_Cache.push(new Gate(0, 0));
     }
-};
-
-const restart = () => {
-    /*game.enemyArray.splice(0, game.enemyArray.length);
-    game.gateArray.splice(0, game.gateArray.length);
-
-    initialSpawn();
-
-    drawBackground();
-
-    container.removeChild(canvas);
-
-    document.createElement('canvas');
-    canvas.id = 'canvas';
-    container.appendChild(canvas);
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    animate();*/
-
-    window.location.reload();
-
-    modal.style.visibility = "hidden";
-    multiplierElement.style.visibility = "hidden";
-    scoreElement.style.visibility = "hidden";
 };
 
 class Player{
@@ -195,6 +157,7 @@ class Player{
     }
 };
 
+
 class Enemy{
     constructor(_x, _y){
         this.x = _x;
@@ -215,6 +178,7 @@ class Enemy{
 
         me.startTime = performance.now(); //create timestamp using computer's internal clock
         me.isParticle = false;
+        me.speed = difficulty;
     }
 
     update(){
@@ -259,6 +223,7 @@ class Enemy{
     }
 };
 
+
 class Gate{
     constructor(_x, _y){
         this.x = _x; //sprite hitbox is only the top-left corner of the square, withdrawing width & height /2
@@ -273,8 +238,8 @@ class Gate{
         this.width = 75;
         this.height = 133;
         this.theta;
-        this.rotation;
-        this.rotationSpeed;
+        this.rotation = random(0, 360);
+        this.rotationSpeed = random(0.03, 0.05);
         this.img = new Image();
     }
 
@@ -283,8 +248,8 @@ class Gate{
 
         me.x = random(200, 1000);
         me.y = random(50, 450);
-        me.rotation = random(0, 360);
-        me.rotationSpeed = random(0.03, 0.05);
+        //me.rotation = random(0, 360);
+        //me.rotationSpeed = random(0.03, 0.05);
 
         me.startTime = performance.now();
     }
@@ -307,7 +272,7 @@ class Gate{
         
         //distance from player to center of gate
         let dx = player.x - me.x; //sprite hitbox relocation fixed
-        let dy = player.y - me.y - 85;    
+        let dy = player.y - me.y - 75;    
 
         me.distance = Math.sqrt(dx*dx + dy*dy);
 
@@ -399,7 +364,7 @@ const game = { //thinking of changing object name to game due to it's interactio
                 for(let m = 0; m < this.enemyArray.length; m++){
                     if(this.enemyArray[m].distance < 200){
                         this.enemyArray[m].isParticle = true;
-                        this.enemyArray[m].speed = difficulty + 2;
+                        this.enemyArray[m].speed = 9; //change speed as enemy becomes particle
                         score += 50;
                     }
                 }
@@ -427,7 +392,8 @@ const game = { //thinking of changing object name to game due to it's interactio
                 if(this.enemyArray[k].isParticle && this.enemyArray[k].distance < 20){
                     //enemy_Cache = enemy_Cache.slice(0, this.enemyArray[k]).concat(enemy_Cache.slice(-this.enemyArray[k]));
                     //enemy_Cache.push(this.enemyArray.splice(this.enemyArray[k], 1));
-                enemy_Cache.push(removeObjectFromArray(this.enemyArray[k], this.enemyArray));
+                    this.enemyArray[k].speed = difficulty; //set speed back to normal as particle is absorbed
+                    enemy_Cache.push(removeObjectFromArray(this.enemyArray[k], this.enemyArray));
                     k--;
                     multiplier++;
                 }
@@ -457,8 +423,6 @@ const game = { //thinking of changing object name to game due to it's interactio
 const player = new Player();
 
 const startScreen = () => {
-
-    initialSpawn();
 
     if(menuActive){
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -492,7 +456,7 @@ const startScreen = () => {
 
 const animate = () => {
 
-    multiplierElement.style.visibility = 'visible';
+    multiplierElement.style.visibility = 'visible'; //making game elements visible on game start
     scoreElement.style.visibility = 'visible';
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -537,8 +501,9 @@ document.getElementById('restartButton').addEventListener('click', () => {
     restart();
 });
 
-document.addEventListener("DOMContentLoaded", () => { 
+document.addEventListener("DOMContentLoaded", () => {
+    difficulty = localStorage.getItem('localDifficulty') || 5; //sets difficulty on page load to 5 if no local difficulty is set
+    speedSlider.value = difficulty; //update html slider to reflect local difficulty
+    initialSpawn();
     startScreen(); 
 });
-
-
