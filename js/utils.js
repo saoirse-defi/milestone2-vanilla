@@ -1,37 +1,3 @@
-export const gameMode = (diff) => {
-    const speedOutput = document.getElementById('speedOutput');
-    
-    switch(diff){
-            case 1:
-                speedOutput.innerHTML = "Baby Game";
-            break;
-            case 2:
-                speedOutput.innerHTML = "Baby Game";
-            break;
-            case 3:
-                speedOutput.innerHTML = "Amateur";
-            break;
-            case 4:
-                speedOutput.innerHTML = "Amateur";
-            break;
-            case 5:
-                speedOutput.innerHTML = "Professional";
-            break;
-            case 6:
-                speedOutput.innerHTML = "Professional";
-            break;
-            case 7:
-                speedOutput.innerHTML = "Veteran";
-            break;
-            case 9:
-                speedOutput.innerHTML = "Veteran";
-            break;
-            case 10:
-                speedOutput.innerHTML = "God Tier";    
-            break;
-        }
-};
-
 export const random = (min, max) => {
     return Math.floor(Math.random() * ((max - min) + min));
 }; //provides random number between min and max
@@ -58,4 +24,8 @@ export const removeObjectFromArray = (obj, arr) => { //needs testing as will bre
         arr.splice(i, 1);
 		return _obj;
     }
+};
+
+export const numberWithCommas = (x) => { //credit https://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
