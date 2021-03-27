@@ -130,12 +130,14 @@ canvas.addEventListener("mousemove", mouseMoveHandler, false);
 //create gate/enemy cache to store sprites on init
 let enemy_Cache = new Array(); 
 let gate_Cache = new Array();
+let explosion_Cache = new Array();
 
 //fills cache with gate/enemy sprites on game start
 const initialSpawn = () => {
     for(let i = 0; i < 500; i++){
         enemy_Cache.push(new Enemy(0, 0));
         gate_Cache.push(new Gate(0, 0));
+        explosion_Cache.push(new Explosion(0, 0));
     }
 };
 
@@ -271,18 +273,16 @@ class Gate{
         this.width = 75;
         this.height = 133;
         this.theta;
-        this.rotation = random(0, 360);
-        this.rotationSpeed = random(0.03, 0.05);
+        this.rotation = Math.floor(Math.random() * 180);
+        this.rotationSpeed = 0.05;
         this.img = new Image();
     }
 
     respawn(){ //when reusing objects you have to reset the spawn location
         let me = this;
 
-        me.x = random(200, 1000);
+        me.x = random(300, 1000);
         me.y = random(50, 450);
-        //me.rotation = random(0, 360);
-        //me.rotationSpeed = random(0.03, 0.05);
 
         me.startTime = performance.now();
     }
@@ -316,7 +316,7 @@ class Gate{
         me.distance1 = Math.sqrt(dx1*dx1 + dy1*dy1);
 
         //distance from player to mine 2
-        let dx2 = player.x - me.x - 25; 
+        let dx2 = player.x - me.x - 5; 
         let dy2 = player.y - me.y - 125;    
 
         me.distance2 = Math.sqrt(dx2*dx2 + dy2*dy2);
@@ -342,11 +342,65 @@ class Gate{
     }
 };
 
+/*let spritedata = require('sprites/explosion/explosion.json');
+
+let spritesheet = new Image();
+spritesheet.src = 'sprites/explosion/Explosion.png';*/
+
+let images = new Array(); //setting up array of explosion animation images
+
+for(let i = 0; i < 8; i++){
+    images[i] = new Image();
+    images.src = `sprites/explosion/tile00${i.toString()}.png`;
+}
+
+class Explosion{
+    constructor(_x, _y){
+        this.x = _x;
+        this.y = _y;
+        this.animation = images; //images array
+        this.len = this.animation.length; //image array length
+        this.width = 64;
+        this.height = 64;
+        this.index = 0; //starting index
+        this.speed = 0.001;
+    }
+
+    spawn(x, y){
+       let me = this;
+
+        me.x = x;
+        me.y = y; 
+    }
+
+    update(){
+        let me = this;
+
+        me.index += this.speed;
+
+        if(me.index > 8){
+            me.draw();
+        }
+    } 
+
+    draw(){
+        let me = this;
+        let index = Math.floor(me.index) % me.len;
+
+        ctx.save();
+        ctx.drawImage(me.animation[index], me.x, me.y, me.width, me.height);
+        ctx.restore();
+    }
+}
+
+
 const game = { //thinking of changing object name to game due to it's interaction with all classes.
 
     enemyArray: [], 
 
     gateArray: [],
+
+    explosionArray: [],
 
     gameLoop: function(){
 
@@ -388,7 +442,7 @@ const game = { //thinking of changing object name to game due to it's interactio
 
             //too much logic in this nested loop, reducing framerate
 
-            if(this.gateArray[i].delta > 2000 && this.gateArray[i].distance1 < player.radius * 2){
+            /*if(this.gateArray[i].delta > 2000 && this.gateArray[i].distance1 < player.radius * 2){
             //The gate's mines are safe for 2 seconds after spawn
                 gameOver = true;
                 killedByMine1 = true; //killed by mine 1 
@@ -397,14 +451,23 @@ const game = { //thinking of changing object name to game due to it's interactio
                 deathInfo.style.visibility = 'visible';
             }
 
-            /*if(this.gateArray[i].distance2 < player.radius * 2){
+            if(this.gateArray[i].distance2 < player.radius * 2){
                 gameOver = true;
                 killedByMine2 = true; //killed by mine 2
+                modal.style.visibility = 'visible'; //modal popup upon death
+                deathInfo.innerHTML = "KILLED BY MINE 2"; //death info pop up upon death
+                deathInfo.style.visibility = 'visible';
             }*/
 
             if(this.gateArray[i].distance < (player.radius * 2)){ //when player passes through gate, enemies with distance < 200 are killed
                 for(let m = 0; m < this.enemyArray.length; m++){
                     if(this.enemyArray[m].distance < 200){
+
+                        let newExplosion;
+                        newExplosion = explosion_Cache.pop();
+                        newExplosion.spawn(this.enemyArray[m].x, this.enemyArray[m].y);
+                        this.explosionArray.push(newExplosion);
+
                         this.enemyArray[m].isParticle = true;
                         this.enemyArray[m].speed = 9; //change speed as enemy becomes particle
                         score += 50;
@@ -416,6 +479,10 @@ const game = { //thinking of changing object name to game due to it's interactio
                 i--;
                 score += 25;
             }
+        }
+
+        for(let i = 0; i < this.explosionArray.length; i++){
+            this.explosionArray[i].update();
         }
 
         for(let k = 0; k < this.enemyArray.length; k++){
