@@ -81,20 +81,23 @@ body{
 
 #difficulty{
     position: fixed;
-    top: 0;
+    top: 5px;
     right: 0;
     bottom: 0;
-    left: 0;
-    margin: auto;
+    left: 25px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    max-width: 25%;
-    max-height: 25%;
+    width: 100px;
+    height: 66px;
     color: white;
     visibility: visible;
+}
+
+#speedOutput{
+    color: orangered;
 }
 
 #score{
