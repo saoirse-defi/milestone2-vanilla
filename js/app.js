@@ -1,4 +1,4 @@
-import { gameMode, random, randomBackground, restart, removeObjectFromArray } from './utils.js';
+import { random, randomBackground, restart, removeObjectFromArray, numberWithCommas } from './utils.js';
 
 let container = document.getElementById('container');
 
@@ -7,6 +7,25 @@ const ctx = canvas.getContext('2d'); //defining whether 2D or 3D
 
 canvas.width = window.innerWidth; //setting canvas dimensions to fit viewport
 canvas.height = window.innerHeight;
+
+const BG = {//defining background co-ordinates for background to match canvas size
+    x: 0, 
+    y: 0,
+    width: canvas.width,
+    height: canvas.height
+}; 
+
+const stars = ['sprites/stars.png', 'sprites/stars1.png', 'sprites/stars2.png', 'sprites/stars3.png', 'sprites/stars4.png', 'nebula01.png', 'nebula02.png'];
+//array of background image locations
+
+let customBG = localStorage.getItem('background#') || 'sprites/stars.png';
+
+const _background = new Image(); //set inital background
+_background.src = customBG;
+
+const drawBackground = () => { //applies background
+    ctx.drawImage(_background, BG.x, BG.y, BG.width, BG.height);
+};
 
 const scoreElement = document.getElementById('scoreElement'); //defining html elements as variables
 const modal = document.getElementById('modal');
@@ -17,34 +36,48 @@ const restartButton = document.getElementById('restartButton');
 const deathInfo = document.getElementById('deathInfo');
 const speedSlider = document.getElementById('speedSlider');
 const difficultyElem = document.getElementById('difficulty');
+const speedOutput = document.getElementById('speedOutput');
 
 let difficulty;
 let _difficulty; //baby, amateur, professional, god
 
-speedSlider.oninput = () => { //user chooses enemy speed at startscreen
+const gameMode = (diff) => {
     
+    switch(diff){
+            case 1:
+                speedOutput.innerHTML = "Baby Game";
+            break;
+            case 2:
+                speedOutput.innerHTML = "Baby Game";
+            break;
+            case 3:
+                speedOutput.innerHTML = "Amateur";
+            break;
+            case 4:
+                speedOutput.innerHTML = "Amateur";
+            break;
+            case 5:
+                speedOutput.innerHTML = "Professional";
+            break;
+            case 6:
+                speedOutput.innerHTML = "Professional";
+            break;
+            case 7:
+                speedOutput.innerHTML = "Veteran";
+            break;
+            case 9:
+                speedOutput.innerHTML = "Veteran";
+            break;
+            case 10:
+                speedOutput.innerHTML = "God Tier";    
+            break;
+        }
+};
+
+speedSlider.addEventListener('change', () => { //user chooses enemy speed at startscreen
     difficulty = speedSlider.value;
-
     localStorage.setItem('localDifficulty', difficulty); //saves new difficulty to local storage
-};
-
-const BG = {//defining background co-ordinates for background to match canvas size
-    x: 0, 
-    y: 0,
-    width: canvas.width,
-    height: canvas.height
-}; 
-
-const drawBackground = () => { //applies starry night background
-    ctx.drawImage(_background, BG.x, BG.y, BG.width, BG.height);
-};
-
-const stars = ['sprites/stars.png', 'sprites/stars1.png', 'sprites/stars2.png', 'sprites/stars3.png', 'sprites/stars4.png', 'nebula01.png', 'nebula02.png'];
-//array of background image locations
-
-const _background = new Image(); //set inital background
-_background.src = stars[0];
-
+}); 
 
 let hue = 0; //used in conjunction with requestionAnimationFrame to create hsl color change effect
 let menuActive = true; //tracks whether startscreen is active
@@ -69,10 +102,10 @@ const checkRecordScore = () => { //if user beats score, update high score
 const enemySpawnLoc = [ 
     /*Enemies will spawn from a different corner each time, 
     corners are numbered clockwise starting from the top left. */
-        {x: 100, y: 100},
-        {x: canvas.width - 100, y: 100},
-        {x: 100, y: canvas.height - 100},
-        {x: canvas.width - 100, y: canvas.height - 100}
+        [{x: 100, y: 100}, {x: 100, y: 60}, {x: 80, y: 80}, {x: 60, y: 100}, {x: 60, y: 60}],
+        [{x: canvas.width - 100, y: 100}, {x: canvas.width - 100, y: 60}, {x: canvas.width - 80, y: 80}, {x: canvas.width - 60, y: 100}, {x: canvas.width - 60, y: 60}],
+        [{x: 100, y: canvas.height - 100}, {x: 100, y: canvas.height - 60}, {x: 80, y: canvas.height - 80}, {x: 60, y: canvas.height - 100}, {x: 60, y: canvas.height - 60}],
+        [{x: canvas.width - 100, y: canvas.height - 100}, {x: canvas.width - 100, y: canvas.height - 60}, {x: canvas.width - 80, y: canvas.height - 80}, {x: canvas.width - 60, y: canvas.height - 100}, {x: canvas.width - 60, y: canvas.height - 60}]
 ];
 
 let canvasPosition = canvas.getBoundingClientRect(); //calculating canvas size relative to viewport
@@ -322,14 +355,23 @@ const game = { //thinking of changing object name to game due to it's interactio
         if(gameFrame % 50 == 0){
             //every 50 frames a new enemy spawns at a random corner
             let randomCorner = Math.floor(Math.random() * 4);
-            let newEnemy;
 
-            newEnemy = enemy_Cache.pop();
-            newEnemy.respawn(); //changes image from particle to enemy and starts timer
-            newEnemy.x = enemySpawnLoc[randomCorner]['x'];
-            newEnemy.y = enemySpawnLoc[randomCorner]['y'];
+            //let newEnemy;
+            //newEnemy = enemy_Cache.pop();
+            //newEnemy.respawn(); //changes image from particle to enemy and starts timer
+
+            for(let i = 0; i < 5; i++){
+                let newEnemy;
+                newEnemy = enemy_Cache.pop();
+                newEnemy.respawn();
+                newEnemy.x = enemySpawnLoc[randomCorner][i]['x'];
+                newEnemy.y = enemySpawnLoc[randomCorner][i]['y'];
+                this.enemyArray.push(newEnemy);
+            }
+            //newEnemy.x = enemySpawnLoc[randomCorner]['x'];
+            //newEnemy.y = enemySpawnLoc[randomCorner]['y'];
             
-            this.enemyArray.push(newEnemy);
+            //this.enemyArray.push(newEnemy);
         }
         
         if(gameFrame % 50 == 0){
@@ -401,7 +443,7 @@ const game = { //thinking of changing object name to game due to it's interactio
     
         total = multiplier * score; //adding the true total score
         scoreElement.innerHTML = `${total} (${highScore})`; //applying score to html element
-        modalScore.innerHTML = total;
+        modalScore.innerHTML = numberWithCommas(total);
         multiplierElement.innerHTML = `${multiplier}x`; //applying multiplier to html element
         
         console.log('Gate Array Length', gate_Cache.length);
@@ -494,6 +536,7 @@ window.addEventListener('keyup', e => {
     }
     if(e.keyCode === 66){
         _background.src = stars[randomBackground()]; //triggers background change
+        localStorage.setItem('background#', _background.src);
     }
 });
 
