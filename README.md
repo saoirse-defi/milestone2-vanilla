@@ -202,6 +202,8 @@ Dot Gothic 16
 
 ##### Not all gates are being drawn, leading to random deaths
 
+##### Gates not rotating after timer was added
+
 ##### Memory Leaks
 
 #### Solved bugs
