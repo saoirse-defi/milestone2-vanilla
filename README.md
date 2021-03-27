@@ -2,11 +2,12 @@
 
 ## Introduction
 
-A 2D spaceship survival game built using Javascript and HTML Canvas. Developed using vanilla Javascript, no additional libraries were used. I have taken inspritation from a childhood video game called Geometery Wars, specifically a game mode called Pacifism.
-As a kid, I spend countless hours on this mode trying to beat my friend's high scores. The concept is simple, you don't have any projectiles so the only way to survive is to pass through gates in order to destroy nearby ships and to thin the ever increasing hoarde.
+This repository represents my milstone project 2 for Code Institute. For this milestone project, I have created a 2D spaceship survival game built using Javascript and HTML Canvas. Developed using vanilla Javascript, no additional libraries were used. 
+I have taken inspritation from a childhood video game called Geometery Wars, specifically a game mode called Pacifism.
+As a child, I spend countless hours on this mode trying to beat my friend's high scores. The concept is simple, you don't have any projectiles so the only way to survive is to pass through gates in order to destroy nearby ships and to thin the ever increasing hoarde.
 The goal is to survive for as long as possible. Similarly to other arcade games, there is no possible way to beat the game. You must simply try and survive for as long as you can.
 Enemy speed increases when your score passes certain increments. This will be outlined to the user using custom sound effects.
-
+Cusomisation has been implemented in this application, the user has the ability to change the background and game difficulty at the start screen. Local storage is then used to track user customisation in between sessions.
 
 ## UX
 
@@ -28,16 +29,21 @@ Depending on where the user clicked, the sprite would appear either upside down 
 
 When choosing the enemy sprite, I wanted the design to give the user a sense of mortality and dread. The ship had to look like it belonged to a terrifying alien race.
 
-
 ###### Gate Sprite (Used to thin Alien hoarde)
 
 ![Gate Sprite](sprites/gate5.png)
 
 #### Background
 
+In 2D game development, backdrops are used to add depth to the canvas and add context to the game individual elements.
+
 ###### Default Background
 
-###### User Customisation (Background Choice)
+As the default background, I have chosen an image of a horizon in the depth of outer space. It contains no planets or nebula, further emphasising the cold darkness of the battlefield that the user finds themselves in.
+
+###### Background Array
+
+This array is responsible for storing background image file names as strings. These will later be required during user customisation.
 
 ## Sound
 
@@ -53,10 +59,34 @@ Custom sound effects were recorded for this project.
 
 #### Enemy Spawn Noise
 
+### Implementation
 
+This section will outline the technologies used in the design of this application.
+
+#### HTML Canvas
+
+The Canvas is a HTML element used to draw graphics via scripting. In this case, our scripting language will be Javascript.
+
+#### Animation Loop
+
+This refers to the function which is repeatedly called using recursion.
+
+### User Cusomisation
+
+For this milestone project, I have implemented 2 separate elements of customisation for the user. The user is able to apply different backdrops to the canvas and they also have the ability to increase or decrease the game's difficulty.
+The state of these customisable elements is then saved for later sessions using local storage.
+
+#### Background
+
+#### Difficulty
+
+The customisable difficulty variable is linked to the enemy speed. The user has the ability to choose and enemy speed of between 1 & 10.
 
 ### Project Goals
 
+My main goal for this Code Institute milstone project was to emmulate Geometery Wars 2: Pacifism within the browser.
+
+Another goal of mine was to successfully capture the original gameplay feeling.
 
 ### User stories
 
