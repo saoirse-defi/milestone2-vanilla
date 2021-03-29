@@ -102,10 +102,10 @@ const checkRecordScore = () => { //if user beats score, update high score
 const enemySpawnLoc = [ 
     /*Enemies will spawn from a different corner each time, 
     corners are numbered clockwise starting from the top left. */
-        [{x: 100, y: 100}, {x: 100, y: 60}, {x: 80, y: 80}, {x: 60, y: 100}, {x: 60, y: 60}],
-        [{x: canvas.width - 100, y: 100}, {x: canvas.width - 100, y: 60}, {x: canvas.width - 80, y: 80}, {x: canvas.width - 60, y: 100}, {x: canvas.width - 60, y: 60}],
-        [{x: 100, y: canvas.height - 100}, {x: 100, y: canvas.height - 60}, {x: 80, y: canvas.height - 80}, {x: 60, y: canvas.height - 100}, {x: 60, y: canvas.height - 60}],
-        [{x: canvas.width - 100, y: canvas.height - 100}, {x: canvas.width - 100, y: canvas.height - 60}, {x: canvas.width - 80, y: canvas.height - 80}, {x: canvas.width - 60, y: canvas.height - 100}, {x: canvas.width - 60, y: canvas.height - 60}]
+        [{x: 100, y: 100}, {x: 100, y: 60}, {x: 80, y: 80}, {x: 60, y: 100}, {x: 60, y: 60}, {x: 70, y: 100}, {x: 70, y: 70}, {x: 100, y: 70},{x: 90, y: 90},{x: 100, y: 90}],
+        [{x: canvas.width - 100, y: 100}, {x: canvas.width - 100, y: 60}, {x: canvas.width - 80, y: 80}, {x: canvas.width - 60, y: 100}, {x: canvas.width - 60, y: 60}, {x: canvas.width - 70, y: 100}, {x: canvas.width - 70, y: 70}, {x: canvas.width - 100, y: 70},{x: canvas.width - 90, y: 90},{x: canvas.width - 100, y: 90}],
+        [{x: 100, y: canvas.height - 100}, {x: 100, y: canvas.height - 60}, {x: 80, y: canvas.height - 80}, {x: 60, y: canvas.height - 100}, {x: 60, y: canvas.height - 60}, {x: 70, y: canvas.height - 100}, {x: 70, y: canvas.height - 70}, {x: 100, y: canvas.height - 70},{x: 90, y: canvas.height - 90},{x: 100, y: canvas.height - 90} ],
+        [{x: canvas.width - 100, y: canvas.height - 100}, {x: canvas.width - 100, y: canvas.height - 60}, {x: canvas.width - 80, y: canvas.height - 80}, {x: canvas.width - 60, y: canvas.height - 100}, {x: canvas.width - 60, y: canvas.height - 60}, {x: canvas.width - 70, y: canvas.height - 100}, {x: canvas.width - 70, y: canvas.height - 70}, {x: canvas.width - 100, y: canvas.height - 70}, {x: canvas.width - 90, y: canvas.height - 90}, {x: canvas.width - 100, y: canvas.height - 90}]
 ];
 
 let canvasPosition = canvas.getBoundingClientRect(); //calculating canvas size relative to viewport
@@ -212,8 +212,8 @@ class Enemy{
         let me = this;
 
         me.startTime = performance.now(); //create timestamp using computer's internal clock
-        me.isParticle = false;
-        me.speed = difficulty;
+        me.isParticle = false; //displays itself as enemy ship
+        me.speed = difficulty; //changes speed back to enemy speed (not particle speed)
     }
 
     update(){
@@ -225,9 +225,9 @@ class Enemy{
 
         me.distance = Math.sqrt(dx*dx + dy*dy);
 
-        me.currTime = performance.now();
+        me.currTime = performance.now(); //create another timestamp
 
-        me.delta = me.currTime - me.startTime;
+        me.delta = me.currTime - me.startTime; //calculating time elapsed
 
         if(me.isParticle){
             if(me.distance < 150){
@@ -284,7 +284,7 @@ class Gate{
         me.x = random(300, 1000);
         me.y = random(50, 450);
 
-        me.startTime = performance.now();
+        me.startTime = performance.now(); //create timestamp using computer's internal clock
     }
 
     update(){
@@ -321,9 +321,9 @@ class Gate{
 
         me.distance2 = Math.sqrt(dx2*dx2 + dy2*dy2);
 
-        me.currTime = performance.now();
+        me.currTime = performance.now(); //creating another timestamp
 
-        me.delta = me.currTime - me.startTime;
+        me.delta = me.currTime - me.startTime; //calculating time elapsed
 
         me.draw();
     } 
@@ -396,11 +396,13 @@ class Explosion{
 
 const game = { //thinking of changing object name to game due to it's interaction with all classes.
 
-    enemyArray: [], 
+    enemyArray: [], //stores enemy sprites while on screen
 
-    gateArray: [],
+    gateArray: [], //stores gate sprites while on screen
 
-    explosionArray: [],
+    explosionArray: [], //stores explosion sprites while on screen
+
+    enemyCounter: 1, //used to increment the amount of enemies that spawn
 
     gameLoop: function(){
 
@@ -410,22 +412,18 @@ const game = { //thinking of changing object name to game due to it's interactio
             //every 50 frames a new enemy spawns at a random corner
             let randomCorner = Math.floor(Math.random() * 4);
 
-            //let newEnemy;
-            //newEnemy = enemy_Cache.pop();
-            //newEnemy.respawn(); //changes image from particle to enemy and starts timer
-
-            for(let i = 0; i < 5; i++){
+            for(let i = 0; i < this.enemyCounter; i++){ //enemyCounter controls enemy spawn amount
                 let newEnemy;
-                newEnemy = enemy_Cache.pop();
+                newEnemy = enemy_Cache.pop(); //remove cached sprite
                 newEnemy.respawn();
                 newEnemy.x = enemySpawnLoc[randomCorner][i]['x'];
                 newEnemy.y = enemySpawnLoc[randomCorner][i]['y'];
                 this.enemyArray.push(newEnemy);
             }
-            //newEnemy.x = enemySpawnLoc[randomCorner]['x'];
-            //newEnemy.y = enemySpawnLoc[randomCorner]['y'];
-            
-            //this.enemyArray.push(newEnemy);
+           
+            if(gameFrame % 1000 == 0){
+                this.enemyCounter++;
+            }
         }
         
         if(gameFrame % 50 == 0){
