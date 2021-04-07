@@ -1,112 +1,41 @@
+/*
+    Against All Odds - Milestone 2 for Code Institute
+    Created using vanilla JavaScript and HTML Canvas
+*/
+
 import { random, randomBackground, restart, removeObjectFromArray, numberWithCommas } from './utils.js';
 
-let container = document.getElementById('container');
+ 
+//  ***     Canvas setup & background       ***
 
 const canvas = document.getElementById('canvas'); //defining canvas element
-const ctx = canvas.getContext('2d'); //defining whether 2D or 3D
+const ctx = canvas.getContext('2d'); //defining whether using a 2D or 3D canvas
 
-canvas.width = window.innerWidth; //setting canvas dimensions to fit viewport
-canvas.height = window.innerHeight;
+canvas.width = window.innerWidth; //setting canvas width to match viewport width
+canvas.height = window.innerHeight; ////setting canvas height to match viewport height
 
-const BG = {//defining background co-ordinates for background to match canvas size
+const BG = {//defining background co-ordinates to match canvas size
     x: 0, 
     y: 0,
     width: canvas.width,
     height: canvas.height
 }; 
 
+//array of background image locations used for customisation
 const stars = ['sprites/stars.png', 'sprites/stars1.png', 'sprites/stars2.png', 'sprites/stars3.png', 'sprites/stars4.png', 'nebula01.png', 'nebula02.png'];
-//array of background image locations
 
+//set as background file location found in local storage OR as default
 let customBG = localStorage.getItem('background#') || 'sprites/stars.png';
 
-const _background = new Image(); //set inital background
-_background.src = customBG;
+const _background = new Image(); //create new background variable of type Image 
+_background.src = customBG; //add file path for background
 
-const drawBackground = () => { //applies background
+const drawBackground = () => { //draws background on the canvas
     ctx.drawImage(_background, BG.x, BG.y, BG.width, BG.height);
 };
 
-const scoreElement = document.getElementById('scoreElement'); //defining html elements as variables
-const modal = document.getElementById('modal');
-const modalScore = document.getElementById('modalScore');
-const highScoreLabel = document.getElementById('highScoreLabel');
-const multiplierElement = document.getElementById('multiplierElement');
-const restartButton = document.getElementById('restartButton');
-const deathInfo = document.getElementById('deathInfo');
-const speedSlider = document.getElementById('speedSlider');
-const difficultyElem = document.getElementById('difficulty');
-const speedOutput = document.getElementById('speedOutput');
 
-let difficulty;
-let _difficulty; //baby, amateur, professional, god
-
-const gameMode = (diff) => {
-    
-    switch(diff){
-            case 1:
-                speedOutput.innerHTML = "Baby Game";
-            break;
-            case 2:
-                speedOutput.innerHTML = "Baby Game";
-            break;
-            case 3:
-                speedOutput.innerHTML = "Amateur";
-            break;
-            case 4:
-                speedOutput.innerHTML = "Amateur";
-            break;
-            case 5:
-                speedOutput.innerHTML = "Professional";
-            break;
-            case 6:
-                speedOutput.innerHTML = "Professional";
-            break;
-            case 7:
-                speedOutput.innerHTML = "Veteran";
-            break;
-            case 9:
-                speedOutput.innerHTML = "Veteran";
-            break;
-            case 10:
-                speedOutput.innerHTML = "God Tier";    
-            break;
-        }
-};
-
-speedSlider.addEventListener('change', () => { //user chooses enemy speed at startscreen
-    difficulty = speedSlider.value;
-    localStorage.setItem('localDifficulty', difficulty); //saves new difficulty to local storage
-}); 
-
-let hue = 0; //used in conjunction with requestionAnimationFrame to create hsl color change effect
-let menuActive = true; //tracks whether startscreen is active
-let change = false;
-let gameOver = false; //tracks whether player has been killed by enemy
-let killedByMine1 = false; //tracks which mine killed player
-let killedByMine2 = false; //1 (top) 2 (bottom)
-let gameFrame = 0; //tracks number of frames that pass
-let score = 0;
-let multiplier = 1;
-let total = 0; //total score is score x multiplier
-
-let highScore = localStorage.getItem('highscore1') || 0; //gets highScore from local storage
-
-const checkRecordScore = () => { //if user beats score, update high score
-    if(total > localStorage.getItem('highscore1')){
-        localStorage.setItem('highscore1', total);
-        highScoreLabel.style.display = 'block'; //user notified off new highscore
-    }
-};
-
-const enemySpawnLoc = [ 
-    /*Enemies will spawn from a different corner each time, 
-    corners are numbered clockwise starting from the top left. */
-        [{x: 100, y: 100}, {x: 100, y: 60}, {x: 80, y: 80}, {x: 60, y: 100}, {x: 60, y: 60}, {x: 70, y: 100}, {x: 70, y: 70}, {x: 100, y: 70},{x: 90, y: 90},{x: 100, y: 90}],
-        [{x: canvas.width - 100, y: 100}, {x: canvas.width - 100, y: 60}, {x: canvas.width - 80, y: 80}, {x: canvas.width - 60, y: 100}, {x: canvas.width - 60, y: 60}, {x: canvas.width - 70, y: 100}, {x: canvas.width - 70, y: 70}, {x: canvas.width - 100, y: 70},{x: canvas.width - 90, y: 90},{x: canvas.width - 100, y: 90}],
-        [{x: 100, y: canvas.height - 100}, {x: 100, y: canvas.height - 60}, {x: 80, y: canvas.height - 80}, {x: 60, y: canvas.height - 100}, {x: 60, y: canvas.height - 60}, {x: 70, y: canvas.height - 100}, {x: 70, y: canvas.height - 70}, {x: 100, y: canvas.height - 70},{x: 90, y: canvas.height - 90},{x: 100, y: canvas.height - 90} ],
-        [{x: canvas.width - 100, y: canvas.height - 100}, {x: canvas.width - 100, y: canvas.height - 60}, {x: canvas.width - 80, y: canvas.height - 80}, {x: canvas.width - 60, y: canvas.height - 100}, {x: canvas.width - 60, y: canvas.height - 60}, {x: canvas.width - 70, y: canvas.height - 100}, {x: canvas.width - 70, y: canvas.height - 70}, {x: canvas.width - 100, y: canvas.height - 70}, {x: canvas.width - 90, y: canvas.height - 90}, {x: canvas.width - 100, y: canvas.height - 90}]
-];
+//  ***     Mouse Control Set Up        ***
 
 let canvasPosition = canvas.getBoundingClientRect(); //calculating canvas size relative to viewport
 
@@ -127,17 +56,89 @@ const mouseMoveHandler = (e) => { //tracks user's mouse input
 
 canvas.addEventListener("mousemove", mouseMoveHandler, false);
 
+
+//  ***     Defining HTML elements as JS variables      ***
+
+const scoreElement = document.getElementById('scoreElement');
+const modal = document.getElementById('modal');
+const modalScore = document.getElementById('modalScore');
+const highScoreLabel = document.getElementById('highScoreLabel');
+const multiplierElement = document.getElementById('multiplierElement');
+const highscoreElement = document.getElementById('highscoreElement');
+const restartButton = document.getElementById('restartButton');
+const deathInfo = document.getElementById('deathInfo');
+const speedSlider = document.getElementById('speedSlider');
+const difficultyElem = document.getElementById('difficulty');
+const speedOutput = document.getElementById('speedOutput');
+
+let difficulty; //stores difficulty 
+
+const gameMode = (diff) => {
+    //displays difficulty to the user at start screen
+    switch(diff){
+            case "4":
+                speedOutput.innerHTML = "Amateur";
+            break;
+            case "5":
+                speedOutput.innerHTML = "Semi-Pro";
+            break;
+            case "6":
+                speedOutput.innerHTML = "Professional";
+            break;
+            case "7":
+                speedOutput.innerHTML = "Veteran";
+            break;
+            case "8":
+                speedOutput.innerHTML = "Legendary";
+            break;    
+            case "9":
+                speedOutput.innerHTML = "God Mode";
+            break;
+        }
+};
+
+speedSlider.addEventListener('change', () => { //check for user interaction with difficulty slider
+    difficulty = speedSlider.value; //sets chosen difficulty 
+    localStorage.setItem('localDifficulty', difficulty); //saves new difficulty to local storage
+    gameMode(difficulty); //displays difficulty to the user
+}); 
+
+let hue = 0; //used in conjunction with requestionAnimationFrame to create hsl color change effect
+let menuActive = true; //tracks whether startscreen is active
+let gameOver = false; //tracks whether player has been killed by enemy
+let killedByMine1 = false; //tracks which mine killed player
+let killedByMine2 = false; //1 (top) 2 (bottom)
+let gameFrame = 0; //tracks number of frames that pass
+let score = 0; //user's current score without multiplier
+let multiplier = 1; //user's multiplier
+let total = 0; //total = score * multiplier
+let storedScore = localStorage.getItem('highscore') || 0; //gets high score from local storage
+
+const checkRecordScore = () => { //if user's score is greater than high score, update high score
+    if(total > localStorage.getItem('highscore')){
+        localStorage.setItem('highscore', total);
+        highScoreLabel.style.display = 'block'; //user notified off new highscore
+    }
+};
+
+const enemySpawnLoc = [ 
+    /*Enemies will spawn from a different corner each time, 
+    corners are numbered clockwise starting from the top left. */
+        [{x: 100, y: 100}, {x: 100, y: 60}, {x: 80, y: 80}, {x: 60, y: 100}, {x: 60, y: 60}, {x: 70, y: 100}, {x: 70, y: 70}, {x: 100, y: 70},{x: 90, y: 90},{x: 100, y: 90}],
+        [{x: canvas.width - 100, y: 100}, {x: canvas.width - 100, y: 60}, {x: canvas.width - 80, y: 80}, {x: canvas.width - 60, y: 100}, {x: canvas.width - 60, y: 60}, {x: canvas.width - 70, y: 100}, {x: canvas.width - 70, y: 70}, {x: canvas.width - 100, y: 70},{x: canvas.width - 90, y: 90},{x: canvas.width - 100, y: 90}],
+        [{x: 100, y: canvas.height - 100}, {x: 100, y: canvas.height - 60}, {x: 80, y: canvas.height - 80}, {x: 60, y: canvas.height - 100}, {x: 60, y: canvas.height - 60}, {x: 70, y: canvas.height - 100}, {x: 70, y: canvas.height - 70}, {x: 100, y: canvas.height - 70},{x: 90, y: canvas.height - 90},{x: 100, y: canvas.height - 90} ],
+        [{x: canvas.width - 100, y: canvas.height - 100}, {x: canvas.width - 100, y: canvas.height - 60}, {x: canvas.width - 80, y: canvas.height - 80}, {x: canvas.width - 60, y: canvas.height - 100}, {x: canvas.width - 60, y: canvas.height - 60}, {x: canvas.width - 70, y: canvas.height - 100}, {x: canvas.width - 70, y: canvas.height - 70}, {x: canvas.width - 100, y: canvas.height - 70}, {x: canvas.width - 90, y: canvas.height - 90}, {x: canvas.width - 100, y: canvas.height - 90}]
+];
+
 //create gate/enemy cache to store sprites on init
 let enemy_Cache = new Array(); 
 let gate_Cache = new Array();
-let explosion_Cache = new Array();
 
 //fills cache with gate/enemy sprites on game start
 const initialSpawn = () => {
     for(let i = 0; i < 500; i++){
         enemy_Cache.push(new Enemy(0, 0));
         gate_Cache.push(new Gate(0, 0));
-        explosion_Cache.push(new Explosion(0, 0));
     }
 };
 
@@ -145,49 +146,46 @@ class Player{
     constructor(){
         this.x = canvas.width / 2; //starting point the center of canvas
         this.y = canvas.height / 2;
-        this.width = 50;
-        this.height = 50;
-        this.radius = 10;
+        this.width = 50; //player width
+        this.height = 50; //player height
         this.angle = 0;
         this.img = new Image();
     }
 
     update(){
-        let me = this;
+        this.draw();
 
-        me.draw();
-
-        let dx = me.x - 25 - mouse.x;
-        let dy = me.y - 25 - mouse.y;
+        let dx = this.x - 25 - mouse.x;
+        let dy = this.y - 25 - mouse.y;
 
         let radAngle  = Math.atan2(dy, dx);
 
-        me.angle = radAngle;
+        this.angle = radAngle;
 
-        if(mouse.x != me.x){
-            me.x -= dx/20;
+        if(mouse.x != this.x){
+            this.x -= dx/25;
         }
-        if(mouse.y != me.y){
-            me.y -= dy/20;
+        if(mouse.y != this.y){
+            this.y -= dy/25;
         }
     }
 
     draw(){
-        let me = this;
+    
         //sprite moves to where mouse is clicked
         if(mouse.click){ 
             ctx.lineWidth = 0.2;
             ctx.beginPath();
-            ctx.moveTo(me.x, me.y);
+            ctx.moveTo(this.x, this.y);
             ctx.lineTo(mouse.x, mouse.y);
             ctx.stroke();
         }
 
         ctx.save();
-        ctx.translate(me.x, me.y);
-        ctx.rotate(me.angle);
-        ctx.drawImage(me.img, 0 - me.width / 2, 0 - me.height / 2, me.width, me.height);
-        me.img.src = "sprites/spacestation.png";
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
+        ctx.drawImage(this.img, 0 - this.width / 2, 0 - this.height / 2, this.width, this.height);
+        this.img.src = "sprites/spacestation.png";
         ctx.restore();
     }
 };
@@ -202,9 +200,9 @@ class Enemy{
         this.startTime; //time of spawn
         this.currTime; //current time
         this.delta; // currTime - startTime
-        this.distance;
+        this.distance; //distance from the player
         this.speed = difficulty; //speed set to user input
-        this.isParticle = false;
+        this.isParticle = false; //is the object being displayed as an enemy or particle
         this.img = new Image();
     }
 
@@ -219,25 +217,27 @@ class Enemy{
     update(){
         let me = this;
 
-        let dx = player.x - me.x;
-        let dy = player.y - me.y;
-        let honeAngle = Math.atan2(dy, dx);
+        let dx = player.x - me.x; //distance from player (x-axis)
+        let dy = player.y - me.y; //distance from player (y-axis)
+        let honeAngle = Math.atan2(dy, dx); //calculating the angle between enemy and player
 
-        me.distance = Math.sqrt(dx*dx + dy*dy);
+        me.distance = Math.sqrt(dx*dx + dy*dy); //calculating distance from player
 
-        me.currTime = performance.now(); //create another timestamp
+        me.currTime = performance.now(); //create timestamp
 
-        me.delta = me.currTime - me.startTime; //calculating time elapsed
+        //calculating time elapsed from spawn, enemies become deadly once delta passes 1000
+        me.delta = me.currTime - me.startTime;
 
         if(me.isParticle){
-            if(me.distance < 150){
+            if(me.distance < 150){//if gem is less than 150 away, get sucked in by the player
                 me.x += me.speed * Math.cos(honeAngle);
                 me.y += me.speed * Math.sin(honeAngle);
             }else{
-                me.x = me.x; //if particle and distance to player is less than 100, gem is stationary
+                me.x = me.x; //if particle AND distance to player is greater than 150, gem is stationary
                 me.y = me.y;
             }
         }else{
+            //if not particle, hone in on player
             me.x += me.speed * Math.cos(honeAngle);
             me.y += me.speed * Math.sin(honeAngle);
         }
@@ -248,10 +248,10 @@ class Enemy{
     draw(){
         let me = this;
 
-        if(me.isParticle){
-            ctx.drawImage(me.img, me.x - me.radius, me.y - me.radius, me.diameter, me.diameter);
+        if(me.isParticle){//if enemy is particle, display as particle and shrink to 3/4 size
+            ctx.drawImage(me.img, me.x - me.radius, me.y - me.radius, me.diameter * 0.75, me.diameter * 0.75);
             me.img.src = 'sprites/gem.png';
-        }else{
+        }else{//if enemy is not particle, display as enemy at full size
             ctx.drawImage(me.img, me.x - me.radius, me.y - me.radius, me.diameter, me.diameter);
             me.img.src = 'sprites/enemy.png';
         }
@@ -263,25 +263,26 @@ class Gate{
     constructor(_x, _y){
         this.x = _x; //sprite hitbox is only the top-left corner of the square, withdrawing width & height /2
         this.y = _y;
-        this.radius;
-        this.distance; //distance from player to center of gate
-        this.distance1; //distance from player to mine 1
-        this.distance2; //distance from player to mine 2
+        this.hypotenus;
+        this.distanceClearGate1; //distance 1 & 4 can trigger gate detonation
+        this.distanceClearGate2;
+        this.distanceMine1; //distance from player to mine 1
+        this.distanceMine2; //distance from player to mine 2
         this.startTime; //time at spawn
         this.currTime; //current time
         this.delta; //current time - start time
         this.width = 75;
         this.height = 133;
-        this.theta;
-        this.rotation = Math.floor(Math.random() * 180);
-        this.rotationSpeed = 0.05;
+        this.theta; //rotational angle in degrees
+        this.rotation = Math.floor(Math.random() * 180); //rotational angle in radians
+        this.rotationSpeed = 0.05; //rotational velocity
         this.img = new Image();
     }
 
     respawn(){ //when reusing objects you have to reset the spawn location
         let me = this;
 
-        me.x = random(300, 1000);
+        me.x = random(500, 1200); //assigning random x, y co-ordinates
         me.y = random(50, 450);
 
         me.startTime = performance.now(); //create timestamp using computer's internal clock
@@ -297,29 +298,35 @@ class Gate{
         me.theta = me.rotation * Math.PI / 180;
 
         //radius of rotation equals the rectangle's hypotenus 
-        me.radius = Math.sqrt(me.x * me.x + me.y * me.y);
+        me.hypotenus = Math.sqrt(me.x * me.x + me.y * me.y);
         
         //using linear rotational transformation to find x,y after rotation
-        me.x = me.radius * Math.cos(me.theta);
-        me.y = me.radius * Math.sin(me.theta);
+        me.x = me.hypotenus * Math.cos(me.theta);
+        me.y = me.hypotenus * Math.sin(me.theta);
         
-        //distance from player to center of gate
-        let dx = player.x - me.x; //sprite hitbox relocation fixed
-        let dy = player.y - me.y - 75;    
+        //distance from player to ClearGate1
+        let dx = player.x - me.x - 5; //sprite hitbox relocation fixed
+        let dy = player.y - me.y - 60;    
 
-        me.distance = Math.sqrt(dx*dx + dy*dy);
+        me.distanceClearGate1 = Math.sqrt(dx*dx + dy*dy);
+
+        //distance from player to ClearGate2
+        let dx4 = player.x - me.x - 5; //sprite hitbox relocation fixed
+        let dy4 = player.y - me.y - 90;    
+
+        me.distanceClearGate2 = Math.sqrt(dx4*dx4 + dy4*dy4);
 
         //distance from player to mine 1
         let dx1 = player.x - me.x - 25; 
         let dy1 = player.y - me.y - 30;    
 
-        me.distance1 = Math.sqrt(dx1*dx1 + dy1*dy1);
+        me.distanceMine1 = Math.sqrt(dx1*dx1 + dy1*dy1);
 
         //distance from player to mine 2
-        let dx2 = player.x - me.x - 5; 
-        let dy2 = player.y - me.y - 125;    
+        let dx2 = player.x - me.x - 25 + 115 * Math.sin(me.theta); //fixes mine location bug by add rotation transformation
+        let dy2 = player.y - me.y - 120;    
 
-        me.distance2 = Math.sqrt(dx2*dx2 + dy2*dy2);
+        me.distanceMine2 = Math.sqrt(dx2*dx2 + dy2*dy2);
 
         me.currTime = performance.now(); //creating another timestamp
 
@@ -333,7 +340,7 @@ class Gate{
 
         ctx.save();
         ctx.translate(me.x, me.y);
-        ctx.rotate(me.rotation * Math.PI / 180); //switch to neg rotation for better movement, edit to translation needed though
+        ctx.rotate(Math.sin(me.theta)); //switch to neg rotation for better movement, edit to translation needed though
         ctx.drawImage(me.img, 0, 0, me.width, me.height);
         ctx.rotate(-me.rotation * Math.PI / 180);
         ctx.translate(-me.x, -me.y);
@@ -341,58 +348,6 @@ class Gate{
         me.img.src = 'sprites/gate5.png';
     }
 };
-
-/*let spritedata = require('sprites/explosion/explosion.json');
-
-let spritesheet = new Image();
-spritesheet.src = 'sprites/explosion/Explosion.png';*/
-
-let images = new Array(); //setting up array of explosion animation images
-
-for(let i = 0; i < 8; i++){
-    images[i] = new Image();
-    images.src = `sprites/explosion/tile00${i.toString()}.png`;
-}
-
-class Explosion{
-    constructor(_x, _y){
-        this.x = _x;
-        this.y = _y;
-        this.animation = images; //images array
-        this.len = this.animation.length; //image array length
-        this.width = 64;
-        this.height = 64;
-        this.index = 0; //starting index
-        this.speed = 0.001;
-    }
-
-    spawn(x, y){
-       let me = this;
-
-        me.x = x;
-        me.y = y; 
-    }
-
-    update(){
-        let me = this;
-
-        me.index += this.speed;
-
-        if(me.index > 8){
-            me.draw();
-        }
-    } 
-
-    draw(){
-        let me = this;
-        let index = Math.floor(me.index) % me.len;
-
-        ctx.save();
-        ctx.drawImage(me.animation[index], me.x, me.y, me.width, me.height);
-        ctx.restore();
-    }
-}
-
 
 const game = { //thinking of changing object name to game due to it's interaction with all classes.
 
@@ -422,17 +377,17 @@ const game = { //thinking of changing object name to game due to it's interactio
             }
            
             if(gameFrame % 1000 == 0){
-                this.enemyCounter++;
+                if(this.enemyCounter < 9){
+                    this.enemyCounter++;
+                } //every 1000 frames increase enemy spawn number by 1
             }
-        }
-        
-        if(gameFrame % 50 == 0){
+
             let newGate;
 
-            newGate = gate_Cache.pop();
+            newGate = gate_Cache.pop(); //removes cached gate sprite
             newGate.respawn(); //resets gate co-ordinates so it doesn't just reappear in the same place
             
-            this.gateArray.push(newGate);
+            this.gateArray.push(newGate); 
         }
 
         for(let i = 0; i < this.gateArray.length; i++){
@@ -440,7 +395,7 @@ const game = { //thinking of changing object name to game due to it's interactio
 
             //too much logic in this nested loop, reducing framerate
 
-            /*if(this.gateArray[i].delta > 2000 && this.gateArray[i].distance1 < player.radius * 2){
+            if(this.gateArray[i].delta > 2000 && this.gateArray[i].distanceMine1 < player.width / 2){
             //The gate's mines are safe for 2 seconds after spawn
                 gameOver = true;
                 killedByMine1 = true; //killed by mine 1 
@@ -449,25 +404,19 @@ const game = { //thinking of changing object name to game due to it's interactio
                 deathInfo.style.visibility = 'visible';
             }
 
-            if(this.gateArray[i].distance2 < player.radius * 2){
+            if(this.gateArray[i].delta > 2000 && this.gateArray[i].distanceMine2 < player.width / 2){
                 gameOver = true;
                 killedByMine2 = true; //killed by mine 2
                 modal.style.visibility = 'visible'; //modal popup upon death
                 deathInfo.innerHTML = "KILLED BY MINE 2"; //death info pop up upon death
                 deathInfo.style.visibility = 'visible';
-            }*/
+            }
 
-            if(this.gateArray[i].distance < (player.radius * 2)){ //when player passes through gate, enemies with distance < 200 are killed
+            if(this.gateArray[i].distanceClearGate1 < player.width / 2 || this.gateArray[i].distanceClearGate2 < player.width / 2){ //when player passes through gate, enemies with distance < 200 are killed
                 for(let m = 0; m < this.enemyArray.length; m++){
                     if(this.enemyArray[m].distance < 200){
-
-                        let newExplosion;
-                        newExplosion = explosion_Cache.pop();
-                        newExplosion.spawn(this.enemyArray[m].x, this.enemyArray[m].y);
-                        this.explosionArray.push(newExplosion);
-
                         this.enemyArray[m].isParticle = true;
-                        this.enemyArray[m].speed = 9; //change speed as enemy becomes particle
+                        this.enemyArray[m].speed = 10; //change speed as enemy becomes particle
                         score += 50;
                     }
                 }
@@ -475,12 +424,8 @@ const game = { //thinking of changing object name to game due to it's interactio
                 //gate_Cache.push(this.gateArray.slice(this.gateArray[i], 1));
                 gate_Cache.push(removeObjectFromArray(this.gateArray[i], this.gateArray)); //gate is removed and added to the gate cache for later use, need to check if working...
                 i--;
-                score += 25;
+                score += 20;
             }
-        }
-
-        for(let i = 0; i < this.explosionArray.length; i++){
-            this.explosionArray[i].update();
         }
 
         for(let k = 0; k < this.enemyArray.length; k++){
@@ -489,7 +434,7 @@ const game = { //thinking of changing object name to game due to it's interactio
 
                 if(!this.enemyArray[k].isParticle && 
                     this.enemyArray[k].delta > 1000 && //allows for 1 second after spawn before becoming deadly
-                    this.enemyArray[k].distance < this.enemyArray[k].radius / 2 + player.radius){
+                    this.enemyArray[k].distance < this.enemyArray[k].radius / 2 + player.width / 2){
                     gameOver = true; //if enemy gets too close, game over!
                     modal.style.visibility = 'visible';
                     deathInfo.innerHTML = "KILLED BY ALIEN";
@@ -506,8 +451,9 @@ const game = { //thinking of changing object name to game due to it's interactio
                 }
         }
     
-        total = multiplier * score; //adding the true total score
-        scoreElement.innerHTML = `${total} (${highScore})`; //applying score to html element
+        total = multiplier * score * difficulty; //adding the true total score, added difficulty factor to incentivise users to choose higher game speed
+        scoreElement.innerHTML = numberWithCommas(total); //applying score to html element
+        highscoreElement.innerHTML = `High Score: ${numberWithCommas(storedScore)}`;
         modalScore.innerHTML = numberWithCommas(total);
         multiplierElement.innerHTML = `${multiplier}x`; //applying multiplier to html element
         
@@ -515,21 +461,13 @@ const game = { //thinking of changing object name to game due to it's interactio
         //should be ~500 but getting random large numbers instead, different each time
         console.log('Enemy Array Length', enemy_Cache.length); 
         console.log('difficulty', difficulty);
-    },
-
-    restart: function(){
-        this.enemyArray.splice(0, this.enemyArray.length);
-        this.gateArray.splice(0, this.gateArray.length);
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        animate();
     }
 };
 
 const player = new Player();
 
 const startScreen = () => {
+    gameMode(difficulty);
 
     if(menuActive){
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -558,13 +496,13 @@ const startScreen = () => {
 
         animate();
     }
-    
 };
 
 const animate = () => {
 
     multiplierElement.style.visibility = 'visible'; //making game elements visible on game start
     scoreElement.style.visibility = 'visible';
+    highscoreElement.style.visibility = 'visible';
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
