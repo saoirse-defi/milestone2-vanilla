@@ -25,11 +25,6 @@ body{
     background-color: #000000;
 }
 
-#highscore{
-    position: absolute;
-    bottom: 2000px;
-}
-
 .content{
     position: relative;
     width: 100%;
@@ -104,16 +99,25 @@ body{
     position: fixed;
     color: green;
     top: 10px;
-    left: 35px;
-    font-size: xx-large;
+    left: 25px;
+    font-size: x-large;
+    visibility: hidden;
+}
+
+#highscore{
+    position: fixed;
+    top: 10px;
+    right: 25px;
+    color: green;
+    font-size: x-large;
     visibility: hidden;
 }
 
 #multiplier{
     position: fixed;
     color: green;
-    top: 10px;
-    right: 50px;
+    bottom: 10px;
+    left: 50px;
     font-size: xx-large;
     visibility: hidden;
 }
