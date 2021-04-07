@@ -5,8 +5,8 @@
 }
 
 body{
-    height: 100vh;
-    width: 100vw;
+    height: 98vh;
+    width: 98vw;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,16 +21,8 @@ body{
     background-position: center center;
 }
 
-#gameboard{
+#canvas{
     background-color: #000000;
-    width: 1000px;
-    height: 600px;
-    border: 5px solid cyan;
-}
-
-#highscore{
-    position: absolute;
-    bottom: 2000px;
 }
 
 .content{
@@ -80,4 +72,107 @@ body{
 .fade-in{
     opacity: 0;
     animation: fadeIntro 1s ease-in forwards;
+}
+
+#difficulty{
+    position: fixed;
+    top: 5px;
+    right: 0;
+    bottom: 0;
+    left: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100px;
+    height: 66px;
+    color: white;
+    visibility: visible;
+}
+
+#speedOutput{
+    color: orangered;
+}
+
+#score{
+    position: fixed;
+    color: green;
+    top: 10px;
+    left: 25px;
+    font-size: x-large;
+    visibility: hidden;
+}
+
+#highscore{
+    position: fixed;
+    top: 10px;
+    right: 25px;
+    color: green;
+    font-size: x-large;
+    visibility: hidden;
+}
+
+#multiplier{
+    position: fixed;
+    color: green;
+    bottom: 10px;
+    left: 50px;
+    font-size: xx-large;
+    visibility: hidden;
+}
+
+#modal{
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    background-image: url('./sprites/nebula10.jpg');
+    opacity: 0.8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    max-width: 33.3%;
+    max-height: 33.3%;
+    border-radius: 2.5%;
+    border: 2px solid gray;
+    visibility: hidden;
+}
+
+#modalScore{
+    font-weight: 900;
+    font-size: xx-large;
+    color: white;
+}
+
+#highScoreLabel{
+    font-weight: 900;
+    font-size: x-large;
+    display: none;
+    color: orangered;
+    padding-bottom: 20px;
+}
+
+#pointsLabel{
+    color: gray;
+    font-weight: 700;
+}
+
+#restartButton{
+    background-color: orangered;
+    color: black;
+    width: 50%;
+}
+
+#deathInfo{
+    position: fixed;
+    top: 75%;
+    left: 38%;
+    color: red;
+    font-size: xx-large;
+    visibility: hidden;
 }

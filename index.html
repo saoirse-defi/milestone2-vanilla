@@ -10,11 +10,31 @@
     <title>Against All Odds - Vanilla</title>
 </head>
 <body>
-    <div class="container">
-        <div id="highscore"></div>
-        <canvas id="gameboard">
+    <div id="container">
+        <canvas id="canvas">
             Your browser doesn't include support for the canvas element.
         </canvas>
+
+        <div id="difficulty">
+            <input type="range" min="4" max="9" value="6" class="slider" id="speedSlider">
+            <span id="speedLabel">Difficulty:</span>
+            <div id="speedOutput"></div>
+        </div>
+
+        <div id="score"><span id="scoreElement">0</span></div>
+        <div id="highscore"><span id="highscoreElement">0</span></div>
+        <div id="multiplier"><span id="multiplierElement">1x</span></div>
+
+        <div class="modalBg">
+            <div id="modal" class="visible">
+                <h2 id="highScoreLabel">New High Score!</h2>
+                <h1 id="modalScore">0</h1><br>
+                <p id="pointsLabel">Points</p><br>
+                <button id="restartButton">Return to Start Menu</button>
+            </div>
+        </div>
+
+        <div id="deathInfo" class="visible"></div>
         <!-- <div class="intro">
             <h2 class="fadeIntro">How long will you survive?</h2>
         </div> -->
@@ -27,6 +47,7 @@
             }, 2000);
         })
     </script> -->
+    <script type="module" src="../js/utils.js"></script>
    <script type="module" src="../js/app.js"></script>
 </body>
 </html>

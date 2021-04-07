@@ -2,11 +2,12 @@
 
 ## Introduction
 
-A 2D spaceship survival game built using Javascript and HTML Canvas. Developed using vanilla Javascript, no additional libraries were used. I have taken inspritation from a childhood video game called Geometery Wars, specifically a game mode called Pacifism.
-As a kid, I spend countless hours on this mode trying to beat my friend's high scores. The concept is simple, you don't have any projectiles so the only way to survive is to pass through gates in order to destroy nearby ships and to thin the ever increasing hoarde.
+This repository represents my milstone project 2 for Code Institute. For this milestone project, I have created a 2D spaceship survival game built using Javascript and HTML Canvas. Developed using vanilla Javascript, no additional libraries were used. 
+I have taken inspritation from a childhood video game called Geometery Wars, specifically a game mode called Pacifism.
+As a child, I spend countless hours on this mode trying to beat my friend's high scores. The concept is simple, you don't have any projectiles so the only way to survive is to pass through gates in order to destroy nearby ships and to thin the ever increasing hoarde.
 The goal is to survive for as long as possible. Similarly to other arcade games, there is no possible way to beat the game. You must simply try and survive for as long as you can.
 Enemy speed increases when your score passes certain increments. This will be outlined to the user using custom sound effects.
-
+Cusomisation has been implemented in this application, the user has the ability to change the background and game difficulty at the start screen. Local storage is then used to track user customisation in between sessions.
 
 ## UX
 
@@ -21,13 +22,13 @@ I decided to browse several game development marketplaces to see which sprite im
 
 As mentioned above, the point and click method was chosen as user input. This introduced a UX issue that would look disconcerting to the end user. 
 Depending on where the user clicked, the sprite would appear either upside down or at the incorrect angle. Due to this, circular sprite was chosen for the player.
+This allows the sprite to appear the same, no matter the angle or direction of user input.
 
 ###### Enemy Sprite (Alien Drone Ship)
 
 ![Enemy Sprite](sprites/enemy.png)
 
-When choosing the enemy sprite, I wanted the design to give the user a sense of mortality and dread. The ship had to look like it belonged to a terrifying alien race.
-
+When choosing the enemy sprite, I wanted the design to give the user a sense of mortality and dread. The ship had to look like it belonged to a terrifying alien race hellbent on conquering human civilisation.
 
 ###### Gate Sprite (Used to thin Alien hoarde)
 
@@ -35,9 +36,15 @@ When choosing the enemy sprite, I wanted the design to give the user a sense of 
 
 #### Background
 
+In 2D game development, backdrops are often used to add depth to the canvas and add context to the game individual elements.
+
 ###### Default Background
 
-###### User Customisation (Background Choice)
+As the default background, I have chosen an image of a horizon in the depth of outer space. It contains no planets or nebula, further emphasising the cold darkness of the battlefield that the user finds themselves in.
+
+###### Background Array
+
+This array is responsible for storing background image file names as strings. This array will later be used to implement user customisation.
 
 ## Sound
 
@@ -53,18 +60,56 @@ Custom sound effects were recorded for this project.
 
 #### Enemy Spawn Noise
 
+### Implementation
 
+This section will outline the technologies and processes used in the design of this application.
+
+#### HTML Canvas
+
+The Canvas is a HTML element used to draw graphics via scripting. In this case, our scripting language will be Javascript.
+
+#### Animation Loop
+
+This refers to the function which is repeatedly called using recursion. Each time the function is called, a single frame is printed on screen.
+
+### User Cusomisation
+
+For this milestone project, I have implemented 2 separate elements of customisation for the user. The user is able to apply different backdrops to the canvas and they also have the ability to increase or decrease the game's difficulty.
+The state of these customisable elements is then saved for later sessions using local storage.
+
+#### Background
+
+#### Difficulty
+
+At the start screen, a difficutly slider is provided to allow for some user customisation. The difficulty variable is linked to the enemy speed. The user has the ability to choose and enemy speed of between 1 & 10.
 
 ### Project Goals
 
+My main goal for this Code Institute milstone project was to authenically emmulate a game from my childhood (Geometery Wars 2: Pacifism) within the browser.
+Another goal of mine was to successfully capture the gameplay feeling from the original.
 
 ### User stories
 
+1. As a user of this web application I want:
+
+    - A statifying gameloop that get me to keep coming back to beat a highscore.
+    - Sound effects to let me know when important game events take place.
+    - Sound design that doesn't get boring to listen to over time.
+    - Consistent Framerate.
+    - The ability to change the difficulty if needed.
+
+2. As a games platform looking to add this application to their library I would want:
+
+    - A great gameloop that will keep our users hooked.
+    - Sound design that doesn't get boring/annoying to the user over time.
+    - Sprite designs that capture the user's imagination and generate an emotional response.
 
 
 ### Design Choices
 
 #### Physics Engine Choices
+
+Originally I had chosen to create this application using the PixiJS library but after seeking advice from my mentor, he stated that using vanilla Javascript would be a better as a learning excercise.
 
 #### User Input Choices
 
@@ -109,16 +154,11 @@ Dot Gothic 16
 
 #### Performance Testing
 
-* Lighthouse within Chrome developer tools was used to observe areas where application performance could be improved.
-* Uncompressed images were causing a very slow TTL, using MS Paint & TinyJPG I was able to reduce the TTL significantly.
+
   
 #### Common paths though the website
 
-* From the home page, each path outlined below is accessible through the navigation bar using clearly defined buttons.
-
-##### Home > Videos
-  
-##### Home > Shop > Product
+##### Start Screen > Game > Start Screen
 
 * A back button represented by a white leftwards arrow was added to each product page to ensure that site visitors can easily return to the shop page. A link in the navbar also has this functionality, the second button was added as it follows modern online shopping conventions.
 
@@ -190,13 +230,19 @@ Dot Gothic 16
 
 ##### Overlap detection for swarm behaviour
 
-##### Hitbox not following Gate rotation
+##### Hitbox not following Gate rotation    
 
 ##### Gates spawn without image (solved)
 
 ##### Gate detection not consistent
 
 ##### Framerate slowing down (I believe due to nested loops)
+
+##### Mines on the end of gates exhibiting random behaviour
+
+##### Not all gates are being drawn, leading to random deaths
+
+##### Gates not rotating after timer was added
 
 ##### Memory Leaks
 
