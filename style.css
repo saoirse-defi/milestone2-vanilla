@@ -160,12 +160,29 @@ body{
 #pointsLabel{
     color: gray;
     font-weight: 700;
+    position: relative;
+    bottom: 5px;
 }
 
 #restartButton{
     background-color: orangered;
     color: black;
     width: 50%;
+    height: 12.5%;
+    margin: 10px;
+    border-radius: 16px;
+    font-weight: 600;
+    font-family: 'Orbitron', sans-serif;
+}
+
+#homeButton{
+    background-color: orangered;
+    color: black;
+    width: 50%;
+    height: 12.5%;
+    border-radius: 16px;
+    font-weight: 600;
+    font-family: 'Orbitron', sans-serif;
 }
 
 #deathInfo{
