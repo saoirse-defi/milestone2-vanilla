@@ -65,6 +65,7 @@ const modalScore = document.getElementById('modalScore');
 const highScoreLabel = document.getElementById('highScoreLabel');
 const multiplierElement = document.getElementById('multiplierElement');
 const highscoreElement = document.getElementById('highscoreElement');
+const homeButton = document.getElementById('homeButton');
 const restartButton = document.getElementById('restartButton');
 const deathInfo = document.getElementById('deathInfo');
 const speedSlider = document.getElementById('speedSlider');
@@ -118,6 +119,7 @@ const checkRecordScore = () => { //if user's score is greater than high score, u
     if(total > localStorage.getItem('highscore')){
         localStorage.setItem('highscore', total);
         highScoreLabel.style.display = 'block'; //user notified off new highscore
+        setInterval(playSFX(effects[3]));
     }
 };
 
@@ -140,6 +142,29 @@ const initialSpawn = () => {
         enemy_Cache.push(new Enemy(0, 0));
         gate_Cache.push(new Gate(0, 0));
     }
+};
+
+//Soundtrack & SFX
+let music = false;
+
+let tracks = ['audio/tracks/Brinstar.mp3', 'audio/tracks/makarov.mp3'];
+
+let effects = ['audio/sfx/explosionSFX.mp3', 'audio/sfx/explosion2SFX.mp3', 'audio/sfx/gameoverSFX.mp3', 'audio/sfx/highscoreSFX.mp3', 'audio/sfx/startSFX.mp3', 'audio/sfx/explosion3SFX.mp3'];
+
+const playTrack = (track) => {
+    let audio = document.createElement('audio');
+    audio.src = track;
+    audio.volume = 0.8;
+    if(music){
+        audio.play();
+    }
+};
+
+const playSFX = (sfx) => {
+    let audio = document.createElement('audio');
+    audio.src = sfx;
+    audio.volume = 0.2;
+    audio.play();
 };
 
 class Player{
@@ -355,8 +380,6 @@ const game = { //thinking of changing object name to game due to it's interactio
 
     gateArray: [], //stores gate sprites while on screen
 
-    explosionArray: [], //stores explosion sprites while on screen
-
     enemyCounter: 1, //used to increment the amount of enemies that spawn
 
     gameLoop: function(){
@@ -402,6 +425,7 @@ const game = { //thinking of changing object name to game due to it's interactio
                 modal.style.visibility = 'visible'; //modal popup upon death
                 deathInfo.innerHTML = "KILLED BY MINE 1"; //death info pop up upon death
                 deathInfo.style.visibility = 'visible';
+                playSFX(effects[2]);
             }
 
             if(this.gateArray[i].delta > 2000 && this.gateArray[i].distanceMine2 < player.width / 2){
@@ -410,6 +434,7 @@ const game = { //thinking of changing object name to game due to it's interactio
                 modal.style.visibility = 'visible'; //modal popup upon death
                 deathInfo.innerHTML = "KILLED BY MINE 2"; //death info pop up upon death
                 deathInfo.style.visibility = 'visible';
+                playSFX(effects[2]);
             }
 
             if(this.gateArray[i].distanceClearGate1 < player.width / 2 || this.gateArray[i].distanceClearGate2 < player.width / 2){ //when player passes through gate, enemies with distance < 200 are killed
@@ -423,6 +448,7 @@ const game = { //thinking of changing object name to game due to it's interactio
                 //gate_Cache = gate_Cache.slice(0, this.gateArray[i]).concat(gate_Cache.slice(-this.gateArray[i]));
                 //gate_Cache.push(this.gateArray.slice(this.gateArray[i], 1));
                 gate_Cache.push(removeObjectFromArray(this.gateArray[i], this.gateArray)); //gate is removed and added to the gate cache for later use, need to check if working...
+                playSFX(effects[0]); //plays explosion SFX
                 i--;
                 score += 20;
             }
@@ -439,6 +465,7 @@ const game = { //thinking of changing object name to game due to it's interactio
                     modal.style.visibility = 'visible';
                     deathInfo.innerHTML = "KILLED BY ALIEN";
                     deathInfo.style.visibility = 'visible';
+                    playSFX(effects[2]);
                 }
 
                 if(this.enemyArray[k].isParticle && this.enemyArray[k].distance < 20){
@@ -461,12 +488,27 @@ const game = { //thinking of changing object name to game due to it's interactio
         //should be ~500 but getting random large numbers instead, different each time
         console.log('Enemy Array Length', enemy_Cache.length); 
         console.log('difficulty', difficulty);
+    },
+
+    reset: function(){
+        this.enemyArray = [];
+        this.gateArray = [];
+        this.enemyCounter = 1;
+        score = 0;
+        multiplier = 0;
+        gameOver = false; //allows animation to be called recursively 
+        player.x = canvas.width / 2; //centering the player
+        player.y = canvas.height / 2;
+        modal.style.visibility = 'hidden'; //hide modal
+        deathInfo.style.visibility = 'hidden'; //hide cause of death
     }
 };
 
 const player = new Player();
 
 const startScreen = () => {
+    music = true;
+    playTrack(tracks[1]);
     gameMode(difficulty);
 
     if(menuActive){
@@ -532,6 +574,8 @@ const animate = () => {
     }
 };
 
+//Event Listeners
+
 window.addEventListener('keyup', e => {
     if(e.keyCode === 83){
         menuActive = false; //triggers game start event
@@ -544,6 +588,11 @@ window.addEventListener('keyup', e => {
 });
 
 document.getElementById('restartButton').addEventListener('click', () => {
+    game.reset();
+    animate(); //restart animation loop
+});
+
+document.getElementById('homeButton').addEventListener('click', () => {
     restart();
 });
 
