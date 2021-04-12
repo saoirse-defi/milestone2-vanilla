@@ -36,7 +36,7 @@ When choosing the enemy sprite, I wanted the design to give the user a sense of 
 
 #### Background
 
-In 2D game development, backdrops are often used to add depth to the canvas and add context to the game individual elements.
+In 2D game development, backdrops are often used to add depth & context the canvas & individual game elements.
 
 ###### Default Background
 
@@ -50,11 +50,13 @@ This array is responsible for storing background image file names as strings. Th
 
 Custom sound effects were recorded for this project.
 
-#### Gate Effect
+#### Gate Destruction Effect
 
-#### Enemy Speed Increase Effect
+This sound effect was custom made to provide the user with aural feedback whenever a gate is successfully destroyed. 
 
-#### Start Menu Soundtrack
+#### Bandcamp Embedded Player
+
+This element is only visible on the start screen and dissapears once playing the game. It allows the user to choose from several different tracks, adding another level of user customisation.
 
 #### Game Soundtrack
 
