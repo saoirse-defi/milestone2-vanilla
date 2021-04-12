@@ -136,11 +136,17 @@ body{
     align-items: center;
     justify-content: center;
     text-align: center;
-    max-width: 33.3%;
-    max-height: 33.3%;
+    max-width: 35%;
+    max-height: 50%;
     border-radius: 2.5%;
     border: 2px solid gray;
     visibility: hidden;
+}
+
+#tutorial{
+    position: fixed;
+    bottom: 0px;
+    right: 10px;
 }
 
 #modalScore{
@@ -151,10 +157,18 @@ body{
 
 #highScoreLabel{
     font-weight: 900;
-    font-size: x-large;
-    display: none;
+    font-size: xx-large;
+    visibility: hidden;
     color: orangered;
-    padding-bottom: 20px;
+    margin-top: 20px;
+}
+
+#deathInfo{
+    position: relative;
+    bottom: 30px;
+    color: orangered;
+    font-size: xx-large;
+    visibility: hidden;
 }
 
 #pointsLabel{
@@ -167,9 +181,9 @@ body{
 #restartButton{
     background-color: orangered;
     color: black;
-    width: 50%;
+    width: 60%;
     height: 12.5%;
-    margin: 10px;
+    margin-bottom: 10px;
     border-radius: 16px;
     font-weight: 600;
     font-family: 'Orbitron', sans-serif;
@@ -178,18 +192,16 @@ body{
 #homeButton{
     background-color: orangered;
     color: black;
-    width: 50%;
+    width: 60%;
     height: 12.5%;
     border-radius: 16px;
     font-weight: 600;
     font-family: 'Orbitron', sans-serif;
 }
 
-#deathInfo{
+#iplayer{
     position: fixed;
-    top: 75%;
-    left: 38%;
-    color: red;
-    font-size: xx-large;
+    top: 0px;
+    right: 550px;
     visibility: hidden;
 }
