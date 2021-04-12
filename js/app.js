@@ -71,6 +71,7 @@ const deathInfo = document.getElementById('deathInfo');
 const speedSlider = document.getElementById('speedSlider');
 const difficultyElem = document.getElementById('difficulty');
 const speedOutput = document.getElementById('speedOutput');
+const iplayer = document.getElementById('iplayer');
 
 let difficulty; //stores difficulty 
 
@@ -113,13 +114,18 @@ let gameFrame = 0; //tracks number of frames that pass
 let score = 0; //user's current score without multiplier
 let multiplier = 1; //user's multiplier
 let total = 0; //total = score * multiplier
-let storedScore = localStorage.getItem('highscore') || 0; //gets high score from local storage
+//let storedScore = localStorage.getItem('highscore') || 0; //gets high score from local storage
 
 const checkRecordScore = () => { //if user's score is greater than high score, update high score
     if(total > localStorage.getItem('highscore')){
         localStorage.setItem('highscore', total);
-        highScoreLabel.style.display = 'block'; //user notified off new highscore
-        setInterval(playSFX(effects[3]));
+        playSFX(effects[3]);
+        highScoreLabel.style.visibility = 'visible'; //user notified off new highscore
+        deathInfo.style.visibility = 'hidden';
+    }else{
+        playSFX(effects[2]);
+        deathInfo.style.visibility = 'visible';
+        highScoreLabel.style.visibility = 'hidden'; //user notified off new highscore
     }
 };
 
@@ -289,9 +295,9 @@ class Gate{
         this.x = _x; //sprite hitbox is only the top-left corner of the square, withdrawing width & height /2
         this.y = _y;
         this.hypotenus;
-        this.distanceClearGate1; //distance 1 & 4 can trigger gate detonation
-        this.distanceClearGate2;
-        this.distanceMine1; //distance from player to mine 1
+        this.distanceClearGate1; //distance from gate detonation (kills gate)
+        this.distanceClearGate2; // a second distance point was used to improve hitbox
+        this.distanceMine1; //distance from player to mine 1 (kills player)
         this.distanceMine2; //distance from player to mine 2
         this.startTime; //time at spawn
         this.currTime; //current time
@@ -343,13 +349,13 @@ class Gate{
 
         //distance from player to mine 1
         let dx1 = player.x - me.x - 25; 
-        let dy1 = player.y - me.y - 30;    
+        let dy1 = player.y - me.y - 25;    
 
         me.distanceMine1 = Math.sqrt(dx1*dx1 + dy1*dy1);
 
         //distance from player to mine 2
         let dx2 = player.x - me.x - 25 + 115 * Math.sin(me.theta); //fixes mine location bug by add rotation transformation
-        let dy2 = player.y - me.y - 120;    
+        let dy2 = player.y - me.y - 115;    
 
         me.distanceMine2 = Math.sqrt(dx2*dx2 + dy2*dy2);
 
@@ -425,7 +431,6 @@ const game = { //thinking of changing object name to game due to it's interactio
                 modal.style.visibility = 'visible'; //modal popup upon death
                 deathInfo.innerHTML = "KILLED BY MINE 1"; //death info pop up upon death
                 deathInfo.style.visibility = 'visible';
-                playSFX(effects[2]);
             }
 
             if(this.gateArray[i].delta > 2000 && this.gateArray[i].distanceMine2 < player.width / 2){
@@ -434,7 +439,6 @@ const game = { //thinking of changing object name to game due to it's interactio
                 modal.style.visibility = 'visible'; //modal popup upon death
                 deathInfo.innerHTML = "KILLED BY MINE 2"; //death info pop up upon death
                 deathInfo.style.visibility = 'visible';
-                playSFX(effects[2]);
             }
 
             if(this.gateArray[i].distanceClearGate1 < player.width / 2 || this.gateArray[i].distanceClearGate2 < player.width / 2){ //when player passes through gate, enemies with distance < 200 are killed
@@ -465,7 +469,6 @@ const game = { //thinking of changing object name to game due to it's interactio
                     modal.style.visibility = 'visible';
                     deathInfo.innerHTML = "KILLED BY ALIEN";
                     deathInfo.style.visibility = 'visible';
-                    playSFX(effects[2]);
                 }
 
                 if(this.enemyArray[k].isParticle && this.enemyArray[k].distance < 20){
@@ -480,7 +483,7 @@ const game = { //thinking of changing object name to game due to it's interactio
     
         total = multiplier * score * difficulty; //adding the true total score, added difficulty factor to incentivise users to choose higher game speed
         scoreElement.innerHTML = numberWithCommas(total); //applying score to html element
-        highscoreElement.innerHTML = `High Score: ${numberWithCommas(storedScore)}`;
+        highscoreElement.innerHTML = `High Score: ${numberWithCommas(localStorage.getItem('highscore') || 0)}`;
         modalScore.innerHTML = numberWithCommas(total);
         multiplierElement.innerHTML = `${multiplier}x`; //applying multiplier to html element
         
@@ -491,24 +494,48 @@ const game = { //thinking of changing object name to game due to it's interactio
     },
 
     reset: function(){
-        this.enemyArray = [];
-        this.gateArray = [];
-        this.enemyCounter = 1;
-        score = 0;
-        multiplier = 0;
+        this.enemyArray = []; //remove enemies from screen
+        this.gateArray = []; //remove gates from screen
+        this.enemyCounter = 1; //set enemy counter back to 1
+        score = 0; //reset score
+        multiplier = 0; //reset multiplier
+        total = 0;
         gameOver = false; //allows animation to be called recursively 
         player.x = canvas.width / 2; //centering the player
         player.y = canvas.height / 2;
-        modal.style.visibility = 'hidden'; //hide modal
+        modal.style.visibility = 'hidden'; //hide modal styling
         deathInfo.style.visibility = 'hidden'; //hide cause of death
+        highScoreLabel.style.visibility = 'hidden';
+    },
+
+    restart: function(){
+        this.enemyArray = []; //remove enemies from screen
+        this.gateArray = []; //remove gates from screen
+        this.enemyCounter = 1; //set enemy counter back to 1
+        score = 0; //reset score
+        multiplier = 0; //reset multiplier
+        total = 0;
+        player.x = canvas.width / 2; //centering the player
+        player.y = canvas.height / 2;
+        modal.style.visibility = 'hidden'; //hide modal styling
+        deathInfo.style.visibility = 'hidden'; //hide cause of death
+        highScoreLabel.style.visibility = "hidden";
+        multiplierElement.style.visibility = "hidden";
+        scoreElement.style.visibility = "hidden";
+        difficultyElem.style.visibility = "visible";
+        highScoreLabel.style.visibility = 'hidden';
+
+        menuActive = true;
+        gameOver = false;
     }
 };
 
 const player = new Player();
 
 const startScreen = () => {
-    music = true;
-    playTrack(tracks[1]);
+
+    iplayer.style.visibility = 'visible';
+
     gameMode(difficulty);
 
     if(menuActive){
@@ -518,8 +545,9 @@ const startScreen = () => {
 
         ctx.font = '22.5px DotGothic16';
         ctx.fillStyle = 'white';
-        ctx.fillText('Energy weapons are down!', canvas.width / 2 - 150, canvas.height / 2 + 100, 900);
-        ctx.fillText('Pass through gates to manage the enemy horde.', canvas.width / 2 - 265, canvas.height / 2 + 150, 900);
+        ctx.fillText('Energy weapons are down!', canvas.width / 2 - 150, canvas.height / 2 + 50, 900);
+        ctx.fillText('Pass through the center of gates to manage the enemy horde.', canvas.width / 2 - 340, canvas.height / 2 + 100, 900);
+        ctx.fillText('Beware of deadly mines at the edge of gates!', canvas.width / 2 - 270, canvas.height / 2 + 150, 900);
 
         ctx.font = '20px Orbitron'
         ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
@@ -542,6 +570,7 @@ const startScreen = () => {
 
 const animate = () => {
 
+    iplayer.style.visibility = 'hidden';
     multiplierElement.style.visibility = 'visible'; //making game elements visible on game start
     scoreElement.style.visibility = 'visible';
     highscoreElement.style.visibility = 'visible';
@@ -551,19 +580,6 @@ const animate = () => {
     drawBackground();
 
     game.gameLoop();
-
-    //game speed increases with score
-    /*if(score > 100000000){
-        game.speedUp();
-    }else if(score > 10000000){
-        game.speedUp();
-    }else if(score > 1000000){
-        game.speedUp();
-    }else if(score > 100000){
-        game.speedUp();
-    }else if(score > 50000){
-        game.speedUp();
-    }*/
         
     if(gameOver){
         checkRecordScore();
@@ -593,7 +609,8 @@ document.getElementById('restartButton').addEventListener('click', () => {
 });
 
 document.getElementById('homeButton').addEventListener('click', () => {
-    restart();
+    game.restart();
+    startScreen();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
