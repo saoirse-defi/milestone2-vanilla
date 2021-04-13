@@ -11,35 +11,37 @@
     <title>Against All Odds - Vanilla</title>
 </head>
 <body>
-    <div id="container">
-        <canvas id="canvas">
+    
+    <canvas id="canvas">
             Your browser doesn't include support for the canvas element.
-        </canvas>
+    </canvas>
 
+    <div id="gameElements">
         <div id="difficulty">
             <input type="range" min="4" max="9" value="6" class="slider" id="speedSlider">
             <span id="speedLabel">Difficulty:</span>
             <div id="speedOutput"></div>
         </div>
         
+        <iframe id="iplayer" style="border: 0; width: 25%; height: 42px;" src="https://bandcamp.com/EmbeddedPlayer/album=1570782488/size=small/bgcol=333333/linkcol=2ebd35/artwork=none/track=1024808881/transparent=true/" seamless><a href="https://djgreen.bandcamp.com/album/for-sale-volume-9-beats">For Sale - Volume 9 (BEATS) by DJ Green</a></iframe>
         <a id="tutorial" data-fancybox href="video/tutorial.mp4" data-caption="Tutorial"><i class="fas fa-4x fa-graduation-cap"></i></a>
+    </div>
 
+    <div id="scoreElements">
         <div id="score"><span id="scoreElement">0</span></div>
         <div id="highscore"><span id="highscoreElement">0</span></div>
         <div id="multiplier"><span id="multiplierElement">1x</span></div>
-
-        <div class="modalBg">
-            <div id="modal" class="visible">
-                <h2 id="highScoreLabel">New High Score!</h2>
-                <div id="deathInfo" class="visible"></div>
-                <h1 id="modalScore">0</h1><br>
-                <p id="pointsLabel">Points</p><br>
-                <button id="restartButton">Restart Game</button>
-                <button id="homeButton">Return to Start Menu</button>
-            </div>
-        </div>
-        <iframe id="iplayer" style="border: 0; width: 25%; height: 42px;" src="https://bandcamp.com/EmbeddedPlayer/album=1570782488/size=small/bgcol=333333/linkcol=2ebd35/artwork=none/track=1024808881/transparent=true/" seamless><a href="https://djgreen.bandcamp.com/album/for-sale-volume-9-beats">For Sale - Volume 9 (BEATS) by DJ Green</a></iframe>
     </div>
+
+    <div id="modal" class="visible">
+        <h2 id="highScoreLabel">New High Score!</h2>
+        <div id="deathInfo" class="visible"></div>
+        <h1 id="modalScore">0</h1><br>
+        <p id="pointsLabel">Points</p><br>
+        <button id="restartButton">Restart Game</button>
+        <button id="homeButton">Return to Start Menu</button>
+    </div>
+
     <!--<audio src="audio/tracks/makarov.mp3" autoplay loop></audio>-->
     <script src="jquery.fancybox.min.js"></script>    
     <script src="https://kit.fontawesome.com/cfd5bd64a2.js" crossorigin="anonymous"></script>
