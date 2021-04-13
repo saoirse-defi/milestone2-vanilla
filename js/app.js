@@ -11,8 +11,8 @@ import { random, randomBackground, restart, removeObjectFromArray, numberWithCom
 const canvas = document.getElementById('canvas'); //defining canvas element
 const ctx = canvas.getContext('2d'); //defining whether using a 2D or 3D canvas
 
-canvas.width = window.innerWidth; //setting canvas width to match viewport width
-canvas.height = window.innerHeight; ////setting canvas height to match viewport height
+canvas.width = window.innerWidth - 5; //setting canvas width to match viewport width
+canvas.height = window.innerHeight - 5; ////setting canvas height to match viewport height
 
 const BG = {//defining background co-ordinates to match canvas size
     x: 0, 
@@ -73,7 +73,9 @@ const difficultyElem = document.getElementById('difficulty');
 const speedOutput = document.getElementById('speedOutput');
 const iplayer = document.getElementById('iplayer');
 
-let difficulty; //stores difficulty 
+let difficulty; //stores difficulty
+let isMobile = false;
+let isTablet = false;
 
 const gameMode = (diff) => {
     //displays difficulty to the user at start screen
@@ -539,29 +541,38 @@ const startScreen = () => {
     gameMode(difficulty);
 
     if(menuActive){
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        if(isMobile){
 
-        drawBackground();
+        }else if(isTablet){
 
-        ctx.font = '22.5px DotGothic16';
-        ctx.fillStyle = 'white';
-        ctx.fillText('Energy weapons are down!', canvas.width / 2 - 150, canvas.height / 2 + 50, 900);
-        ctx.fillText('Pass through the center of gates to manage the enemy horde.', canvas.width / 2 - 340, canvas.height / 2 + 100, 900);
-        ctx.fillText('Beware of deadly mines at the edge of gates!', canvas.width / 2 - 270, canvas.height / 2 + 150, 900);
+        }else{
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        ctx.font = '20px Orbitron'
-        ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
-        ctx.fillText('START (S)                                                         BACKGROUND (B)', canvas.width / 2 - 340, canvas.height / 2 + 250, 900);
+            drawBackground();
 
-        player.update(); //player methods placed here to create z-index effect
+            ctx.font = '22.5px DotGothic16';
+            ctx.fillStyle = 'white';
+            ctx.fillText('Energy weapons are down!', canvas.width / 2 - 150, canvas.height / 2 + 50, 900);
+            ctx.fillText('Pass through the center of gates to manage the enemy horde.', canvas.width / 2 - 340, canvas.height / 2 + 100, 900);
+            ctx.fillText('Beware of deadly mines at the edge of gates!', canvas.width / 2 - 270, canvas.height / 2 + 150, 900);
 
-        ctx.font = '80px Orbitron'; //player sprite is hidden behind title but not other text
-        ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
-        ctx.fillText('AGAINST ALL ODDS', canvas.width / 2 - 400, canvas.height / 2 - 100, 800, 200);
+            ctx.font = '20px Orbitron'
+            ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
+            ctx.fillText('START (S)                                                         BACKGROUND (B)', canvas.width / 2 - 340, canvas.height / 2 + 250, 900);
 
-        hue++; //changes hsl value every animation frame
+            player.update(); //player methods placed here to create z-index effect
 
-        requestAnimationFrame(startScreen);
+            ctx.font = '80px Orbitron'; //player sprite is hidden behind title but not other text hence why it is coded here
+            ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
+            ctx.fillText('AGAINST ALL ODDS', canvas.width / 2 - 400, canvas.height / 2 - 100, 800, 200);
+
+            hue++; //changes hsl value every animation frame
+
+            requestAnimationFrame(startScreen);
+        }
+
+    
     }else{
 
         animate();
@@ -603,6 +614,11 @@ window.addEventListener('keyup', e => {
     }
 });
 
+window.addEventListener('resize', e => {
+    canvas.width = document.documentElement.clientWidth - 5;
+    canvas.height = document.documentElement.clientHeight - 5;
+});
+
 document.getElementById('restartButton').addEventListener('click', () => {
     game.reset();
     animate(); //restart animation loop
@@ -618,4 +634,10 @@ document.addEventListener("DOMContentLoaded", () => {
     speedSlider.value = difficulty; //update html slider to reflect local difficulty
     initialSpawn();
     startScreen(); 
+
+    if(window.screen.width < 479){
+        isMobile = true;
+    }else if(window.screen.width > 479 && window.screen.width < 767){
+        isTablet = true;
+    }
 });
