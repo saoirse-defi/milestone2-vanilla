@@ -49,14 +49,14 @@ body{
 #iplayer{
     position: fixed;
     top: 0px;
-    right: 550px;
+    right: 0px;
     visibility: hidden;
 }
 
 #tutorial{
     position: fixed;
     bottom: 0px;
-    right: 10px;
+    left: 10px;
 }
 
 /* End of difficulty, tutorial & iplayer styling */
