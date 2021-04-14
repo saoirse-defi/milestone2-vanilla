@@ -34,6 +34,9 @@ When choosing the enemy sprite, I wanted the design to give the user a sense of 
 
 ![Gate Sprite](sprites/gate5.png)
 
+This sprite was designed and created by myself using Microsoft Paint. 
+The 2 orange circles at the edge of the sprite are deadly mines which end the game if touched. The user must pass through the center of the gate in order to clear the area around them of enemy sprites.
+
 #### Background
 
 In 2D game development, backdrops are often used to add depth & context the canvas & individual game elements.
@@ -48,7 +51,12 @@ This array is responsible for storing background image file names as strings. Th
 
 ## Sound
 
-Custom sound effects were recorded for this project.
+Custom sound effects were recorded for this project by DJ green. 
+
+#### Bandcamp Player (Soundtrack)
+
+At the start screen, the user is able to choose their soundtrack from an embedded bandcamp playlist. 
+All backing tracks have been produced by DJ Green. Expressed permission has been given for the use of all audio used in this project.
 
 #### Gate Destruction Effect
 
@@ -58,9 +66,6 @@ This sound effect was custom made to provide the user with aural feedback whenev
 
 This element is only visible on the start screen and dissapears once playing the game. It allows the user to choose from several different tracks, adding another level of user customisation.
 
-#### Game Soundtrack
-
-#### Enemy Spawn Noise
 
 ### Implementation
 
@@ -81,20 +86,24 @@ The state of these customisable elements is then saved for later sessions using 
 
 #### Background
 
+A collection of backdrops have been prepared and their file locations stored within the array. At the start screen, this array is used during user customisation to change backdrops.
+
+
 #### Difficulty
 
-At the start screen, a difficutly slider is provided to allow for some user customisation. The difficulty variable is linked to the enemy speed. The user has the ability to choose and enemy speed of between 1 & 10.
+At the start screen, a slider is provided to the user to allow for some further customisation. The difficulty variable is linked to the enemy speed. The user has the ability to choose from 5 different difficulty levels.
+In order to prevent users selecting the lowest difficulty in order to get a high score, points generated from each game event are directly corelated to the difficulty variable.
 
 ### Project Goals
 
-My main goal for this Code Institute milstone project was to authenically emmulate a game from my childhood (Geometery Wars 2: Pacifism) within the browser.
+My main goal for this Code Institute milstone project was to authenically emmulate a game from my childhood (Geometery Wars 2: Pacifism) within the browser while maintaining the game's original gameplay.
 Another goal of mine was to successfully capture the gameplay feeling from the original.
 
 ### User stories
 
 1. As a user of this web application I want:
 
-    - A statifying gameloop that get me to keep coming back to beat a highscore.
+    - A statifying gameloop that keeps me coming back in order beat my highscore.
     - Sound effects to let me know when important game events take place.
     - Sound design that doesn't get boring to listen to over time.
     - Consistent Framerate.
@@ -106,19 +115,31 @@ Another goal of mine was to successfully capture the gameplay feeling from the o
     - Sound design that doesn't get boring/annoying to the user over time.
     - Sprite designs that capture the user's imagination and generate an emotional response.
 
+3. As a parent of a child user I would like:
+
+    - A game free from gratuitous violence & profanity.
+    - Sprites whose design do not make the child scared.
+
 
 ### Design Choices
 
 #### Physics Engine Choices
 
 Originally I had chosen to create this application using the PixiJS library but after seeking advice from my mentor, he stated that using vanilla Javascript would be a better as a learning excercise.
+Looking back on this decision, I believe it was a great choice. It has allowed me to better study the intricacies of the Javascript call stack & the HTML5 Canvas.
 
 #### User Input Choices
 
 Due to the nature of Javascript's event listening system, a choice between 2 player input methods had to be made. 
 I had to decide between either the traditional WASD directional input or using the mouse click to move to position. After testing both methods, 'point and click' was chosen due to increased accuracy and ease of use.
 
+#### Start Menu Design
+
+#### Game Over Modal Design
+
 #### Fonts
+
+Two fonts were chosen for this project; hero font & secondary font. Both of these fonts look very different but were chosen for their science fiction design attributes.
 
 ##### Hero Title Font
 
@@ -128,9 +149,15 @@ Orbitron
 
 Dot Gothic 16
 
+The font was designed to be pixelated in order to emmulate how text used to look on older CRT monitors
+
 #### Icons
 
+##### Tutorial Icon
+
 #### Colours
+
+##### HSL Colour Change Effect
 
 #### Styling
 
@@ -163,8 +190,6 @@ Dot Gothic 16
 ##### Start Screen > Game > Start Screen
 
 * A back button represented by a white leftwards arrow was added to each product page to ensure that site visitors can easily return to the shop page. A link in the navbar also has this functionality, the second button was added as it follows modern online shopping conventions.
-
-##### Home > Contact
 
 #### Testing client's stories outlined in the UX section:
 
@@ -247,6 +272,8 @@ Dot Gothic 16
 ##### Gates not rotating after timer was added
 
 ##### Memory Leaks
+
+##### Fancybox Won't Close
 
 #### Solved bugs
 
