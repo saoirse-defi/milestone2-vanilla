@@ -7,16 +7,6 @@ export const randomBackground = () => {
     return starsInt;
 }; //used to randomly cycle through stars array for background customisation
 
-export const restart = () => {
-    window.location.reload(); //reloads page on restart but keeps local difficulty
-
-    //hiding html elements on returning to start screen
-    modal.style.visibility = "hidden";
-    highScoreLabel.style.visibility = "hidden";
-    multiplierElement.style.visibility = "hidden";
-    scoreElement.style.visibility = "hidden";
-};
-
 export const removeObjectFromArray = (obj, arr) => { //needs testing as will break according to my mentor
     let i = arr.indexOf(obj);
     if (i !== -1) {
