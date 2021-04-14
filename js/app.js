@@ -3,7 +3,7 @@
     Created using vanilla JavaScript and HTML Canvas
 */
 
-import { random, randomBackground, restart, removeObjectFromArray, numberWithCommas } from './utils.js';
+import { random, randomBackground, removeObjectFromArray, numberWithCommas } from './utils.js';
 
  
 //  ***     Canvas setup & background       ***
@@ -72,6 +72,8 @@ const speedSlider = document.getElementById('speedSlider');
 const difficultyElem = document.getElementById('difficulty');
 const speedOutput = document.getElementById('speedOutput');
 const iplayer = document.getElementById('iplayer');
+const tutorial = document.getElementById('tutorial');
+const tutorialIcon = document.getElementById('tutorialIcon');
 
 let difficulty; //stores difficulty
 let isMobile = false;
@@ -495,7 +497,7 @@ const game = { //thinking of changing object name to game due to it's interactio
         console.log('difficulty', difficulty);
     },
 
-    reset: function(){
+    restart: function(){
         this.enemyArray = []; //remove enemies from screen
         this.gateArray = []; //remove gates from screen
         this.enemyCounter = 1; //set enemy counter back to 1
@@ -510,7 +512,7 @@ const game = { //thinking of changing object name to game due to it's interactio
         highScoreLabel.style.visibility = 'hidden';
     },
 
-    restart: function(){
+    return: function(){
         this.enemyArray = []; //remove enemies from screen
         this.gateArray = []; //remove gates from screen
         this.enemyCounter = 1; //set enemy counter back to 1
@@ -521,11 +523,12 @@ const game = { //thinking of changing object name to game due to it's interactio
         player.y = canvas.height / 2;
         modal.style.visibility = 'hidden'; //hide modal styling
         deathInfo.style.visibility = 'hidden'; //hide cause of death
-        highScoreLabel.style.visibility = "hidden";
+        highscoreElement.style.visibility = "hidden";
         multiplierElement.style.visibility = "hidden";
         scoreElement.style.visibility = "hidden";
         difficultyElem.style.visibility = "visible";
         highScoreLabel.style.visibility = 'hidden';
+        tutorial.style.visibility = 'visible';
 
         menuActive = true;
         gameOver = false;
@@ -537,6 +540,8 @@ const player = new Player();
 const startScreen = () => {
 
     iplayer.style.visibility = 'visible';
+    tutorialIcon.style.color = `hsl(${hue}, 100%, 35%)`;
+    speedOutput.style.color = `hsl(${hue}, 100%, 35%)`;
 
     gameMode(difficulty);
 
@@ -580,7 +585,8 @@ const startScreen = () => {
 };
 
 const animate = () => {
-
+    
+    tutorial.style.visibility = 'hidden';
     iplayer.style.visibility = 'hidden';
     multiplierElement.style.visibility = 'visible'; //making game elements visible on game start
     scoreElement.style.visibility = 'visible';
@@ -614,18 +620,18 @@ window.addEventListener('keyup', e => {
     }
 });
 
-window.addEventListener('resize', e => {
+window.addEventListener('resize', (e) => {
     canvas.width = document.documentElement.clientWidth - 5;
     canvas.height = document.documentElement.clientHeight - 5;
 });
 
 document.getElementById('restartButton').addEventListener('click', () => {
-    game.reset();
+    game.restart();
     animate(); //restart animation loop
 });
 
 document.getElementById('homeButton').addEventListener('click', () => {
-    game.restart();
+    game.return();
     startScreen();
 });
 
