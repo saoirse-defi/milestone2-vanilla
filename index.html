@@ -18,13 +18,13 @@
 
     <div id="gameElements">
         <div id="difficulty">
-            <input type="range" min="4" max="9" value="6" class="slider" id="speedSlider">
             <span id="speedLabel">Difficulty:</span>
             <div id="speedOutput"></div>
+            <input type="range" min="4" max="9" value="6" class="slider" id="speedSlider">
         </div>
         
         <iframe id="iplayer" style="border: 0; width: 25%; height: 42px;" src="https://bandcamp.com/EmbeddedPlayer/album=1570782488/size=small/bgcol=333333/linkcol=2ebd35/artwork=none/track=1024808881/transparent=true/" seamless><a href="https://djgreen.bandcamp.com/album/for-sale-volume-9-beats">For Sale - Volume 9 (BEATS) by DJ Green</a></iframe>
-        <a id="tutorial" data-fancybox href="video/tutorial.mp4" data-caption="Tutorial"><i class="fas fa-4x fa-graduation-cap"></i></a>
+        <a id="tutorial" data-fancybox data-width="640" data-height="360" href="video/tutorial.mp4" data-caption="Tutorial"><i class="fas fa-4x fa-graduation-cap" id="tutorialIcon"></i></a>
     </div>
 
     <div id="scoreElements">
@@ -42,18 +42,10 @@
         <button id="homeButton">Return to Start Menu</button>
     </div>
 
-    <!--<audio src="audio/tracks/makarov.mp3" autoplay loop></audio>-->
     <script src="jquery.fancybox.min.js"></script>    
     <script src="https://kit.fontawesome.com/cfd5bd64a2.js" crossorigin="anonymous"></script>
     <script type="module" src="../js/utils.js"></script>
     <script type="module" src="../js/app.js"></script>
-    <script>
-            $(document).ready(function() {
-                $('#tutorial').fancybox({
-                    closeBtn: true,
-                    closeClick: true
-                });
-            });
-        </script>
+
 </body>
 </html>
