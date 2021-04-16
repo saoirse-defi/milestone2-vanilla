@@ -6,26 +6,62 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="jquery.fancybox.min.css">    
     <link rel="stylesheet" href="style.css"/>
     <title>Against All Odds - Vanilla</title>
 </head>
 <body>
+    <!-- <div class="navbar navbar-expand-xl bg-dark">
+        <div class="container">
+            <div class="navbar-header">
+                <a href="" class="navbar-brand">Customisation Menu</a>
+                <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="nav navbar-nav">
+                    <li class="nav-item">
+                        <div id="difficulty">
+                            <span id="speedLabel">Difficulty:</span>
+                            <div id="speedOutput"></div>
+                            <input type="range" min="4" max="9" value="6" class="slider" id="speedSlider">
+                        </div>
+                    </li>
+                     <li class="nav-item">
+                        <iframe id="iplayer" style="border: 0; height: 42px;" src="https://bandcamp.com/EmbeddedPlayer/album=1570782488/size=small/bgcol=333333/linkcol=2ebd35/artwork=none/track=1024808881/transparent=true/" seamless><a href="https://djgreen.bandcamp.com/album/for-sale-volume-9-beats">For Sale - Volume 9 (BEATS) by DJ Green</a></iframe>
+                     </li>
+                      <li class="nav-item">
+                        <a id="tutorial" data-fancybox data-width="640" data-height="360" href="video/tutorial.mp4" data-caption="Tutorial"><i class="fas fa-4x fa-graduation-cap" id="tutorialIcon"></i></a>
+                      </li>
+                </ul>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="navbar" id="navbar">
+        <div class="container" id="nav-container">
+            <div id="difficulty">
+                            <div id="difficulty-container">
+                                <span id="speedLabel">Difficulty:</span>
+                                <div id="speedOutput"></div>
+                            </div>
+                            <input type="range" min="4" max="9" value="6" class="slider" id="speedSlider">
+            </div>
+                        <iframe id="iplayer" style="border: 0; height: 42px;" src="https://bandcamp.com/EmbeddedPlayer/album=1570782488/size=small/bgcol=333333/linkcol=2ebd35/artwork=none/track=1024808881/transparent=true/" seamless><a href="https://djgreen.bandcamp.com/album/for-sale-volume-9-beats">For Sale - Volume 9 (BEATS) by DJ Green</a></iframe>
+
+        </div>
+    </div>
+    
+    <a id="tutorial" data-fancybox data-width="640" data-height="360" href="video/tutorial.mp4" data-caption="Tutorial"><i class="fas fa-4x fa-graduation-cap" id="tutorialIcon"></i></a>
     
     <canvas id="canvas">
             Your browser doesn't include support for the canvas element.
     </canvas>
-
-    <div id="gameElements">
-        <div id="difficulty">
-            <span id="speedLabel">Difficulty:</span>
-            <div id="speedOutput"></div>
-            <input type="range" min="4" max="9" value="6" class="slider" id="speedSlider">
-        </div>
-        
-        <iframe id="iplayer" style="border: 0; width: 25%; height: 42px;" src="https://bandcamp.com/EmbeddedPlayer/album=1570782488/size=small/bgcol=333333/linkcol=2ebd35/artwork=none/track=1024808881/transparent=true/" seamless><a href="https://djgreen.bandcamp.com/album/for-sale-volume-9-beats">For Sale - Volume 9 (BEATS) by DJ Green</a></iframe>
-        <a id="tutorial" data-fancybox data-width="640" data-height="360" href="video/tutorial.mp4" data-caption="Tutorial"><i class="fas fa-4x fa-graduation-cap" id="tutorialIcon"></i></a>
-    </div>
 
     <div id="scoreElements">
         <div id="score"><span id="scoreElement">0</span></div>
@@ -33,15 +69,15 @@
         <div id="multiplier"><span id="multiplierElement">1x</span></div>
     </div>
 
-    <div id="modal" class="visible">
+    <div id="modal">
         <h2 id="highScoreLabel">New High Score!</h2>
-        <div id="deathInfo" class="visible"></div>
+        <div id="deathInfo"></div>
         <h1 id="modalScore">0</h1><br>
         <p id="pointsLabel">Points</p><br>
         <button id="restartButton">Restart Game</button>
         <button id="homeButton">Return to Start Menu</button>
     </div>
-
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="jquery.fancybox.min.js"></script>    
     <script src="https://kit.fontawesome.com/cfd5bd64a2.js" crossorigin="anonymous"></script>
     <script type="module" src="../js/utils.js"></script>
