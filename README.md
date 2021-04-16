@@ -128,6 +128,10 @@ Another goal of mine was to successfully capture the gameplay feeling from the o
 Originally I had chosen to create this application using the PixiJS library but after seeking advice from my mentor, he stated that using vanilla Javascript would be a better as a learning excercise.
 Looking back on this decision, I believe it was a great choice. It has allowed me to better study the intricacies of the Javascript call stack & the HTML5 Canvas.
 
+#### Hitbox (Hitmarker) Detection
+
+#### 
+
 #### User Input Choices
 
 Due to the nature of Javascript's event listening system, a choice between 2 player input methods had to be made. 
@@ -257,17 +261,29 @@ The font was designed to be pixelated in order to emmulate how text used to look
 
 ##### Overlap detection for swarm behaviour
 
-##### Hitbox not following Gate rotation    
+At the start of the project when designing sprite behaviour, I wanted to implement overlap detection. Each enemy sprite in the swarm would calculate the distance it's nearest enemy.
+This distance would be used to move the 2 enemy sprites apart preventing any sprite overlap from happening. This feature was removed from the final implementation as it put too much strain on the call stack per animation frame.
+Enemy sprite movement looked jittery and framerate would drop significantly as the amount of enemies on the screen increased.
 
-##### Gates spawn without image (solved)
+##### Hitbox not following Gate rotation 
+
+When implementing rotational movement for gate sprites, I noticed that the position of certain hit markers were mistranslated. Using some simple trigonometry, I was able to calculate the positioning needed. 
 
 ##### Gate detection not consistent
 
-##### Framerate slowing down (I believe due to nested loops)
+In initial development only 1 hitmarker was used to clear the gate, its location was at the dead center of the sprite. This caused some inconsistencies during gameplay as the user would sometimes not pass through the gate precisely enough and the gate sprite would remain on screen.
+A second hitmarker was added to make it easier for the user to clear the gates. This was a crutial implementation as it significantly helped the gameplay feeling and made gates more consistent 
 
-##### Mines on the end of gates exhibiting random behaviour
+##### Framerate slowing down
+
+Animation in Javascript uses a function called requestAnimationFrame in combination with a process called recursion to generate each frame seen on screen.
+Due to this, too much complex logic required within each frame will cause the framerate to drop. The Javascript call stack can only handle so many calls per frame.
+When designing the main gameloop, it is essential to reduce nesting as much as is practical. In the early development stages, this application suffered significantly from this issue.
+The code was then streamlined to remove any unncessary nesting and a significant increase in framerate was observed.
 
 ##### Not all gates are being drawn, leading to random deaths
+
+
 
 ##### Gates not rotating after timer was added
 
