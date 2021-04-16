@@ -21,11 +21,47 @@ body{
 
 /* Start of difficulty, tutorial & iplayer styling */
 
-#gameElements{
+.navbar{
+    position: fixed;
+    bottom: 0px;
+    width: 110%;
+    height: 75px;
+    color: black;
+    visibility: visible;
+}
 
+#nav-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
 }
 
 #difficulty{
+    display: flex;
+    flex-direction: row;
+}
+
+#difficulty-container{
+    display: flex;
+    flex-direction: column;
+    width: 100px;
+}
+
+#speedLabel{
+    color: white;
+}
+
+#tutorial{
+    position: fixed;
+    top: 0px;
+    right: 15px;
+}
+
+#tutorialIcon{
+    color: green;
+}
+
+/* #difficulty{
     position: fixed;
     top: 5px;
     right: 0;
@@ -57,15 +93,11 @@ body{
     position: fixed;
     bottom: 0px;
     left: 10px;
-}
+} */
 
 /* End of difficulty, tutorial & iplayer styling */
 
 /* Start of score styling */
-
-#scoreElements{
-
-}
 
 #score{
     position: fixed;
