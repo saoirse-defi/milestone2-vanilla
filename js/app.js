@@ -59,6 +59,7 @@ canvas.addEventListener("mousemove", mouseMoveHandler, false);
 
 //  ***     Defining HTML elements as JS variables      ***
 
+const navbar = document.getElementById('navbar');
 const scoreElement = document.getElementById('scoreElement');
 const modal = document.getElementById('modal');
 const modalScore = document.getElementById('modalScore');
@@ -300,9 +301,9 @@ class Gate{
         this.y = _y;
         this.hypotenus;
         this.distanceClearGate1; //distance from gate detonation (kills gate)
-        this.distanceClearGate2; // a second distance point was used to improve hitbox
+        this.distanceClearGate2; // a second distance point was used to improve hitbox (kills gate)
         this.distanceMine1; //distance from player to mine 1 (kills player)
-        this.distanceMine2; //distance from player to mine 2
+        this.distanceMine2; //distance from player to mine 2 (kills player)
         this.startTime; //time at spawn
         this.currTime; //current time
         this.delta; //current time - start time
@@ -340,26 +341,26 @@ class Gate{
         me.y = me.hypotenus * Math.sin(me.theta);
         
         //distance from player to ClearGate1
-        let dx = player.x - me.x - 5; //sprite hitbox relocation fixed
-        let dy = player.y - me.y - 60;    
+        let dx = player.x - me.x; //sprite hitbox relocation fixed
+        let dy = player.y - me.y - 65;    
 
         me.distanceClearGate1 = Math.sqrt(dx*dx + dy*dy);
 
         //distance from player to ClearGate2
-        let dx4 = player.x - me.x - 5; //sprite hitbox relocation fixed
-        let dy4 = player.y - me.y - 90;    
+        let dx4 = player.x - me.x; //sprite hitbox relocation fixed
+        let dy4 = player.y - me.y - 80;    
 
         me.distanceClearGate2 = Math.sqrt(dx4*dx4 + dy4*dy4);
 
         //distance from player to mine 1
         let dx1 = player.x - me.x - 25; 
-        let dy1 = player.y - me.y - 25;    
+        let dy1 = player.y - me.y - 30;    
 
         me.distanceMine1 = Math.sqrt(dx1*dx1 + dy1*dy1);
 
         //distance from player to mine 2
-        let dx2 = player.x - me.x - 25 + 115 * Math.sin(me.theta); //fixes mine location bug by add rotation transformation
-        let dy2 = player.y - me.y - 115;    
+        let dx2 = player.x - me.x - 25 + 115 * Math.sin(me.theta); //fixes mine location bug by add rotational transformation
+        let dy2 = player.y - me.y - 105;    
 
         me.distanceMine2 = Math.sqrt(dx2*dx2 + dy2*dy2);
 
@@ -400,14 +401,14 @@ const game = { //thinking of changing object name to game due to it's interactio
             //every 50 frames a new enemy spawns at a random corner
             let randomCorner = Math.floor(Math.random() * 4);
 
-            for(let i = 0; i < this.enemyCounter; i++){ //enemyCounter controls enemy spawn amount
+            /*for(let i = 0; i < this.enemyCounter; i++){ //enemyCounter controls enemy spawn amount
                 let newEnemy;
                 newEnemy = enemy_Cache.pop(); //remove cached sprite
                 newEnemy.respawn();
                 newEnemy.x = enemySpawnLoc[randomCorner][i]['x'];
                 newEnemy.y = enemySpawnLoc[randomCorner][i]['y'];
                 this.enemyArray.push(newEnemy);
-            }
+            }*/
            
             if(gameFrame % 1000 == 0){
                 if(this.enemyCounter < 9){
@@ -453,8 +454,8 @@ const game = { //thinking of changing object name to game due to it's interactio
                         score += 50;
                     }
                 }
-                //gate_Cache = gate_Cache.slice(0, this.gateArray[i]).concat(gate_Cache.slice(-this.gateArray[i]));
-                //gate_Cache.push(this.gateArray.slice(this.gateArray[i], 1));
+                //gate_Cache.slice(0, this.gateArray[i]).concat(gate_Cache.slice(-this.gateArray[i]));
+                //gate_Cache.push(this.gateArray.slice(this.gateArray.indexOf(this.gateArray[i])));
                 gate_Cache.push(removeObjectFromArray(this.gateArray[i], this.gateArray)); //gate is removed and added to the gate cache for later use, need to check if working...
                 playSFX(effects[0]); //plays explosion SFX
                 i--;
@@ -540,8 +541,8 @@ const player = new Player();
 const startScreen = () => {
 
     iplayer.style.visibility = 'visible';
-    tutorialIcon.style.color = `hsl(${hue}, 100%, 35%)`;
-    speedOutput.style.color = `hsl(${hue}, 100%, 35%)`;
+    //tutorialIcon.style.color = 'green';
+    speedOutput.style.color = 'green';
 
     gameMode(difficulty);
 
@@ -558,19 +559,19 @@ const startScreen = () => {
 
             ctx.font = '22.5px DotGothic16';
             ctx.fillStyle = 'white';
-            ctx.fillText('Energy weapons are down!', canvas.width / 2 - 150, canvas.height / 2 + 50, 900);
-            ctx.fillText('Pass through the center of gates to manage the enemy horde.', canvas.width / 2 - 340, canvas.height / 2 + 100, 900);
-            ctx.fillText('Beware of deadly mines at the edge of gates!', canvas.width / 2 - 270, canvas.height / 2 + 150, 900);
+            ctx.fillText('Energy weapons are down!', canvas.width / 2 - 150, canvas.height / 2, 900);
+            ctx.fillText('Pass through the center of gates to manage the enemy horde.', canvas.width / 2 - 340, canvas.height / 2 + 50, 900);
+            ctx.fillText('Beware of deadly mines at the edge of gates!', canvas.width / 2 - 270, canvas.height / 2 + 100, 900);
 
             ctx.font = '20px Orbitron'
             ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
-            ctx.fillText('START (S)                                                         BACKGROUND (B)', canvas.width / 2 - 340, canvas.height / 2 + 250, 900);
+            ctx.fillText('START (S)                                                         BACKGROUND (B)', canvas.width / 2 - 340, canvas.height / 2 + 200, 900);
 
             player.update(); //player methods placed here to create z-index effect
 
             ctx.font = '80px Orbitron'; //player sprite is hidden behind title but not other text hence why it is coded here
             ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
-            ctx.fillText('AGAINST ALL ODDS', canvas.width / 2 - 400, canvas.height / 2 - 100, 800, 200);
+            ctx.fillText('AGAINST ALL ODDS', canvas.width / 2 - 400, canvas.height / 2 - 150, 800, 200);
 
             hue++; //changes hsl value every animation frame
 
@@ -585,7 +586,7 @@ const startScreen = () => {
 };
 
 const animate = () => {
-    
+    navbar.style.visibility = 'hidden';
     tutorial.style.visibility = 'hidden';
     iplayer.style.visibility = 'hidden';
     multiplierElement.style.visibility = 'visible'; //making game elements visible on game start
@@ -642,8 +643,8 @@ document.addEventListener("DOMContentLoaded", () => {
     startScreen(); 
 
     if(window.screen.width < 479){
-        isMobile = true;
+        isMobile = true; //checking for mobile
     }else if(window.screen.width > 479 && window.screen.width < 767){
-        isTablet = true;
+        isTablet = true; //checking for tablet
     }
 });
