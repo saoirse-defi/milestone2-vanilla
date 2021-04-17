@@ -58,8 +58,6 @@ canvas.addEventListener("mousemove", mouseMoveHandler, false);
 
 
 //  ***     Defining HTML elements as JS variables      ***
-
-const navbar = document.getElementById('navbar');
 const scoreElement = document.getElementById('scoreElement');
 const modal = document.getElementById('modal');
 const modalScore = document.getElementById('modalScore');
@@ -124,11 +122,11 @@ let total = 0; //total = score * multiplier
 const checkRecordScore = () => { //if user's score is greater than high score, update high score
     if(total > localStorage.getItem('highscore')){
         localStorage.setItem('highscore', total);
-        playSFX(effects[3]);
+        playSFX(effects[2]);
         highScoreLabel.style.visibility = 'visible'; //user notified off new highscore
         deathInfo.style.visibility = 'hidden';
     }else{
-        playSFX(effects[2]);
+        playSFX(effects[1]);
         deathInfo.style.visibility = 'visible';
         highScoreLabel.style.visibility = 'hidden'; //user notified off new highscore
     }
@@ -160,7 +158,7 @@ let music = false;
 
 let tracks = ['audio/tracks/Brinstar.mp3', 'audio/tracks/makarov.mp3'];
 
-let effects = ['audio/sfx/explosionSFX.mp3', 'audio/sfx/explosion2SFX.mp3', 'audio/sfx/gameoverSFX.mp3', 'audio/sfx/highscoreSFX.mp3', 'audio/sfx/startSFX.mp3', 'audio/sfx/explosion3SFX.mp3'];
+let effects = ['audio/sfx/explosionSFX.mp3', 'audio/sfx/gameoverSFX.mp3', 'audio/sfx/highscoreSFX.mp3', 'audio/sfx/startSFX.mp3'];
 
 const playTrack = (track) => {
     let audio = document.createElement('audio');
@@ -401,14 +399,14 @@ const game = { //thinking of changing object name to game due to it's interactio
             //every 50 frames a new enemy spawns at a random corner
             let randomCorner = Math.floor(Math.random() * 4);
 
-            /*for(let i = 0; i < this.enemyCounter; i++){ //enemyCounter controls enemy spawn amount
+            for(let i = 0; i < this.enemyCounter; i++){ //enemyCounter controls enemy spawn amount
                 let newEnemy;
                 newEnemy = enemy_Cache.pop(); //remove cached sprite
                 newEnemy.respawn();
                 newEnemy.x = enemySpawnLoc[randomCorner][i]['x'];
                 newEnemy.y = enemySpawnLoc[randomCorner][i]['y'];
                 this.enemyArray.push(newEnemy);
-            }*/
+            }
            
             if(gameFrame % 1000 == 0){
                 if(this.enemyCounter < 9){
@@ -524,7 +522,6 @@ const game = { //thinking of changing object name to game due to it's interactio
         player.y = canvas.height / 2;
         modal.style.visibility = 'hidden'; //hide modal styling
         deathInfo.style.visibility = 'hidden'; //hide cause of death
-        highscoreElement.style.visibility = "hidden";
         multiplierElement.style.visibility = "hidden";
         scoreElement.style.visibility = "hidden";
         difficultyElem.style.visibility = "visible";
@@ -541,7 +538,6 @@ const player = new Player();
 const startScreen = () => {
 
     iplayer.style.visibility = 'visible';
-    //tutorialIcon.style.color = 'green';
     speedOutput.style.color = 'green';
 
     gameMode(difficulty);
@@ -557,41 +553,40 @@ const startScreen = () => {
 
             drawBackground();
 
-            ctx.font = '22.5px DotGothic16';
+            ctx.font = canvas.width / 60 +'px DotGothic16';
             ctx.fillStyle = 'white';
-            ctx.fillText('Energy weapons are down!', canvas.width / 2 - 150, canvas.height / 2, 900);
-            ctx.fillText('Pass through the center of gates to manage the enemy horde.', canvas.width / 2 - 340, canvas.height / 2 + 50, 900);
-            ctx.fillText('Beware of deadly mines at the edge of gates!', canvas.width / 2 - 270, canvas.height / 2 + 100, 900);
+            ctx.textAlign = "center";
+            ctx.fillText('Energy weapons are down!', canvas.width / 2, canvas.height / 2, 900);
+            ctx.fillText('Pass through the center of gates to manage the enemy horde.', canvas.width / 2, canvas.height / 2 + 50, 900);
+            ctx.fillText('Beware of deadly mines at the edge of gates!', canvas.width / 2, canvas.height / 2 + 100, 900);
 
-            ctx.font = '20px Orbitron'
+            ctx.font = canvas.width / 40 + 'px Orbitron'
             ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
-            ctx.fillText('START (S)                                                         BACKGROUND (B)', canvas.width / 2 - 340, canvas.height / 2 + 200, 900);
+            ctx.textAlign = "center";
+            ctx.fillText('START (S)           BACKGROUND (B)', canvas.width / 2, canvas.height / 2 + 200, 900);
 
             player.update(); //player methods placed here to create z-index effect
 
-            ctx.font = '80px Orbitron'; //player sprite is hidden behind title but not other text hence why it is coded here
+            ctx.font = canvas.width / 20 + 'px Orbitron'; //player sprite is hidden behind title but not other text hence why it is coded here
             ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
-            ctx.fillText('AGAINST ALL ODDS', canvas.width / 2 - 400, canvas.height / 2 - 150, 800, 200);
+            ctx.textAlign = "center";
+            ctx.fillText('AGAINST ALL ODDS', canvas.width / 2, canvas.height / 2 - 100, 800, 200);
 
             hue++; //changes hsl value every animation frame
 
             requestAnimationFrame(startScreen);
         }
-
     
     }else{
-
         animate();
     }
 };
 
 const animate = () => {
-    navbar.style.visibility = 'hidden';
     tutorial.style.visibility = 'hidden';
     iplayer.style.visibility = 'hidden';
     multiplierElement.style.visibility = 'visible'; //making game elements visible on game start
     scoreElement.style.visibility = 'visible';
-    highscoreElement.style.visibility = 'visible';
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -614,6 +609,7 @@ window.addEventListener('keyup', e => {
     if(e.keyCode === 83){
         menuActive = false; //triggers game start event
         difficultyElem.style.visibility = "hidden";
+        playSFX(effects[3]);
     }
     if(e.keyCode === 66){
         _background.src = stars[randomBackground()]; //triggers background change
@@ -629,6 +625,7 @@ window.addEventListener('resize', (e) => {
 document.getElementById('restartButton').addEventListener('click', () => {
     game.restart();
     animate(); //restart animation loop
+    playSFX(effects[3]);
 });
 
 document.getElementById('homeButton').addEventListener('click', () => {
@@ -638,6 +635,7 @@ document.getElementById('homeButton').addEventListener('click', () => {
 
 document.addEventListener("DOMContentLoaded", () => {
     difficulty = localStorage.getItem('localDifficulty') || 5; //sets difficulty on page load to 5 if no local difficulty is set
+    highscoreElement.innerHTML = `High Score: ${numberWithCommas(localStorage.getItem('highscore') || 0)}`;
     speedSlider.value = difficulty; //update html slider to reflect local difficulty
     initialSpawn();
     startScreen(); 
