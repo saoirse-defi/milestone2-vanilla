@@ -15,36 +15,24 @@ body{
     font-family: 'Orbitron', sans-serif;
 }
 
-#canvas{
-    background-color: #000000;
-}
-
 /* Start of difficulty, tutorial & iplayer styling */
 
-.navbar{
+#iplayer{
     position: fixed;
     bottom: 0px;
-    width: 110%;
-    height: 75px;
-    color: black;
-    visibility: visible;
-}
-
-#nav-container{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+    left: 10px;
 }
 
 #difficulty{
-    display: flex;
-    flex-direction: row;
+    position: fixed;
+    top: 10px;
+    left: 15px;
 }
 
 #difficulty-container{
     display: flex;
     flex-direction: column;
-    width: 100px;
+    width: 120px;
 }
 
 #speedLabel{
@@ -53,47 +41,13 @@ body{
 
 #tutorial{
     position: fixed;
-    top: 0px;
+    bottom: 0px;
     right: 15px;
 }
 
 #tutorialIcon{
     color: green;
 }
-
-/* #difficulty{
-    position: fixed;
-    top: 5px;
-    right: 0;
-    bottom: 0;
-    left: 25px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    width: 100px;
-    height: 66px;
-    color: white;
-    visibility: visible;
-}
-
-#speedOutput{
-    color: orangered;
-}
-
-#iplayer{
-    position: fixed;
-    top: 0px;
-    right: 0px;
-    visibility: hidden;
-}
-
-#tutorial{
-    position: fixed;
-    bottom: 0px;
-    left: 10px;
-} */
 
 /* End of difficulty, tutorial & iplayer styling */
 
@@ -114,7 +68,6 @@ body{
     right: 25px;
     color: green;
     font-size: x-large;
-    visibility: hidden;
 }
 
 #multiplier{
@@ -145,7 +98,7 @@ body{
     justify-content: center;
     text-align: center;
     max-width: 35%;
-    max-height: 50%;
+    max-height: 60%;
     border-radius: 2.5%;
     border: 2px solid gray;
     visibility: hidden;
@@ -153,7 +106,7 @@ body{
 
 #modalScore{
     font-weight: 900;
-    font-size: xx-large;
+    font-size: 3vw;
     color: white;
 }
 
@@ -183,8 +136,8 @@ body{
 #restartButton{
     background-color: orangered;
     color: black;
-    width: 60%;
-    height: 12.5%;
+    width: 55%;
+    height: 10%;
     margin-bottom: 10px;
     border-radius: 16px;
     font-weight: 600;
@@ -194,8 +147,8 @@ body{
 #homeButton{
     background-color: orangered;
     color: black;
-    width: 60%;
-    height: 12.5%;
+    width: 55%;
+    height: 10%;
     border-radius: 16px;
     font-weight: 600;
     font-family: 'Orbitron', sans-serif;
