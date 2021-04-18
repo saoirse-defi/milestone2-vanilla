@@ -2,14 +2,69 @@
 
 ## Introduction
 
-This repository represents my milstone project 2 for Code Institute. For this milestone project, I have created a 2D spaceship survival game built using Javascript and HTML Canvas. Developed using vanilla Javascript, no additional libraries were used. 
-I have taken inspritation from a childhood video game called Geometery Wars, specifically a game mode called Pacifism.
+This repository represents my milestone project 2 for Code Institute. For this milestone project, I have created a 2D spaceship survival game built using JavaScript and HTML Canvas. Developed using vanilla JavaScript, no additional libraries were used. 
+I have taken inspiration from a childhood video game called Geometry Wars, specifically a game mode called Pacifism.
 As a child, I spend countless hours on this mode trying to beat my friend's high scores. The concept is simple, you don't have any projectiles so the only way to survive is to pass through gates in order to destroy nearby ships and to thin the ever increasing hoarde.
 The goal is to survive for as long as possible. Similarly to other arcade games, there is no possible way to beat the game. You must simply try and survive for as long as you can.
 Enemy speed increases when your score passes certain increments. This will be outlined to the user using custom sound effects.
 Cusomisation has been implemented in this application, the user has the ability to change the background and game difficulty at the start screen. Local storage is then used to track user customisation in between sessions.
 
 ## UX
+
+### Project Goals
+
+My main goal for this Code Institute milestone project was to authentically emulate a video game from my childhood (Geometry Wars 2: Pacifism) within the browser using vanilla JavaScript.
+Another goal of mine was to successfully capture the gameplay feeling from the original.
+
+#### Player Goals
+
+The target audience for this game is users of any age.
+
+The player's goals are:
+
+* That the game is fun to play & keeps me coming back to beat my high score.
+* Controls that are intuitive & easy to learn.
+* Sprite & Background designs that inspire emotion.
+* Audio cues that outline specific game events.
+
+Against All Odds has achieved these player needs by:
+
+* Controls were designed with simplicity in mind while retaining the original game's gameplay feeling.
+* The amount of buttons within the application have been kept to a minimum.
+* Controlling the player sprite is done by simply moving the cursor to where you would like the user to travel (for mobile devices, this will be accomplished by dragging your finger across the screen).
+* The user is notified of significant game events using audio cues.
+* These audio cues occur at game start, game end & whenever a user successfully clears a gate.
+* Making it easy to restart the game loop with minimal downtime by the click of a single button.
+
+
+#### Developer & Business Goals
+
+* The main developer goal for this project is to learn as much as possible about JavaScript & HTML5 canvas.
+* Adding another project that the developer is passionate about to their portfolio.
+* To create a well-designed application that is free of any bugs which would cause the user stop playing prematurely.
+* To design a satisfying game loop that is fair to the player.
+
+### User stories
+
+1. As a user of this web application I want:
+
+    - A satisfying game loop that keeps me coming back in order beat my high score.
+    - Sound effects to let me know when important game events take place.
+    - Sound design that doesn't get boring to listen to over time.
+    - Consistent frame rate.
+    - The ability to change the difficulty if needed.
+
+2. As a games platform looking to add this application to their library I would want:
+
+    - A great game loop that will keep our users hooked.
+    - Sound design that doesn't get boring/annoying to the user over time.
+    - Sprite designs that capture the user's imagination and generate an emotional response.
+
+3. As a parent of a child user I would like:
+
+    - A game free from gratuitous violence & profanity.
+    - Sprites design that doesn't make the children scared.
+
 
 #### Sprites
 
@@ -30,12 +85,12 @@ This allows the sprite to appear the same, no matter the angle or direction of u
 
 When choosing the enemy sprite, I wanted the design to give the user a sense of mortality and dread. The ship had to look like it belonged to a terrifying alien race hellbent on conquering human civilisation.
 
-###### Gate Sprite (Used to thin Alien hoarde)
+###### Gate Sprite (Used to thin Alien horde)
 
 ![Gate Sprite](sprites/gate5.png)
 
 This sprite was designed and created by myself using Microsoft Paint. 
-The 2 orange circles at the edge of the sprite are deadly mines which end the game if touched. The user must pass through the center of the gate in order to clear the area around them of enemy sprites.
+The 2 orange circles at the edge of the sprite are deadly mines which end the game if touched. The user must pass through the center of the gate in order to clear the surrounding area of enemy sprites.
 
 #### Background
 
@@ -55,16 +110,16 @@ Custom sound effects were recorded for this project by DJ green.
 
 #### Bandcamp Player (Soundtrack)
 
-At the start screen, the user is able to choose their soundtrack from an embedded bandcamp playlist. 
+At the start screen, the user is able to choose their soundtrack from an embedded Bandcamp playlist. 
 All backing tracks have been produced by DJ Green. Expressed permission has been given for the use of all audio used in this project.
 
 #### Gate Destruction Effect
 
-This sound effect was custom made to provide the user with aural feedback whenever a gate is successfully destroyed. 
+This sound effect was custom-made to provide the user with aural feedback whenever a gate is successfully destroyed. 
 
 #### Bandcamp Embedded Player
 
-This element is only visible on the start screen and dissapears once playing the game. It allows the user to choose from several different tracks, adding another level of user customisation.
+This element is only visible on the start screen and disappears once playing the game. It allows the user to choose from several tracks, adding another level of user customisation.
 
 
 ### Implementation
@@ -73,7 +128,7 @@ This section will outline the technologies and processes used in the design of t
 
 #### HTML Canvas
 
-The Canvas is a HTML element used to draw graphics via scripting. In this case, our scripting language will be Javascript.
+The Canvas is an HTML element used to draw graphics via scripting. In this case, our scripting language will be JavaScript.
 
 #### Animation Loop
 
@@ -81,7 +136,7 @@ This refers to the function which is repeatedly called using recursion. Each tim
 
 ### User Cusomisation
 
-For this milestone project, I have implemented 2 separate elements of customisation for the user. The user is able to apply different backdrops to the canvas and they also have the ability to increase or decrease the game's difficulty.
+For this milestone project, I have implemented 2 separate elements of customisation for the user. The user is able to apply different backdrops to the canvas, and they also have the ability to increase or decrease the game's difficulty.
 The state of these customisable elements is then saved for later sessions using local storage.
 
 #### Background
@@ -94,47 +149,21 @@ A collection of backdrops have been prepared and their file locations stored wit
 At the start screen, a slider is provided to the user to allow for some further customisation. The difficulty variable is linked to the enemy speed. The user has the ability to choose from 5 different difficulty levels.
 In order to prevent users selecting the lowest difficulty in order to get a high score, points generated from each game event are directly corelated to the difficulty variable.
 
-### Project Goals
-
-My main goal for this Code Institute milstone project was to authenically emmulate a game from my childhood (Geometery Wars 2: Pacifism) within the browser while maintaining the game's original gameplay.
-Another goal of mine was to successfully capture the gameplay feeling from the original.
-
-### User stories
-
-1. As a user of this web application I want:
-
-    - A statifying gameloop that keeps me coming back in order beat my highscore.
-    - Sound effects to let me know when important game events take place.
-    - Sound design that doesn't get boring to listen to over time.
-    - Consistent Framerate.
-    - The ability to change the difficulty if needed.
-
-2. As a games platform looking to add this application to their library I would want:
-
-    - A great gameloop that will keep our users hooked.
-    - Sound design that doesn't get boring/annoying to the user over time.
-    - Sprite designs that capture the user's imagination and generate an emotional response.
-
-3. As a parent of a child user I would like:
-
-    - A game free from gratuitous violence & profanity.
-    - Sprites whose design do not make the child scared.
-
 
 ### Design Choices
 
 #### Physics Engine Choices
 
-Originally I had chosen to create this application using the PixiJS library but after seeking advice from my mentor, he stated that using vanilla Javascript would be a better as a learning excercise.
-Looking back on this decision, I believe it was a great choice. It has allowed me to better study the intricacies of the Javascript call stack & the HTML5 Canvas.
+Originally I had chosen to create this application using the PixiJS library but after seeking advice from my mentor, he stated that using vanilla JavaScript would be a better as a learning exercise.
+Looking back on this decision, I believe it was a great choice. It has allowed me to better study the intricacies of the JavaScript call stack & the HTML5 Canvas.
 
-#### Hitbox (Hitmarker) Detection
+#### Hit box (Hit marker) Detection
 
 #### 
 
 #### User Input Choices
 
-Due to the nature of Javascript's event listening system, a choice between 2 player input methods had to be made. 
+Due to the nature of JavaScript's event listening system, a choice between 2 player input methods had to be made. 
 I had to decide between either the traditional WASD directional input or using the mouse click to move to position. After testing both methods, 'point and click' was chosen due to increased accuracy and ease of use.
 
 #### Start Menu Design
@@ -153,7 +182,7 @@ Orbitron
 
 Dot Gothic 16
 
-The font was designed to be pixelated in order to emmulate how text used to look on older CRT monitors
+The font was designed to be pixelated in order to emulate how text used to look on older CRT monitors
 
 #### Icons
 
@@ -259,27 +288,27 @@ The font was designed to be pixelated in order to emmulate how text used to look
 
 ## Bugs Discovered:
 
-##### Overlap detection for swarm behaviour
+##### Overlap detection for swarm behavior
 
-At the start of the project when designing sprite behaviour, I wanted to implement overlap detection. Each enemy sprite in the swarm would calculate the distance it's nearest enemy.
+At the start of the project when designing sprite behavior, I wanted to implement overlap detection. Each enemy sprite in the swarm would calculate the distance to the enemy closest to them.
 This distance would be used to move the 2 enemy sprites apart preventing any sprite overlap from happening. This feature was removed from the final implementation as it put too much strain on the call stack per animation frame.
-Enemy sprite movement looked jittery and framerate would drop significantly as the amount of enemies on the screen increased.
+Enemy sprite movement looked jittery and frame rate would drop significantly as the amount of enemies on the screen increased.
 
-##### Hitbox not following Gate rotation 
+##### Hit box not following gate rotation 
 
 When implementing rotational movement for gate sprites, I noticed that the position of certain hit markers were mistranslated. Using some simple trigonometry, I was able to calculate the positioning needed. 
 
 ##### Gate detection not consistent
 
-In initial development only 1 hitmarker was used to clear the gate, its location was at the dead center of the sprite. This caused some inconsistencies during gameplay as the user would sometimes not pass through the gate precisely enough and the gate sprite would remain on screen.
-A second hitmarker was added to make it easier for the user to clear the gates. This was a crutial implementation as it significantly helped the gameplay feeling and made gates more consistent 
+In initial development only 1 hit marker was used to clear the gate, its location was at the dead center of the sprite. This caused some inconsistencies during gameplay as the user would sometimes not pass through the gate precisely enough and the gate sprite would remain on screen.
+A second hit marker was added to make it easier for the user to clear the gates. This was a crucial implementation as it significantly helped the gameplay feeling and made gates more consistent. 
 
-##### Framerate slowing down
+##### Frame rate slowing down
 
-Animation in Javascript uses a function called requestAnimationFrame in combination with a process called recursion to generate each frame seen on screen.
-Due to this, too much complex logic required within each frame will cause the framerate to drop. The Javascript call stack can only handle so many calls per frame.
-When designing the main gameloop, it is essential to reduce nesting as much as is practical. In the early development stages, this application suffered significantly from this issue.
-The code was then streamlined to remove any unncessary nesting and a significant increase in framerate was observed.
+Animation in JavaScript uses a function called requestAnimationFrame in combination with a process called recursion to generate each frame seen on screen.
+Due to this, too much complex logic required within each frame will cause the frame rate to drop. The JavaScript call stack can only handle so many calls per frame.
+When designing the main game loop, it is essential to reduce nesting as much as is practical. In the early development stages, this application suffered significantly from this issue.
+The code was then streamlined to remove any unnecessary nesting and a significant increase in frame rate was observed.
 
 ##### Not all gates are being drawn, leading to random deaths
 
@@ -288,8 +317,6 @@ The code was then streamlined to remove any unncessary nesting and a significant
 ##### Gates not rotating after timer was added
 
 ##### Memory Leaks
-
-##### Fancybox Won't Close
 
 #### Solved bugs
 
