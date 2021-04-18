@@ -208,11 +208,17 @@ The font was designed to be pixelated in order to emulate how text used to look 
 ## Technologies Used
 
 
-## Testing
+## Against All Odds - Testing details
+
+### Testing
 
 #### Validation
 
-* The developer used W3C CSS validation service and W3C Markup validation service to check the validity of their code.
+* [W3C HTML Validation](https://validator.w3.org/)
+* [W3C CSS Validation](https://jigsaw.w3.org/css-validator/)
+* [JavaScript Validation](https://jshint.com/)
+
+The developer used W3C HTML, W3C CSS & JSHint validation services in order to check the validity of their code.
 
 #### Performance Testing
 
@@ -226,63 +232,6 @@ The font was designed to be pixelated in order to emulate how text used to look 
 
 #### Testing client's stories outlined in the UX section:
 
-1. As a new visitor to the website, I want to be able to navigate the site easily and be able to find what I want quickly.
-    
-    * No matter what page a new visitor lands on, they're able to easily find and use the navigation bar.
-    * The logo image and hero title are links that always lead back to the homepage.
-    * The landing section of the homepage contains a description of the music label, their genre and location.
-
-
-2. As a new visitor to the site, I want to be able to find specific artists.
-
-    * Artist's profiles are grouped together on the homepage to ensure that the user can find a specific artist quickly. 
-
-
-3. As a new visitor to the website, I want the ability to read personal information relating to each artist, so I can understand their lyrics in context.
-
-    * Each artist profile contains a short biography and their latest video release.
-
-
-4. As a fan, I want the ability to purchase physical/digital copies of their music.
-   
-    * Each artist's profile has a link to their Bandcamp page where users can purchase music from Bad Arts Entertainment digitally.
-    * Physical media such as CDs and clothing will be available for sale when in stock.
-
-
-5. As a fan, I want to be able to interact with social media from their Twitter account.
-
-    * On the homepage, an embedded twitter timeline allows users to scroll though the Bad Arts Entertainment twitter feed.
-    * A twitter follow button has also added within the footer, which has been synchronised across all pages.
-
-
-6. As a music venue coordinator, I would like the ability to see previous events they have done in order to make a more calculated business decision on whether to hire one of the label's artists.
-
-    * The events section on the homepage outlines previous events that the label has taken part in as well as any upcoming gigs planned.
-    * A video gallery can be used to review recent content and determine if the label is the right fit for the venue.
-
-
-7. As a potential customer, I would like the ability to view their merchandise with clearly indicated pricing.
-
-    * In the shop, prices are outlined clearly for each product once you hover over the item. Also, within the product page, the current and previous product price is clearly outlined.
-    * The user is then brought to the individual product page where they can read the product information.
-    * A call-to-action button allows the user to add the item to the checkout.
-
-
-8. As a potential customer, I want to be able to navigate between the shop and individual product pages with ease.
-
-    * At the top left of each product page, a left arrow icon allows the user to return to the shop with ease.
-    * This icon was chosen for its obvious meaning and purpose so that it can be understood by everyone.
-
-
-9. As a potential employer, I would like the ability to contact the label directly.
-
-    * On the contact page, there is a contact form in order to get in touch with Bad Arts Entertainment.
-  
-
-10. As a fan, I would like to know precisely where the music label is located.
-
-    * The contact page contains a Google Map element containing a pin to show where the label is based.
-    * If you click on the map marker, a small blurb of the area is provided to give the user more context about the location.
 
 
 
