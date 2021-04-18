@@ -37,6 +37,11 @@ body{
 
 #speedLabel{
     color: white;
+    font-size: large;
+}
+
+#speedOutput{
+    font-size: larger;
 }
 
 #tutorial{
