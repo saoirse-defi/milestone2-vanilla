@@ -46,7 +46,6 @@ const mouse = { //set mouse co-ordinates on application start
 
 const mouseMoveHandler = (e) => { //tracks user's mouse input
     let relX = e.x - canvasPosition.left;
-    let relY = e.y - canvasPosition.top;
 
     if(relX > 0 && relX < canvas.width){
         mouse.x = event.x - canvasPosition.left;
@@ -64,15 +63,12 @@ const modalScore = document.getElementById('modalScore');
 const highScoreLabel = document.getElementById('highScoreLabel');
 const multiplierElement = document.getElementById('multiplierElement');
 const highscoreElement = document.getElementById('highscoreElement');
-const homeButton = document.getElementById('homeButton');
-const restartButton = document.getElementById('restartButton');
 const deathInfo = document.getElementById('deathInfo');
 const speedSlider = document.getElementById('speedSlider');
 const difficultyElem = document.getElementById('difficulty');
 const speedOutput = document.getElementById('speedOutput');
 const iplayer = document.getElementById('iplayer');
 const tutorial = document.getElementById('tutorial');
-const tutorialIcon = document.getElementById('tutorialIcon');
 
 let difficulty; //stores difficulty
 let isMobile = false;
@@ -142,8 +138,8 @@ const enemySpawnLoc = [
 ];
 
 //create gate/enemy cache to store sprites on init
-let enemy_Cache = new Array(); 
-let gate_Cache = new Array();
+let enemy_Cache = []; 
+let gate_Cache = [];
 
 //fills cache with gate/enemy sprites on game start
 const initialSpawn = () => {
@@ -154,20 +150,7 @@ const initialSpawn = () => {
 };
 
 //Soundtrack & SFX
-let music = false;
-
-let tracks = ['audio/tracks/Brinstar.mp3', 'audio/tracks/makarov.mp3'];
-
 let effects = ['audio/sfx/explosionSFX.mp3', 'audio/sfx/gameoverSFX.mp3', 'audio/sfx/highscoreSFX.mp3', 'audio/sfx/startSFX.mp3'];
-
-const playTrack = (track) => {
-    let audio = document.createElement('audio');
-    audio.src = track;
-    audio.volume = 0.8;
-    if(music){
-        audio.play();
-    }
-};
 
 const playSFX = (sfx) => {
     let audio = document.createElement('audio');
@@ -222,8 +205,7 @@ class Player{
         this.img.src = "sprites/spacestation.png";
         ctx.restore();
     }
-};
-
+}
 
 class Enemy{
     constructor(_x, _y){
@@ -290,8 +272,7 @@ class Enemy{
             me.img.src = 'sprites/enemy.png';
         }
     }
-};
-
+}
 
 class Gate{
     constructor(_x, _y){
@@ -381,7 +362,7 @@ class Gate{
         ctx.restore();
         me.img.src = 'sprites/gate5.png';
     }
-};
+}
 
 const game = { //thinking of changing object name to game due to it's interaction with all classes.
 
@@ -403,8 +384,8 @@ const game = { //thinking of changing object name to game due to it's interactio
                 let newEnemy;
                 newEnemy = enemy_Cache.pop(); //remove cached sprite
                 newEnemy.respawn();
-                newEnemy.x = enemySpawnLoc[randomCorner][i]['x'];
-                newEnemy.y = enemySpawnLoc[randomCorner][i]['y'];
+                newEnemy.x = enemySpawnLoc[randomCorner][i].x;
+                newEnemy.y = enemySpawnLoc[randomCorner][i].y;
                 this.enemyArray.push(newEnemy);
             }
            
@@ -489,11 +470,6 @@ const game = { //thinking of changing object name to game due to it's interactio
         highscoreElement.innerHTML = `High Score: ${numberWithCommas(localStorage.getItem('highscore') || 0)}`;
         modalScore.innerHTML = numberWithCommas(total);
         multiplierElement.innerHTML = `${multiplier}x`; //applying multiplier to html element
-        
-        console.log('Gate Array Length', gate_Cache.length);
-        //should be ~500 but getting random large numbers instead, different each time
-        console.log('Enemy Array Length', enemy_Cache.length); 
-        console.log('difficulty', difficulty);
     },
 
     restart: function(){
@@ -560,7 +536,7 @@ const startScreen = () => {
             ctx.fillText('Pass through the center of gates to manage the enemy horde.', canvas.width / 2, canvas.height / 2 + 50, 900);
             ctx.fillText('Beware of deadly mines at the edge of gates!', canvas.width / 2, canvas.height / 2 + 100, 900);
 
-            ctx.font = canvas.width / 40 + 'px Orbitron'
+            ctx.font = canvas.width / 40 + 'px Orbitron';
             ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
             ctx.textAlign = "center";
             ctx.fillText('START (S)           BACKGROUND (B)', canvas.width / 2, canvas.height / 2 + 200, 900);
@@ -617,7 +593,7 @@ window.addEventListener('keyup', e => {
     }
 });
 
-window.addEventListener('resize', (e) => {
+window.addEventListener('resize', () => {
     canvas.width = document.documentElement.clientWidth - 5;
     canvas.height = document.documentElement.clientHeight - 5;
 });
