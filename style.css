@@ -23,16 +23,16 @@ body{
     left: 10px;
 }
 
-#difficulty{
-    position: fixed;
-    top: 10px;
-    left: 15px;
-}
-
 #difficulty-container{
     display: flex;
     flex-direction: column;
     width: 120px;
+}
+
+#difficulty{
+    position: fixed;
+    top: 10px;
+    left: 15px;
 }
 
 #speedLabel{
@@ -130,6 +130,7 @@ body{
     color: gray;
     font-weight: 700;
     position: relative;
+    font-size: larger;
     bottom: 5px;
 }
 
