@@ -74,6 +74,15 @@ let difficulty; //stores difficulty
 let isMobile = false;
 let isTablet = false;
 
+const checkDevice = () => {
+    if(window.screen.width > 479 && window.screen.width < 767){
+        isTablet = true; //checking for tablet
+    }
+    if(window.screen.width < 479){
+        isMobile = true; //checking for mobile
+    }
+};
+
 const gameMode = (diff) => {
     //displays difficulty to the user at start screen
     switch(diff){
@@ -537,14 +546,14 @@ const startScreen = () => {
             ctx.fillText('Beware of deadly mines at the edge of gates!', canvas.width / 2, canvas.height / 2 + 100, 900);
 
             ctx.font = canvas.width / 40 + 'px Orbitron';
-            ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
+            ctx.fillStyle = `hsl(${hue}, 100%, 35%)`; //hsl colour change effect
             ctx.textAlign = "center";
             ctx.fillText('START (S)           BACKGROUND (B)', canvas.width / 2, canvas.height / 2 + 200, 900);
 
             player.update(); //player methods placed here to create z-index effect
 
             ctx.font = canvas.width / 20 + 'px Orbitron'; //player sprite is hidden behind title but not other text hence why it is coded here
-            ctx.fillStyle = `hsl(${hue}, 100%, 35%)`;
+            ctx.fillStyle = `hsl(${hue}, 100%, 35%)`; //hsl colour change effect
             ctx.textAlign = "center";
             ctx.fillText('AGAINST ALL ODDS', canvas.width / 2, canvas.height / 2 - 100, 800, 200);
 
@@ -582,43 +591,45 @@ const animate = () => {
 //Event Listeners
 
 window.addEventListener('keyup', e => {
-    if(e.keyCode === 83){
+    if(e.keyCode === 83){ //when the 's' key is pressed
         menuActive = false; //triggers game start event
-        difficultyElem.style.visibility = "hidden";
-        playSFX(effects[3]);
+        difficultyElem.style.visibility = "hidden"; //hides difficulty customisation element
+        playSFX(effects[3]); //play game start SFX
     }
-    if(e.keyCode === 66){
+    if(e.keyCode === 66){ //when the 'b' key is pressed
         _background.src = stars[randomBackground()]; //triggers background change
-        localStorage.setItem('background#', _background.src);
+        localStorage.setItem('background#', _background.src); //stores background choice in local storage for later use
     }
 });
 
 window.addEventListener('resize', () => {
-    canvas.width = document.documentElement.clientWidth - 5;
-    canvas.height = document.documentElement.clientHeight - 5;
+    canvas.width = document.documentElement.clientWidth - 5; //adjust canvas width if browser is resized
+    canvas.height = document.documentElement.clientHeight - 5; //adjust canvas height if browser is resized
+    checkDevice();
+});
+
+document.addEventListener('fullscreenchange', () => {
+    canvas.width = document.documentElement.clientWidth - 5; //adjust canvas width if browser is resized
+    canvas.height = document.documentElement.clientHeight - 5; //adjust canvas height if browser is resized
 });
 
 document.getElementById('restartButton').addEventListener('click', () => {
-    game.restart();
+    game.restart(); //restarts game loop for the user
     animate(); //restart animation loop
-    playSFX(effects[3]);
+    playSFX(effects[3]); //play game start SFX
 });
 
 document.getElementById('homeButton').addEventListener('click', () => {
-    game.return();
-    startScreen();
+    game.return(); //returns the user to the start screen
+    startScreen(); //renders start screen instead of game loop
 });
 
 document.addEventListener("DOMContentLoaded", () => {
     difficulty = localStorage.getItem('localDifficulty') || 5; //sets difficulty on page load to 5 if no local difficulty is set
-    highscoreElement.innerHTML = `High Score: ${numberWithCommas(localStorage.getItem('highscore') || 0)}`;
+    highscoreElement.innerHTML = `High Score: ${numberWithCommas(localStorage.getItem('highscore') || 0)}`; //checks for high score in local storage to display
     speedSlider.value = difficulty; //update html slider to reflect local difficulty
-    initialSpawn();
-    startScreen(); 
-
-    if(window.screen.width < 479){
-        isMobile = true; //checking for mobile
-    }else if(window.screen.width > 479 && window.screen.width < 767){
-        isTablet = true; //checking for tablet
-    }
+    initialSpawn(); //spawns sprites for later use in game
+    startScreen(); //renders start screen
+    checkDevice();
 });
+
