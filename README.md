@@ -163,8 +163,14 @@ Looking back on this decision, I believe it was a great choice. It has allowed m
 
 #### User Input Choices
 
-Due to the nature of JavaScript's event listening system, a choice between 2 player input methods had to be made. 
-I had to decide between either the traditional WASD directional input or using the mouse click to move to position. After testing both methods, 'point and click' was chosen due to increased accuracy and ease of use.
+##### Desktop Input
+
+Due to the nature of JavaScript's event listening system, a choice between 2 player input methods on desktop had to be made. 
+The decision was between the traditional WASD directional input or using the mouse click to move to position. Between these two, the 'point and click' was chosen due to its ease of use.
+Unfortunately after user testing, it was found that this directional input from the user didn't have the correct gameplay feel due to the lack of accuracy & predictability.
+In the final implementation, the JavaScript event listener 'movemove' was used. This directional input allows for greater control as the player sprite smoothly follows the cursor of the mouse.
+
+##### Mobile/Tablet Input
 
 #### Start Menu Design
 
@@ -321,4 +327,44 @@ Further reading and troubleshooting on cloning a repository can be found here [G
 
 
 ## Wireframes
+
+### Start Screen
+
+##### Desktop
+
+![Desktop Start Screen](wireframes/StartDesktopWireframe.png)
+
+##### Tablet
+
+
+
+##### Mobile
+
+
+
+### Game Screen
+
+##### Desktop
+
+
+
+##### Tablet
+
+
+
+##### Mobile
+
+
+
+### Game Over Modal
+
+##### Desktop
+
+
+
+##### Tablet
+
+
+
+##### Mobile
 
