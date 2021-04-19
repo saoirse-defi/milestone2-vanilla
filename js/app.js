@@ -55,17 +55,6 @@ const mouseMoveHandler = (e) => { //tracks user's mouse input
 
 canvas.addEventListener("mousemove", mouseMoveHandler, false);
 
-/*const touchMoveHandler = (e) => {
-    let relX = e.touchLocation.pageX - canvasPosition.left;
-
-    if(relX > 0 && relX < canvas.width){
-        mouse.x = e.touchLocation.pageX - canvasPosition.left;
-        mouse.y = e.touchLocation.pageY - canvasPosition.top;
-    }
-};
-
-canvas.addEventListener("touchmove", touchMoveHandler, false); */
-
 //  ***     Defining HTML elements as JS variables      ***
 const scoreElement = document.getElementById('scoreElement');
 const modal = document.getElementById('modal');
@@ -85,13 +74,16 @@ const mobileBackground = document.getElementById('mobileBackground');
 let difficulty; //stores difficulty
 let isMobile = false;
 let isTablet = false;
+let spriteSize = 1;
 
 const checkDevice = () => {
     if(window.screen.width > 479 && window.screen.width < 767){
         isTablet = true; //checking for tablet
+        spriteSize = 0.5;
     }
     if(window.screen.width < 479){
         isMobile = true; //checking for mobile
+        spriteSize = 0.33;
     }
 };
 
@@ -165,8 +157,8 @@ let gate_Cache = [];
 //fills cache with gate/enemy sprites on game start
 const initialSpawn = () => {
     for(let i = 0; i < 500; i++){
-        enemy_Cache.push(new Enemy(0, 0));
-        gate_Cache.push(new Gate(0, 0));
+        enemy_Cache.push(new Enemy(0, 0, spriteSize));
+        gate_Cache.push(new Gate(0, 0, spriteSize));
     }
 };
 
@@ -184,8 +176,8 @@ class Player{
     constructor(){
         this.x = canvas.width / 2; //starting point the center of canvas
         this.y = canvas.height / 2;
-        this.width = 50; //player width
-        this.height = 50; //player height
+        this.width = 50 * spriteSize; //player width
+        this.height = 50 * spriteSize; //player height
         this.angle = 0;
         this.img = new Image();
     }
@@ -193,8 +185,8 @@ class Player{
     update(){
         this.draw();
 
-        let dx = this.x - 25 - mouse.x;
-        let dy = this.y - 25 - mouse.y;
+        let dx = this.x - mouse.x - this.width / 2;
+        let dy = this.y - mouse.y - this.height / 2;
 
         let radAngle  = Math.atan2(dy, dx);
 
@@ -229,11 +221,11 @@ class Player{
 }
 
 class Enemy{
-    constructor(_x, _y){
+    constructor(_x, _y, size){
         this.x = _x;
         this.y = _y;
-        this.radius = 20;
-        this.diameter = 40;
+        this.radius = 20 * size;
+        this.diameter = 40 * size;
         this.startTime; //time of spawn
         this.currTime; //current time
         this.delta; // currTime - startTime
@@ -296,7 +288,7 @@ class Enemy{
 }
 
 class Gate{
-    constructor(_x, _y){
+    constructor(_x, _y, size){
         this.x = _x; //sprite hitbox is only the top-left corner of the square, withdrawing width & height /2
         this.y = _y;
         this.hypotenus;
@@ -307,8 +299,8 @@ class Gate{
         this.startTime; //time at spawn
         this.currTime; //current time
         this.delta; //current time - start time
-        this.width = 75;
-        this.height = 133;
+        this.width = 75 * size;
+        this.height = 133 * size;
         this.theta; //rotational angle in degrees
         this.rotation = Math.floor(Math.random() * 180); //rotational angle in radians
         this.rotationSpeed = 0.05; //rotational velocity
@@ -342,25 +334,25 @@ class Gate{
         
         //distance from player to ClearGate1
         let dx = player.x - me.x; //sprite hitbox relocation fixed
-        let dy = player.y - me.y - 65;    
+        let dy = player.y - me.y - (65 * me.size);    
 
         me.distanceClearGate1 = Math.sqrt(dx*dx + dy*dy);
 
         //distance from player to ClearGate2
         let dx4 = player.x - me.x; //sprite hitbox relocation fixed
-        let dy4 = player.y - me.y - 80;    
+        let dy4 = player.y - me.y - (80 * me.size);    
 
         me.distanceClearGate2 = Math.sqrt(dx4*dx4 + dy4*dy4);
 
         //distance from player to mine 1
-        let dx1 = player.x - me.x - 25; 
-        let dy1 = player.y - me.y - 30;    
+        let dx1 = player.x - me.x - (25 * me.size); 
+        let dy1 = player.y - me.y - (30 * me.size);    
 
         me.distanceMine1 = Math.sqrt(dx1*dx1 + dy1*dy1);
 
         //distance from player to mine 2
-        let dx2 = player.x - me.x - 25 + 115 * Math.sin(me.theta); //fixes mine location bug by add rotational transformation
-        let dy2 = player.y - me.y - 105;    
+        let dx2 = player.x - me.x - (25 * me.size) + (115 * me.size) * Math.sin(me.theta); //fixes mine location bug by add rotational transformation
+        let dy2 = player.y - me.y - (105 * me.size);    
 
         me.distanceMine2 = Math.sqrt(dx2*dx2 + dy2*dy2);
 
@@ -672,22 +664,9 @@ document.addEventListener('fullscreenchange', () => {
     canvas.height = document.documentElement.clientHeight - 5; //adjust canvas height if browser is resized
 });
 
-/*document.body.addEventListener("touchstart", function (e) {
-    if (e.target == canvas) {
-        e.preventDefault();
-    }
-}, false);
 
-document.body.addEventListener("touchend", function (e) {
-    if (e.target == canvas) {
-        e.preventDefault();
-    }
-}, false);*/
-
-document.body.addEventListener("touchmove", function (e) {
-    
+document.body.addEventListener("touchmove", function (e) { //allows mobile users to touch drag the player sprite
     let touchLocation = e.targetTouches[0];
-
     let relX = touchLocation.screenX - canvasPosition.left;
 
     if(relX > 0 && relX < canvas.width){
@@ -703,6 +682,8 @@ document.getElementById('mobileStart').addEventListener('click', () => {
     animate();
     playSFX(effects[3]);
     difficultyElem.style.visibility = 'hidden';
+    mobileStart.style.visibility = 'hidden';
+    mobileBackground.style.visibility = 'hidden';
 });
 
 document.getElementById('mobileBackground').addEventListener('click', () => {
@@ -719,6 +700,8 @@ document.getElementById('restartButton').addEventListener('click', () => {
 document.getElementById('homeButton').addEventListener('click', () => {
     game.return(); //returns the user to the start screen
     startScreen(); //renders start screen instead of game loop
+    mobileStart.style.visibility = 'visible';
+    mobileBackground.style.visibility = 'visible';
 });
 
 document.addEventListener("DOMContentLoaded", () => {
