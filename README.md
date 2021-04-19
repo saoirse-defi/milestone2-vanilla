@@ -336,35 +336,36 @@ Further reading and troubleshooting on cloning a repository can be found here [G
 
 ##### Tablet
 
-
+![Tablet Start Screen](wireframes/StartTabletWireframe.png)
 
 ##### Mobile
 
-
+![Mobile Start Screen](wireframes/StartMobileWireframe.png)
 
 ### Game Screen
 
 ##### Desktop
 
-
+![Desktop Game Screen](wireframes/GameDesktopWireframe.png)
 
 ##### Tablet
 
-
+![Tablet Game Screen](wireframes/GameTabletWireframe.png)
 
 ##### Mobile
 
-
+![Mobile Game Screen](wireframes/GameMobileWireframe.png)
 
 ### Game Over Modal
 
 ##### Desktop
 
-
+![Desktop Game Over Modal](wireframes/ModalDesktopWireframe.png)
 
 ##### Tablet
 
-
+![Tablet Game Over Modal](wireframes/ModalTabletWireframe.png)
 
 ##### Mobile
 
+![Mobile Game Over Modal](wireframes/ModalMobileWireframe.png)
