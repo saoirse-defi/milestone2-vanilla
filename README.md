@@ -9,6 +9,15 @@ The goal is to survive for as long as possible. Similarly to other arcade games,
 Enemy speed increases when your score passes certain increments. This will be outlined to the user using custom sound effects.
 Cusomisation has been implemented in this application, the user has the ability to change the background and game difficulty at the start screen. Local storage is then used to track user customisation in between sessions.
 
+### Considerations 
+
+Geometry Wars 2: Pacifism was released on traditional games consoles with a large amount of screen real estate & dedicated controller. 
+While implementing the mobile version of this application, I have encountered several limitations that dramatically reduce the enjoyment one gets from playing this game.
+In the start menu on desktop, the user is able to select their desired difficulty but for mobile I have decided to limit game speed to amateur. 
+This is due to reduced time the player has to react to enemy sprites. Touch drag was selected to move the player sprite. 
+At the early stages of design, this control method seemed like this best of a bad bunch, but it too lacks the necessary accuracy to play the game as intended.
+In order to appreciate this game as it was intended, it is recommended to play this application on a desktop/laptop with a mouse.
+
 ## UX
 
 ### Project Goals
@@ -66,7 +75,7 @@ Against All Odds has achieved these player needs by:
     - Sprites design that doesn't make the children scared.
 
 
-#### Sprites
+### Sprites
 
 When designing UX for a game, selecting the correct sprite image is essential as it can dramatically change the appearance & feel of your finished application.
 I decided to browse several game development marketplaces to see which sprite images were available for free.
@@ -92,9 +101,9 @@ When choosing the enemy sprite, I wanted the design to give the user a sense of 
 This sprite was designed and created by myself using Microsoft Paint. 
 The 2 orange circles at the edge of the sprite are deadly mines which end the game if touched. The user must pass through the center of the gate in order to clear the surrounding area of enemy sprites.
 
-#### Background
+### Background
 
-In 2D game development backdrops are often used to add depth, give context to the canvas & individual game elements. They provide something for the user's imagination  to work with.
+In 2D game development backdrops are often used to add depth, give context to the canvas & individual game elements. They provide something for the user's imagination to work with.
 
 ###### Default Background
 
@@ -104,7 +113,7 @@ As the default background, I have chosen an image of a horizon in the depth of o
 
 This array is responsible for storing background image file names as strings. This array will later be used to implement user customisation.
 
-#### Sound
+### Sound
 
 All sound effects & background tracks were recorded for this project by DJ green (except the gem collected SFX)
 
@@ -129,7 +138,7 @@ This sound effect was sourced from [freesound.org](https://freesound.org/) in or
 
 ### Implementation
 
-This section will outline the technologies and processes used in the design of this application.
+This section will outline the technologies & processes used in the design & implementation of this application.
 
 #### HTML Canvas
 
@@ -157,36 +166,38 @@ In order to prevent users selecting the lowest difficulty in order to get a high
 
 ### Design Choices
 
-#### Physics Engine Choices
+##### Physics Engine Choices
 
 Originally I had chosen to create this application using the PixiJS library but after seeking advice from my mentor, he stated that using vanilla JavaScript would be a better as a learning exercise.
 Looking back on this decision, I believe it was a great choice. It has allowed me to better study the intricacies of the JavaScript call stack & the HTML5 Canvas.
 
-#### Hit box (Hit marker) Detection
+##### Hit box (Hit marker) Detection
 
 Hit Detection is probably the most crucial element of a satisfying video game. Below you can see an image of how the hit detection has been implemented within this application.
 For the gate sprites, four points are used to implement hit detection. Two inboard hit markers which are used by the player to clear the gate & two outboard markers, one on either side of the sprite which will kill the player upon contact.
 Once per frame, the distance between the player and these four hit markers are calculated allowing them to be used for hit detection.
 
-#### 
+![Gate Hit Markers](sprites/gate4stars.png)
 
 #### User Input Choices
 
-##### Desktop Input
+##### Desktop Controls
 
 Due to the nature of JavaScript's event listening system, a choice between 2 player input methods on desktop had to be made. 
 The decision was between the traditional WASD directional input or using the mouse click to move to position. Between these two, the 'point and click' was chosen due to its ease of use.
 Unfortunately after user testing, it was found that this directional input from the user didn't have the correct gameplay feel due to the lack of accuracy & predictability.
 In the final implementation, the JavaScript event listener 'mousemove' was used. This directional input allows for greater control as the player sprite smoothly follows the cursor.
 
-##### Mobile/Tablet Input
+##### Mobile/Tablet Controls
 
 For the mobile & tablet implementation, the previous method of user input wouldn't be enjoyable to the user. A new method of user input was needed to account for the touch screen.
 When thinking of possible options, touch drag was the only one that stood out as enjoyable to use.
 
-#### Start Menu Design
+#### Visual Choices
 
-#### Game Over Modal Design
+##### Start Menu Design
+
+##### Game Over Modal Design
 
 #### Fonts
 
