@@ -22,7 +22,7 @@ const BG = {//defining background co-ordinates to match canvas size
 }; 
 
 //array of background image locations used for customisation
-const backgroundArr = ['sprites/stars.png', 'sprites/stars1.png', 'sprites/stars2.png', 'sprites/stars3.png', 'sprites/stars4.png', 'nebula01.png', 'nebula02.png'];
+const backgroundArr = ['sprites/stars.jpg', 'sprites/stars1.jpg', 'sprites/stars2.jpg', 'sprites/stars3.jpg', 'sprites/stars4.jpg', 'nebula01.jpg', 'nebula02.jpg'];
 
 //set as background file location found in local storage OR as default
 let customBG = localStorage.getItem('background#') || backgroundArr[0];
