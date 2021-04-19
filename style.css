@@ -21,6 +21,7 @@ body{
     position: fixed;
     bottom: 0px;
     left: 0px;
+    max-width: 110px;
 }
 
 #difficulty-container{
@@ -127,12 +128,13 @@ body{
     font-size: xx-large;
     visibility: hidden;
     color: orangered;
-    margin-top: 20px;
+    position: relative;
+    bottom: 10px;
 }
 
 #deathInfo{
     position: relative;
-    bottom: 30px;
+    bottom: 15px;
     color: orangered;
     font-size: xx-large;
     visibility: hidden;
