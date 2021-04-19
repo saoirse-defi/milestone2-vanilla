@@ -20,7 +20,7 @@ body{
 #iplayer{
     position: fixed;
     bottom: 0px;
-    left: 10px;
+    left: 0px;
 }
 
 #difficulty-container{
@@ -52,6 +52,10 @@ body{
 
 #tutorialIcon{
     color: green;
+}
+
+#mobile-start{
+    visibility: hidden;
 }
 
 /* End of difficulty, tutorial & iplayer styling */
@@ -161,3 +165,40 @@ body{
 }
 
 /* End of modal styling */
+
+/* Start of Media Queries*/
+
+@media screen and (max-width: 480px) {
+    #iplayer{
+        max-width: 125px;
+    }
+
+    #highscore{
+        max-width: 100px;
+        font-size: small;
+    }
+
+    #difficulty-container{
+        max-width: 100px;
+    }
+
+    #speedLabel{
+        font-size: small;
+    }
+
+    #speedOutput{
+        font-size: small;
+    }
+
+    #speedSlider{
+        max-width: 75px;
+    }
+
+    #tutorial{
+        max-width: 15px;
+    }
+
+    #mobile-start{
+        visibility: visible;
+    }
+}
