@@ -11,8 +11,8 @@ import { random, randomBackground, removeObjectFromArray, numberWithCommas } fro
 const canvas = document.getElementById('canvas'); //defining canvas element
 const ctx = canvas.getContext('2d'); //defining whether using a 2D or 3D canvas
 
-canvas.width = window.innerWidth - 5; //setting canvas width to match viewport width
-canvas.height = window.innerHeight - 5; ////setting canvas height to match viewport height
+canvas.width = window.innerWidth - 100; //setting canvas width to match viewport width
+canvas.height = window.innerHeight - 100; ////setting canvas height to match viewport height
 
 const BG = {//defining background co-ordinates to match canvas size
     x: 0, 
@@ -70,7 +70,7 @@ const difficultyElem = document.getElementById('difficulty');
 const speedOutput = document.getElementById('speedOutput');
 const iplayer = document.getElementById('iplayer');
 const tutorial = document.getElementById('tutorial');
-const mobileStart = document.getElementById('mobile-start');
+const mobileStart = document.getElementById('mobileStart');
 
 let difficulty; //stores difficulty
 let isMobile = false;
@@ -532,6 +532,8 @@ const startScreen = () => {
     if(menuActive){
         
         if(isMobile){
+            mobileStart.style.top = canvas.width / 2;
+            mobileStart.style.left = canvas.height / 2;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             drawBackground();
@@ -656,7 +658,7 @@ document.addEventListener('fullscreenchange', () => {
     canvas.height = document.documentElement.clientHeight - 5; //adjust canvas height if browser is resized
 });
 
-document.getElementById('mobile-start').addEventListener('click', () => {
+document.getElementById('mobileStart').addEventListener('click', () => {
     animate();
     playSFX(effects[3]);
 });

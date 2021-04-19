@@ -54,8 +54,11 @@ body{
     color: green;
 }
 
-#mobile-start{
+#mobileStart{
     visibility: hidden;
+    background-color: orangered;
+    color: black;
+    position: fixed;
 }
 
 /* End of difficulty, tutorial & iplayer styling */
@@ -198,7 +201,7 @@ body{
         max-width: 15px;
     }
 
-    #mobile-start{
+    #mobileStart{
         visibility: visible;
     }
 }
