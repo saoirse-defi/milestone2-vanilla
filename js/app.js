@@ -22,10 +22,10 @@ const BG = {//defining background co-ordinates to match canvas size
 }; 
 
 //array of background image locations used for customisation
-const stars = ['sprites/stars.png', 'sprites/stars1.png', 'sprites/stars2.png', 'sprites/stars3.png', 'sprites/stars4.png', 'nebula01.png', 'nebula02.png'];
+const backgroundArr = ['sprites/stars.png', 'sprites/stars1.png', 'sprites/stars2.png', 'sprites/stars3.png', 'sprites/stars4.png', 'nebula01.png', 'nebula02.png'];
 
 //set as background file location found in local storage OR as default
-let customBG = localStorage.getItem('background#') || 'sprites/stars.png';
+let customBG = localStorage.getItem('background#') || backgroundArr[0];
 
 const _background = new Image(); //create new background variable of type Image 
 _background.src = customBG; //add file path for background
@@ -597,7 +597,7 @@ window.addEventListener('keyup', e => {
         playSFX(effects[3]); //play game start SFX
     }
     if(e.keyCode === 66){ //when the 'b' key is pressed
-        _background.src = stars[randomBackground()]; //triggers background change
+        _background.src = backgroundArr[randomBackground()]; //triggers background change
         localStorage.setItem('background#', _background.src); //stores background choice in local storage for later use
     }
 });
