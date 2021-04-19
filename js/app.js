@@ -171,7 +171,7 @@ const initialSpawn = () => {
 };
 
 //Soundtrack & SFX
-let effects = ['audio/sfx/explosionSFX.mp3', 'audio/sfx/gameoverSFX.mp3', 'audio/sfx/highscoreSFX.mp3', 'audio/sfx/startSFX.mp3'];
+let effects = ['audio/sfx/explosionSFX.mp3', 'audio/sfx/gameoverSFX.mp3', 'audio/sfx/highscoreSFX.mp3', 'audio/sfx/startSFX.mp3', 'audio/sfx/coinSFX.wav'];
 
 const playSFX = (sfx) => {
     let audio = document.createElement('audio');
@@ -484,6 +484,7 @@ const game = { //thinking of changing object name to game due to it's interactio
                     //enemy_Cache.push(this.enemyArray.splice(this.enemyArray[k], 1));
                     this.enemyArray[k].speed = difficulty; //set speed back to normal as particle is absorbed
                     enemy_Cache.push(removeObjectFromArray(this.enemyArray[k], this.enemyArray));
+                    playSFX(effects[4]); //plays coin collect sound
                     k--;
                     multiplier++;
                 }
