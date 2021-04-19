@@ -11,8 +11,8 @@ import { random, randomBackground, removeObjectFromArray, numberWithCommas } fro
 const canvas = document.getElementById('canvas'); //defining canvas element
 const ctx = canvas.getContext('2d'); //defining whether using a 2D or 3D canvas
 
-canvas.width = window.innerWidth - 100; //setting canvas width to match viewport width
-canvas.height = window.innerHeight - 100; ////setting canvas height to match viewport height
+canvas.width = window.innerWidth - 5; //setting canvas width to match viewport width
+canvas.height = window.innerHeight - 5; ////setting canvas height to match viewport height
 
 const BG = {//defining background co-ordinates to match canvas size
     x: 0, 
@@ -44,18 +44,27 @@ const mouse = { //set mouse co-ordinates on application start
     y: canvas.height / 2,
 };
 
-const moveHandler = (e) => { //tracks user's mouse input
+const mouseMoveHandler = (e) => { //tracks user's mouse input
     let relX = e.x - canvasPosition.left;
 
     if(relX > 0 && relX < canvas.width){
-        mouse.x = event.x - canvasPosition.left;
-        mouse.y = event.y - canvasPosition.top;
+        mouse.x = e.x - canvasPosition.left;
+        mouse.y = e.y - canvasPosition.top;
     }
 };
 
-canvas.addEventListener("mousemove", moveHandler, false);
-canvas.addEventListener("touchmove", moveHandler, false);
+canvas.addEventListener("mousemove", mouseMoveHandler, false);
 
+const touchMoveHandler = (e) => {
+    let relX = e.touchLocation.pageX - canvasPosition.left;
+
+    if(relX > 0 && relX < canvas.width){
+        mouse.x = e.touchLocation.pageX - canvasPosition.left;
+        mouse.y = e.touchLocation.pageY - canvasPosition.top;
+    }
+};
+
+canvas.addEventListener("touchmove", touchMoveHandler, false);
 
 //  ***     Defining HTML elements as JS variables      ***
 const scoreElement = document.getElementById('scoreElement');
@@ -131,7 +140,7 @@ const checkRecordScore = () => { //if user's score is greater than high score, u
         localStorage.setItem('highscore', total);
         playSFX(effects[2]);
         highScoreLabel.style.visibility = 'visible'; //user notified off new highscore
-        deathInfo.style.visibility = 'hidden';
+        deathInfo.style.visibility = 'visbile';
     }else{
         playSFX(effects[1]);
         deathInfo.style.visibility = 'visible';
@@ -657,6 +666,27 @@ document.addEventListener('fullscreenchange', () => {
     canvas.width = document.documentElement.clientWidth - 5; //adjust canvas width if browser is resized
     canvas.height = document.documentElement.clientHeight - 5; //adjust canvas height if browser is resized
 });
+
+document.body.addEventListener("touchstart", function (e) {
+    if (e.target == canvas) {
+        e.preventDefault();
+    }
+}, false);
+
+document.body.addEventListener("touchend", function (e) {
+    if (e.target == canvas) {
+        e.preventDefault();
+    }
+}, false);
+
+document.body.addEventListener("touchmove", function (e) {
+    if (e.target == canvas) {
+        e.preventDefault();
+    }
+
+    let touchLocation = e.targetTouches[0];
+
+}, false);
 
 document.getElementById('mobileStart').addEventListener('click', () => {
     animate();
