@@ -82,28 +82,29 @@ I decided to browse several game development marketplaces to see which sprite im
 
 ###### Player Sprite (Human Mining Station)
 
-![Player Sprite](sprites/spacestation.png)
-
 As mentioned above, the point and click method was chosen as user input. This introduced a UX issue that would look disconcerting to the end user. 
 Depending on where the user clicked, the sprite would appear either upside down or at the incorrect angle. Due to this, circular sprite was chosen for the player.
 This allows the sprite to appear the same, no matter the angle or direction of user input.
 
-###### Enemy Sprite (Alien Drone Ship)
+![Player Sprite](sprites/spacestation.png)
 
-![Enemy Sprite](sprites/enemy.png)
+###### Enemy Sprite (Alien Drone Ship)
 
 When choosing the enemy sprite, I wanted the design to give the user a sense of mortality and dread. The ship had to look like it belonged to a terrifying alien race hellbent on conquering human civilisation.
 
-###### Gate Sprite (Used to thin Alien horde)
+![Enemy Sprite](sprites/enemy.png)
 
-![Gate Sprite](sprites/gate5.png)
+###### Gate Sprite (Used to thin Alien horde)
 
 This sprite was designed and created by myself using Microsoft Paint. 
 The 2 orange circles at the edge of the sprite are deadly mines which end the game if touched. The user must pass through the center of the gate in order to clear the surrounding area of enemy sprites.
 
+![Gate Sprite](sprites/gate5.png)
+
 ### Background
 
 In 2D game development backdrops are often used to add depth, give context to the canvas & individual game elements. They provide something for the user's imagination to work with.
+As this game is a 2D space arcade, the natural choice for background images would be horizons from outer space. Within the background image array, there are several images of different nebula & starry backdrops.
 
 ###### Default Background
 
@@ -111,11 +112,11 @@ As the default background, I have chosen an image of a horizon in the depth of o
 
 ###### Background Array
 
-This array is responsible for storing background image file names as strings. This array will later be used to implement user customisation.
+This array is responsible for storing background image file names as strings. This array will later be used to cycle through different backdrops adding another element of user customisation.
 
 ### Sound
 
-All sound effects & background tracks were recorded for this project by DJ green (except the gem collected SFX)
+All sound effects & background tracks were recorded for this project by DJ green except the gem collected SFX which was sourced from a free game development marketplace
 
 ###### Bandcamp Player (Soundtrack)
 
@@ -124,17 +125,17 @@ All backing tracks have been produced by DJ Green. Expressed permission has been
 
 ###### Game Start Sound Effect
 
-When the user starts/restarts the game, this sound effect will be played.
+When the user starts or restarts the game, this sound effect will be played to let the user know it's game time.
 
 ###### Gate Destruction Sound Effect
 
 This sound effect was custom-made to provide the user with aural feedback whenever a gate is successfully destroyed. When choosing the sound design for this effect, we wanted to emmulate the sound of an explosion in space. 
-It is well known that sound waves cannot travel through the vaccum of space, but this was our thought process when designing the sound file.
+It is well known that sound waves cannot travel through the vaccum of space, but this was our thought process when designing the sound effect.
 
 ###### Gem Collected Sound Effect
 
 This sound effect was sourced from [freesound.org](https://freesound.org/) in order to provide feedback to the user whenever they have successfully collected a gem.
-
+It was chosen for it's arcade-like sound while also being satisfying to listen to repeatedly. It was essential to choose a sample which wouldn't get annoying over time.
 
 ### Implementation
 
@@ -143,19 +144,23 @@ This section will outline the technologies & processes used in the design & impl
 #### HTML Canvas
 
 The Canvas is an HTML element used to draw graphics via scripting. In this case, our scripting language will be JavaScript.
+The JavaScript code can access the drawable area of the canvas allowing for dynamically generated graphics. 
 
 #### Animation Loop
 
-This refers to the function which is repeatedly called using recursion. Each time the function is called, a single frame is printed on screen.
+In order to create animation through JavaScript & HTML5 Canvas, the animation function must call itself recursively using requestAnimationFrame.
+This principle of recursion refers to a function which calls itself creating a loop, in this case an animation loop. Each time the animation function is called, a single frame is drawn on screen.
 
 ### User Customisation
 
-For this milestone project, I have implemented 2 separate elements of customisation for the user. The user is able to apply different backdrops to the canvas, and they also have the ability to increase or decrease the game's difficulty.
-The state of these customisable elements is then saved for later sessions using local storage.
+For this milestone project, I have implemented 2 separate elements of customisation for the user. The user is able to apply different backdrops to the canvas. 
+Also, they have the ability to increase or decrease the game's difficulty by having control over the speed of enemy sprites.
+The states of these custom elements are then saved for later sessions using local storage.
 
 #### Background
 
-A collection of backdrops have been prepared and strings of their file locations have been stored within an array. At the start screen, this array is used for user customisation in order to change the background image.
+A collection of backdrops have been prepared and strings of their file locations have been stored within an array. 
+At the start screen, this array is used for user customisation in order to change the background image.
 
 
 #### Difficulty
@@ -168,7 +173,7 @@ In order to prevent users selecting the lowest difficulty in order to get a high
 
 ##### Physics Engine Choices
 
-Originally I had chosen to create this application using the PixiJS library but after seeking advice from my mentor, he stated that using vanilla JavaScript would be a better as a learning exercise.
+Originally I had chosen to create this application using a purpose built JavaScript library (ie. PixiJS). Although after seeking advice from my mentor, he advised me that using vanilla JavaScript would be a better option as a learning exercise.
 Looking back on this decision, I believe it was a great choice. It has allowed me to better study the intricacies of the JavaScript call stack & the HTML5 Canvas.
 
 ##### Hit box (Hit marker) Detection
@@ -190,8 +195,8 @@ In the final implementation, the JavaScript event listener 'mousemove' was used.
 
 ##### Mobile/Tablet Controls
 
-For the mobile & tablet implementation, the previous method of user input wouldn't be enjoyable to the user. A new method of user input was needed to account for the touch screen.
-When thinking of possible options, touch drag was the only one that stood out as enjoyable to use.
+For mobile & tablet implementation, a new method of user input was needed to account for the touch screen. When thinking of possible options, touch drag was the only one that stood out as enjoyable to use.
+It was a logical transition to use the JavaScript 'touchmove' event listener as 'mousemove' was implemented successfully on the desktop application.
 
 #### Visual Choices
 
@@ -205,25 +210,29 @@ Two fonts were chosen for this project; hero font & secondary font. Both of thes
 
 ##### Hero Title Font
 
-Orbitron
+The hero font selected is name Orbitron. It was chosen as it fit nicely within the theme of science fiction and space exploration. 
+It's similar to certain fonts used for corporation logos in old sci-fi movies.
 
 ##### Secondary Font
 
-Dot Gothic 16
-
-The font was designed to be pixelated in order to emulate how text used to look on older CRT monitors
+The secondary font chosen is called Dot Gothic 16. It was designed to be pixelated in order to mimic how text used to look on older CRT monitors such as those found in vintage arcade cabinets.
 
 #### Icons
 
 ##### Tutorial Icon
 
+When a user tries a game for the first time, the rules maybe unclear at first. This is why in addition to the explanation underneath the hero title, a link to a tutorial video has been provided.
+This link will open a new tab displaying a short YouTube video of the game being played. When choosing an icon for this tutorial link, it was essential to pick something that is universally known.
+I decided to use a graduation cap in the final implementation as it is widely know to represent tuition or school.
+
 #### Colours
 
 ##### HSL Colour Change Effect
 
+After learning about the HSL colour wheel, I decided to use the animation loop to further effect. By creating a variable called hue, I was able to increment it with each animation frame which in turn would cycle through the colour wheel.
+This caused a beautiful colour change effect which I have applied to the hero title and other elements.
+
 #### Styling
-
-
 
 ## Key Elements (Classes & Functions)
 
@@ -331,9 +340,15 @@ The code was then streamlined to remove any unnecessary nesting and a significan
 
 ##### Prevent Default Behavior During Touch Event
 
+When working with a touch screen, developers will always encounter the same problem, touch drag in the y-axis will lead to either unwanted scrolling or a page reload.
+In order to overcome this, we need to prevent default events from happening.
+
 ##### Gates not rotating after timer was added
 
 ##### Memory Leaks
+
+During early stages of development, low frame rate & random crashed were significant factors. 
+After consulting with my mentor, it was advised that I refactor my game loop function to avoid any unnecessary nesting while being mindful of how garbage collection is being taken care of.
 
 #### Solved bugs
 
