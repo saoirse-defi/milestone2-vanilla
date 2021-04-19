@@ -44,7 +44,7 @@ const mouse = { //set mouse co-ordinates on application start
     y: canvas.height / 2,
 };
 
-const mouseMoveHandler = (e) => { //tracks user's mouse input
+const moveHandler = (e) => { //tracks user's mouse input
     let relX = e.x - canvasPosition.left;
 
     if(relX > 0 && relX < canvas.width){
@@ -53,7 +53,8 @@ const mouseMoveHandler = (e) => { //tracks user's mouse input
     }
 };
 
-canvas.addEventListener("mousemove", mouseMoveHandler, false);
+canvas.addEventListener("mousemove", moveHandler, false);
+canvas.addEventListener("touchmove", moveHandler, false);
 
 
 //  ***     Defining HTML elements as JS variables      ***
@@ -69,6 +70,7 @@ const difficultyElem = document.getElementById('difficulty');
 const speedOutput = document.getElementById('speedOutput');
 const iplayer = document.getElementById('iplayer');
 const tutorial = document.getElementById('tutorial');
+const mobileStart = document.getElementById('mobile-start');
 
 let difficulty; //stores difficulty
 let isMobile = false;
@@ -530,9 +532,50 @@ const startScreen = () => {
     if(menuActive){
         
         if(isMobile){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            drawBackground();
+
+            ctx.font = canvas.width / 60 +'px DotGothic16';
+            ctx.fillStyle = 'white';
+            ctx.textAlign = "center";
+            ctx.fillText('Energy weapons are down!', canvas.width / 2, canvas.height / 2 + 50, 900);
+            ctx.fillText('Pass through the center of gates to manage the enemy horde.', canvas.width / 2, canvas.height / 2 + 75, 900);
+            ctx.fillText('Beware of deadly mines at the edge of gates!', canvas.width / 2, canvas.height / 2 + 100, 900);
+
+            player.update(); //player methods placed here to create z-index effect
+
+            ctx.font = canvas.width / 20 + 'px Orbitron'; //player sprite is hidden behind title but not other text hence why it is coded here
+            ctx.fillStyle = `hsl(${hue}, 100%, 35%)`; //hsl colour change effect
+            ctx.textAlign = "center";
+            ctx.fillText('AGAINST ALL ODDS', canvas.width / 2, canvas.height / 2 - 25, 800, 200);
+
+            hue++; //changes hsl value every animation frame
+
+            requestAnimationFrame(startScreen);
 
         }else if(isTablet){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+            drawBackground();
+
+            ctx.font = canvas.width / 60 +'px DotGothic16';
+            ctx.fillStyle = 'white';
+            ctx.textAlign = "center";
+            ctx.fillText('Energy weapons are down!', canvas.width / 2, canvas.height / 2, 900);
+            ctx.fillText('Pass through the center of gates to manage the enemy horde.', canvas.width / 2, canvas.height / 2 + 50, 900);
+            ctx.fillText('Beware of deadly mines at the edge of gates!', canvas.width / 2, canvas.height / 2 + 100, 900);
+
+            player.update(); //player methods placed here to create z-index effect
+
+            ctx.font = canvas.width / 20 + 'px Orbitron'; //player sprite is hidden behind title but not other text hence why it is coded here
+            ctx.fillStyle = `hsl(${hue}, 100%, 35%)`; //hsl colour change effect
+            ctx.textAlign = "center";
+            ctx.fillText('AGAINST ALL ODDS', canvas.width / 2, canvas.height / 2 - 100, 800, 200);
+
+            hue++; //changes hsl value every animation frame
+
+            requestAnimationFrame(startScreen);
         }else{
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -611,6 +654,11 @@ window.addEventListener('resize', () => {
 document.addEventListener('fullscreenchange', () => {
     canvas.width = document.documentElement.clientWidth - 5; //adjust canvas width if browser is resized
     canvas.height = document.documentElement.clientHeight - 5; //adjust canvas height if browser is resized
+});
+
+document.getElementById('mobile-start').addEventListener('click', () => {
+    animate();
+    playSFX(effects[3]);
 });
 
 document.getElementById('restartButton').addEventListener('click', () => {
