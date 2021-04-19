@@ -94,7 +94,7 @@ The 2 orange circles at the edge of the sprite are deadly mines which end the ga
 
 #### Background
 
-In 2D game development, backdrops are often used to add depth & context the canvas & individual game elements.
+In 2D game development backdrops are often used to add depth, give context to the canvas & individual game elements. They provide something for the user's imagination  to work with.
 
 ###### Default Background
 
@@ -104,22 +104,27 @@ As the default background, I have chosen an image of a horizon in the depth of o
 
 This array is responsible for storing background image file names as strings. This array will later be used to implement user customisation.
 
-## Sound
+#### Sound
 
-Custom sound effects were recorded for this project by DJ green. 
+All sound effects & background tracks were recorded for this project by DJ green (except the gem collected SFX)
 
-#### Bandcamp Player (Soundtrack)
+###### Bandcamp Player (Soundtrack)
 
 At the start screen, the user is able to choose their soundtrack from an embedded Bandcamp playlist. 
 All backing tracks have been produced by DJ Green. Expressed permission has been given for the use of all audio used in this project.
 
-#### Gate Destruction Effect
+###### Game Start Sound Effect
 
-This sound effect was custom-made to provide the user with aural feedback whenever a gate is successfully destroyed. 
+When the user starts/restarts the game, this sound effect will be played.
 
-#### Bandcamp Embedded Player
+###### Gate Destruction Sound Effect
 
-This element is only visible on the start screen and disappears once playing the game. It allows the user to choose from several tracks, adding another level of user customisation.
+This sound effect was custom-made to provide the user with aural feedback whenever a gate is successfully destroyed. When choosing the sound design for this effect, we wanted to emmulate the sound of an explosion in space. 
+It is well known that sound waves cannot travel through the vaccum of space, but this was our thought process when designing the sound file.
+
+###### Gem Collected Sound Effect
+
+This sound effect was sourced from [freesound.org](https://freesound.org/) in order to provide feedback to the user whenever they have successfully collected a gem.
 
 
 ### Implementation
@@ -141,13 +146,13 @@ The state of these customisable elements is then saved for later sessions using 
 
 #### Background
 
-A collection of backdrops have been prepared and their file locations stored within the array. At the start screen, this array is used during user customisation to change backdrops.
+A collection of backdrops have been prepared and strings of their file locations have been stored within an array. At the start screen, this array is used for user customisation in order to change the background image.
 
 
 #### Difficulty
 
 At the start screen, a slider is provided to the user to allow for some further customisation. The difficulty variable is linked to the enemy speed. The user has the ability to choose from 5 different difficulty levels.
-In order to prevent users selecting the lowest difficulty in order to get a high score, points generated from each game event are directly corelated to the difficulty variable.
+In order to prevent users selecting the lowest difficulty in order to get a high score, points generated from each game event are directly correlated to the difficulty variable.
 
 
 ### Design Choices
@@ -159,6 +164,10 @@ Looking back on this decision, I believe it was a great choice. It has allowed m
 
 #### Hit box (Hit marker) Detection
 
+Hit Detection is probably the most crucial element of a satisfying video game. Below you can see an image of how the hit detection has been implemented within this application.
+For the gate sprites, four points are used to implement hit detection. Two inboard hit markers which are used by the player to clear the gate & two outboard markers, one on either side of the sprite which will kill the player upon contact.
+Once per frame, the distance between the player and these four hit markers are calculated allowing them to be used for hit detection.
+
 #### 
 
 #### User Input Choices
@@ -168,9 +177,12 @@ Looking back on this decision, I believe it was a great choice. It has allowed m
 Due to the nature of JavaScript's event listening system, a choice between 2 player input methods on desktop had to be made. 
 The decision was between the traditional WASD directional input or using the mouse click to move to position. Between these two, the 'point and click' was chosen due to its ease of use.
 Unfortunately after user testing, it was found that this directional input from the user didn't have the correct gameplay feel due to the lack of accuracy & predictability.
-In the final implementation, the JavaScript event listener 'movemove' was used. This directional input allows for greater control as the player sprite smoothly follows the cursor of the mouse.
+In the final implementation, the JavaScript event listener 'mousemove' was used. This directional input allows for greater control as the player sprite smoothly follows the cursor.
 
 ##### Mobile/Tablet Input
+
+For the mobile & tablet implementation, the previous method of user input wouldn't be enjoyable to the user. A new method of user input was needed to account for the touch screen.
+When thinking of possible options, touch drag was the only one that stood out as enjoyable to use.
 
 #### Start Menu Design
 
@@ -202,21 +214,62 @@ The font was designed to be pixelated in order to emulate how text used to look 
 
 
 
-## Existing Features
+## Key Elements (Classes & Functions)
 
+### Classes
+
+This project consists of three distinct classes which allow us to create instances of different types of sprites.
+
+#### Player Class
+
+The Player class will only ever create one instance per game. Upon game start, the instance of the player class is positioned in the center of the canvas.
+
+#### Enemy Class
+
+Instances of the enemy class are created once per second at a randomly selected corner of the canvas. As the game progresses, the number of enemy sprites generated increases.
+
+#### Gate Class
+
+Instances of the gate class are positioned randomly on the canvas, this allows the game to stay fresh as no two games are the same.
+
+### Functions
+
+#### Initial Spawn Function
+
+This essential function allows for a large amount of enemy & gate sprites to be created before the game ever begins. It is called as soon as the DOM has been loaded successfully.
+It creates 500 instances of both enemy & gate sprites then places them into their respective arrays for later use.
+
+#### Game Loop Function
+
+This function is called every time the animate function is called recursively. It is responsible for the spawning of enemy & gate sprites on screen. It also looks after hit detection.
+
+#### Check Record Function
+
+Upon player death, this function is called in order to compare their score with the highest score recorded in their local storage.
+If they have successfully achieved a high score, the user will be notified within the game over modal.
 
 ## Performance
 
 #### Image Resizing & Compression
+
+All background images were compressed using the website outlined below. This significantly reduces load times when the user calls the changeBackground function as each image takes less time to load.
 
 #### Autoprefixing
 
 ## Technologies Used
 
 
-## Against All Odds - Testing details
 
-### Testing
+## Testing
+
+#### User Testing
+
+##### Gate Hit Marker Testing
+
+Accurate hit detection is essential for any game worth it's salt. Without it, the user cannot trust the application to perform predictability.
+In order to test this in isolation, enemy spawning was disabled. This allows the tester to accurately map each hit marker without having to avoid enemy sprites.
+The tester then passes over specific point of the gate sprite to see if the desired effect is achieved. For example, the tester will target a mine on a specific side of the gate sprite.
+They will then test the outer limit of this point's hit detection and edit the location of this hit marker is needed.
 
 #### Validation
 
@@ -224,7 +277,7 @@ The font was designed to be pixelated in order to emulate how text used to look 
 * [W3C CSS Validation](https://jigsaw.w3.org/css-validator/)
 * [JavaScript Validation](https://jshint.com/)
 
-The developer used W3C HTML, W3C CSS & JSHint validation services in order to check the validity of their code.
+This developer used W3C HTML, W3C CSS & JSHint validation services in order to check the validity of their code.
 
 #### Performance Testing
 
@@ -265,9 +318,7 @@ Due to this, too much complex logic required within each frame will cause the fr
 When designing the main game loop, it is essential to reduce nesting as much as is practical. In the early development stages, this application suffered significantly from this issue.
 The code was then streamlined to remove any unnecessary nesting and a significant increase in frame rate was observed.
 
-##### Not all gates are being drawn, leading to random deaths
-
-
+##### Prevent Default Behavior During Touch Event
 
 ##### Gates not rotating after timer was added
 
