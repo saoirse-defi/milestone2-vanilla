@@ -55,7 +55,7 @@ const mouseMoveHandler = (e) => { //tracks user's mouse input
 
 canvas.addEventListener("mousemove", mouseMoveHandler, false);
 
-const touchMoveHandler = (e) => {
+/*const touchMoveHandler = (e) => {
     let relX = e.touchLocation.pageX - canvasPosition.left;
 
     if(relX > 0 && relX < canvas.width){
@@ -64,7 +64,7 @@ const touchMoveHandler = (e) => {
     }
 };
 
-canvas.addEventListener("touchmove", touchMoveHandler, false);
+canvas.addEventListener("touchmove", touchMoveHandler, false); */
 
 //  ***     Defining HTML elements as JS variables      ***
 const scoreElement = document.getElementById('scoreElement');
@@ -80,6 +80,7 @@ const speedOutput = document.getElementById('speedOutput');
 const iplayer = document.getElementById('iplayer');
 const tutorial = document.getElementById('tutorial');
 const mobileStart = document.getElementById('mobileStart');
+const mobileBackground = document.getElementById('mobileBackground');
 
 let difficulty; //stores difficulty
 let isMobile = false;
@@ -435,6 +436,7 @@ const game = { //thinking of changing object name to game due to it's interactio
                 modal.style.visibility = 'visible'; //modal popup upon death
                 deathInfo.innerHTML = "KILLED BY MINE 1"; //death info pop up upon death
                 deathInfo.style.visibility = 'visible';
+                multiplierElement.style.visibility = 'hidden';
             }
 
             if(this.gateArray[i].delta > 2000 && this.gateArray[i].distanceMine2 < player.width / 2){
@@ -443,6 +445,7 @@ const game = { //thinking of changing object name to game due to it's interactio
                 modal.style.visibility = 'visible'; //modal popup upon death
                 deathInfo.innerHTML = "KILLED BY MINE 2"; //death info pop up upon death
                 deathInfo.style.visibility = 'visible';
+                multiplierElement.style.visibility = 'hidden';
             }
 
             if(this.gateArray[i].distanceClearGate1 < player.width / 2 || this.gateArray[i].distanceClearGate2 < player.width / 2){ //when player passes through gate, enemies with distance < 200 are killed
@@ -473,6 +476,7 @@ const game = { //thinking of changing object name to game due to it's interactio
                     modal.style.visibility = 'visible';
                     deathInfo.innerHTML = "KILLED BY ALIEN";
                     deathInfo.style.visibility = 'visible';
+                    multiplierElement.style.visibility = 'hidden';
                 }
 
                 if(this.enemyArray[k].isParticle && this.enemyArray[k].distance < 20){
@@ -667,7 +671,7 @@ document.addEventListener('fullscreenchange', () => {
     canvas.height = document.documentElement.clientHeight - 5; //adjust canvas height if browser is resized
 });
 
-document.body.addEventListener("touchstart", function (e) {
+/*document.body.addEventListener("touchstart", function (e) {
     if (e.target == canvas) {
         e.preventDefault();
     }
@@ -677,20 +681,32 @@ document.body.addEventListener("touchend", function (e) {
     if (e.target == canvas) {
         e.preventDefault();
     }
-}, false);
+}, false);*/
 
 document.body.addEventListener("touchmove", function (e) {
-    if (e.target == canvas) {
-        e.preventDefault();
+    
+    let touchLocation = e.targetTouches[0];
+
+    let relX = touchLocation.screenX - canvasPosition.left;
+
+    if(relX > 0 && relX < canvas.width){
+        mouse.x = touchLocation.screenX - canvasPosition.left;
+        mouse.y = touchLocation.screenY - canvasPosition.top;
     }
 
-    let touchLocation = e.targetTouches[0];
+    e.preventDefault();
 
 }, false);
 
 document.getElementById('mobileStart').addEventListener('click', () => {
     animate();
     playSFX(effects[3]);
+    difficultyElem.style.visibility = 'hidden';
+});
+
+document.getElementById('mobileBackground').addEventListener('click', () => {
+    _background.src = backgroundArr[randomBackground()]; //triggers background change
+    localStorage.setItem('background#', _background.src); //stores background choice in local storage for later use
 });
 
 document.getElementById('restartButton').addEventListener('click', () => {

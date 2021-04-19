@@ -55,12 +55,23 @@ body{
     color: green;
 }
 
+#mobileBtnContainer{
+    position: fixed;
+    display: flex;
+}
+
 #mobileStart{
     visibility: hidden;
     background-color: orangered;
     color: black;
-    position: fixed;
 }
+
+#mobileBackground{
+    visibility: hidden;
+    background-color: orangered;
+    color: black;
+}
+
 
 /* End of difficulty, tutorial & iplayer styling */
 
@@ -87,7 +98,7 @@ body{
     position: fixed;
     color: green;
     bottom: 10px;
-    left: 50px;
+    left: 10px;
     font-size: xx-large;
     visibility: hidden;
 }
@@ -173,6 +184,50 @@ body{
 
 /* Start of Media Queries*/
 
+@media screen and (max-width: 768px){
+    #mobileStart{
+        visibility: visible;
+    }
+
+    #mobileBackground{
+        visibility: visible;
+    }
+
+    #modal{
+        max-width: 90%;
+        max-height: 60%;
+    }
+
+    #modalScore{
+    font-weight: 900;
+    font-size: xx-large;
+    color: white;
+    }   
+
+    #highScoreLabel{
+    font-size: x-large;
+    }
+
+    #deathInfo{
+        font-size: x-large;
+    }
+
+    #pointsLabel{
+        font-size: x-large;
+    }
+
+    #restartButton{
+        width: 85%;
+        height: 10%;
+    }
+
+    #homeButton{
+        width: 85%;
+        height: 10%;
+    }
+
+}
+
 @media screen and (max-width: 480px) {
     #iplayer{
         max-width: 125px;
@@ -203,7 +258,4 @@ body{
         max-width: 15px;
     }
 
-    #mobileStart{
-        visibility: visible;
-    }
 }

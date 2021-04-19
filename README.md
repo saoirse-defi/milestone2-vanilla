@@ -134,7 +134,7 @@ The Canvas is an HTML element used to draw graphics via scripting. In this case,
 
 This refers to the function which is repeatedly called using recursion. Each time the function is called, a single frame is printed on screen.
 
-### User Cusomisation
+### User Customisation
 
 For this milestone project, I have implemented 2 separate elements of customisation for the user. The user is able to apply different backdrops to the canvas, and they also have the ability to increase or decrease the game's difficulty.
 The state of these customisable elements is then saved for later sessions using local storage.
