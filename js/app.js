@@ -696,7 +696,7 @@ document.body.addEventListener("touchmove", function (e) {
 
     e.preventDefault();
 
-}, false);
+}, {passive: false}, false);
 
 document.getElementById('mobileStart').addEventListener('click', () => {
     animate();
@@ -727,5 +727,6 @@ document.addEventListener("DOMContentLoaded", () => {
     initialSpawn(); //spawns sprites for later use in game
     startScreen(); //renders start screen
     checkDevice();
+    gameMode(speedSlider.value); //provides difficulty name string to difficulty
 });
 
