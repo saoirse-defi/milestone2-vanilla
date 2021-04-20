@@ -2,21 +2,21 @@
 
 ## Introduction
 
-This repository represents my milestone project 2 for Code Institute. For this milestone project, I have created a 2D spaceship survival game built using JavaScript and HTML Canvas. Developed using vanilla JavaScript, no additional libraries were used. 
-I have taken inspiration from a childhood video game called Geometry Wars, specifically a game mode called Pacifism.
+This repository represents my submission of milestone project 2 for Code Institute. For this milestone project I have created a 2D spaceship survival game built using JavaScript & HTML Canvas. Developed using vanilla JavaScript, no additional libraries were used. 
+I have taken inspiration from a childhood video game called Geometry Wars, specifically one of it's game modes called Pacifism.
 As a child, I spend countless hours on this mode trying to beat my friend's high scores. The concept is simple, you don't have any projectiles so the only way to survive is to pass through gates in order to destroy nearby ships and to thin the ever increasing hoarde.
-The goal is to survive for as long as possible. Similarly to other arcade games, there is no possible way to beat the game. You must simply try and survive for as long as you can.
-Enemy speed increases when your score passes certain increments. This will be outlined to the user using custom sound effects.
-Cusomisation has been implemented in this application, the user has the ability to change the background and game difficulty at the start screen. Local storage is then used to track user customisation in between sessions.
+The goal is to survive for as long as possible and rack up the highest score you can. Similarly to other arcade games, there is no possible way to beat the game. You must simply try and survive for as long as you can.
+The amount of enemies that spawn increases as the game progresses, reducing the margin for error.
+Cusomisation has been implemented within this application. The user has the ability to change the background image and game difficulty while waiting at the start screen. Local storage is then used to track states of user customisation between sessions.
 
 ### Considerations 
 
-Geometry Wars 2: Pacifism was released on traditional games consoles with a large amount of screen real estate & dedicated controller. 
+Geometry Wars 2: Pacifism was released on traditional games consoles with a large amount of screen real estate & a dedicated controller. It is a game that requires pin-point accuracy which unfortunately couldn't be achieved for smaller screens in this implementation.
 While implementing the mobile version of this application, I have encountered several limitations that dramatically reduce the enjoyment one gets from playing this game.
-In the start menu on desktop, the user is able to select their desired difficulty but for mobile I have decided to limit game speed to amateur. 
-This is due to reduced time the player has to react to enemy sprites. Touch drag was selected to move the player sprite. 
+In the start menu on desktop, the user is able to select their desired difficulty but for mobile version I have decided to limit game speed to amateur and to hide the visible of this element ensuring the user cannot access it. 
+Due to the small screen, there is a reduction in the amount of time the player has to react to enemy sprites. Touch drag was selected to move the player sprite. 
 At the early stages of design, this control method seemed like this best of a bad bunch, but it too lacks the necessary accuracy to play the game as intended.
-In order to appreciate this game as it was intended, it is recommended to play this application on a desktop/laptop with a mouse.
+In order to appreciate this game as it was designed, it is recommended to play this application on a desktop/laptop with a mouse. The improved accuracy due the mouse & the increased screen size allows you to increase the game's difficulty.
 
 ## UX
 
@@ -31,10 +31,10 @@ The target audience for this game is users of any age.
 
 The player's goals are:
 
-* That the game is fun to play & keeps me coming back to beat my high score.
+* That the game is fun to play & keeps the player coming back to beat their high score.
 * Controls that are intuitive & easy to learn.
 * Sprite & Background designs that inspire emotion.
-* Audio cues that outline specific game events.
+* Audio cues that outline specific game events to provide feedback.
 
 Against All Odds has achieved these player needs by:
 
@@ -42,16 +42,16 @@ Against All Odds has achieved these player needs by:
 * The amount of buttons within the application have been kept to a minimum.
 * Controlling the player sprite is done by simply moving the cursor to where you would like the user to travel (for mobile devices, this will be accomplished by dragging your finger across the screen).
 * The user is notified of significant game events using audio cues.
-* These audio cues occur at game start, game end & whenever a user successfully clears a gate.
+* These audio cues occur at game start, game end, whenever a user successfully clears a gate & whenever gems are collected.
 * Making it easy to restart the game loop with minimal downtime by the click of a single button.
 
 
 #### Developer & Business Goals
 
 * The main developer goal for this project is to learn as much as possible about JavaScript & HTML5 canvas.
-* Adding another project that the developer is passionate about to their portfolio.
+* To add another project that the developer is passionate about to their portfolio.
 * To create a well-designed application that is free of any bugs which would cause the user stop playing prematurely.
-* To design a satisfying game loop that is fair to the player.
+* Designing a satisfying game loop that is fair to the player.
 
 ### User stories
 
@@ -83,8 +83,8 @@ As the theme of the game is science fiction, it naturally limited my search.
 
 ###### Player Sprite (Human Mining Station)
 
-As mentioned above, the point and click method was chosen as user input. This introduced a UX issue that would look disconcerting to the end user. 
-Depending on where the user clicked, the sprite would appear either upside down or at the incorrect angle. Due to this, circular sprite was chosen for the player.
+As mentioned above, the player sprite follows the cursor around the canvas. This introduced a UX issue that would look disconcerting to the end user. 
+Depending on where the user clicked on the canvas, the sprite would appear either upside down or at the incorrect angle. Due to this, circular sprite was chosen for the player.
 This allows the sprite to appear the same, no matter the angle or direction of user input.
 
 ![Player Sprite](sprites/spacestation.png)
@@ -92,13 +92,13 @@ This allows the sprite to appear the same, no matter the angle or direction of u
 ###### Enemy Sprite (Alien Drone Ship)
 
 When choosing the enemy sprite, I wanted the design to give the user a sense of mortality and dread. The ship had to look like it belonged to a terrifying alien race hellbent on conquering human civilisation.
-As the enemy sprites travel in hoards, the sprite design needed to look good with multiple sprites close together or overlapping.
+As the enemy sprites travel in hoards, the sprite design needed to look good in proximity to other enemy sprites.
 
 ![Enemy Sprite](sprites/enemy.png)
 
 ###### Gate Sprite (Used to thin Alien horde)
 
-This sprite was designed and created by myself using Microsoft Paint. 
+This sprite was designed and created by myself using Microsoft Paint emulating the gate sprites from the original source material.
 The 2 orange circles at the edge of the sprite are deadly mines which end the game if touched. The user must pass through the center of the gate in order to clear the surrounding area of enemy sprites.
 
 ![Gate Sprite](sprites/gate5.png)
@@ -132,7 +132,7 @@ When the user starts or restarts the game, this sound effect will be played to l
 ###### Gate Destruction Sound Effect
 
 This sound effect was custom-made to provide the user with aural feedback whenever a gate is successfully destroyed. When choosing the sound design for this effect, we wanted to emmulate the sound of an explosion in space. 
-It is well known that sound waves cannot travel through the vaccum of space, but this was our thought process when designing the sound effect.
+It is well known that sound waves cannot travel through the vacuum of space, but this was our thought process when designing the sound effect.
 
 ###### Gem Collected Sound Effect
 
@@ -146,7 +146,7 @@ This section will outline the technologies & processes used in the design & impl
 ###### HTML Canvas
 
 The Canvas is an HTML element used to draw graphics via scripting. In this case, our scripting language will be JavaScript.
-The JavaScript code can access the drawable area of the canvas allowing for dynamically generated graphics. Many things can be applied to the canvas including graphs, animations, image composition & video games. 
+The JavaScript code can access the area of the canvas allowing for dynamically generated graphics. Many things can be applied to the canvas including graphs, animations, image composition & video games. 
 
 ###### Animation Loop
 
@@ -167,7 +167,7 @@ At the start screen, this array is then used for user customisation in order to 
 ###### Difficulty
 
 At the start screen, a slider is provided to the user to allow for some further customisation. The difficulty variable is linked to the enemy speed. The user has the ability to choose from 5 different difficulty levels.
-In order to prevent users selecting the lowest difficulty in order to get a high score, points generated from each game event are directly correlated to the difficulty variable.
+In order to prevent users selecting the lowest difficulty in order to get a high score, the amount of points generated from each game event are directly correlated to the difficulty variable.
 
 
 ### Design Choices
@@ -188,6 +188,7 @@ Once per frame, the distance between the player and these four hit markers are c
 #### User Input Choices
 
 During the design process of a video game, choosing the correct control scheme is an essential as it's the only physical connection that the user has with the application.
+Two different control methods had to be designed, one for desktop and another for mobile.
 
 ###### Desktop Controls
 
@@ -271,10 +272,13 @@ The Player class will only ever create one instance per game. Upon game start, t
 ###### Enemy Class
 
 Instances of the enemy class are created once per second at a randomly selected corner of the canvas. As the game progresses, the number of enemy sprites generated increases.
+They are attracted to the player sprite and travel at a constant speed allowing the user to guess where they will be frame by frame.
 
 ###### Gate Class
 
 Instances of the gate class are positioned randomly on the canvas, this allows the game to stay fresh as no two games are the same.
+Each gate is give a random value of rotation velocity from a given range. This allows each gate to feel different and increases the visual appeal to the user.
+
 
 ### Functions
 
@@ -285,11 +289,11 @@ It creates 500 instances of both enemy & gate sprites then places them into thei
 
 ###### Game Loop Function
 
-This function is called every time the animate function is called recursively. It is responsible for the spawning of enemy & gate sprites on screen. It also looks after hit detection.
+This function is called every time the animate function is called recursively. It is responsible for the spawning of enemy & gate sprites on screen. It also looks after the majority of array management, hit detection & totaling the user's score.
 
 ###### Check Record Function
 
-Upon player death, this function is called in order to compare their score with the highest score recorded in their local storage.
+Upon player death, this function is called in order to compare the user's score against the highest score recorded in their local storage.
 If they have successfully achieved a high score, the user will be notified within the game over modal.
 
 ###### Add Commas To number
@@ -333,17 +337,20 @@ This developer used W3C HTML, W3C CSS & JSHint validation services in order to c
 
 ###### Cached Sprites
 
+During the application initialisation, two separate arrays are created and fills 500 sprites each. One array is for enemy sprites & the other for gate sprites.
+This allows sprites to appear on screen the moment the user starts the game.
+
 ###### Compressed images
 
+As with any web application, large image file sizes can significantly affect page load times. Due to this, all background images were compressed to 50% their size.
+This amount of compression was chosen as it lead to a dramatic reduction in load times when the user wished to change the background without severely affecting image quality.
+
 ###### Reusing sprites once they have left the screen
-  
-#### Common paths though the website
 
-###### Start Screen > Game > Start Screen
+Once enemy/gate sprites are destroyed and removed from the canvas, they are added back into the cache for later use. This allows for the player to keep playing as long as possible without running out of pre-loaded sprites.
+If all 500 cached sprites were to appear on screen at once then this could be an issue. But this is not a major concern as with that many sprites on screen it would be impossible for the user to stay alive along with the extremely low frame rate.
 
-* A back button represented by a white leftwards arrow was added to each product page to ensure that site visitors can easily return to the shop page. A link in the navbar also has this functionality, the second button was added as it follows modern online shopping conventions.
 
-##### Testing client's stories outlined in the UX section:
 
 ### Screenshots of finished project
 
@@ -360,16 +367,18 @@ This developer used W3C HTML, W3C CSS & JSHint validation services in order to c
 ###### Overlap detection for swarm behavior
 
 At the start of the project when designing sprite behavior, I wanted to implement overlap detection. Each enemy sprite in the swarm would calculate the distance to the enemy closest to them.
-This distance would be used to move the 2 enemy sprites apart preventing any sprite overlap from happening. This feature was removed from the final implementation as it put too much strain on the call stack per animation frame.
-Enemy sprite movement looked jittery and frame rate would drop significantly as the amount of enemies on the screen increased.
+This distance would be used to move the 2 enemy sprites apart preventing any sprite overlap from happening causing the enemy bundle together into a swarm with an ever-increasing radius.
+Unfortunately this feature was removed from the final implementation as it put too much strain on the call stack per animation frame.
+Enemy sprite movement looked jittery and frame rate would drop significantly as the amount of enemies on the screen. This is due to the exponential number of function calls the swarm would need for each frame.
 
 ###### Hit box not following gate rotation 
 
-When implementing rotational movement for gate sprites, I noticed that the position of certain hit markers were mistranslated. Using some simple trigonometry, I was able to calculate the positioning needed. 
+When implementing rotational movement for gate sprites, I noticed that the position of certain hit markers were mistranslated. Using some simple trigonometry, I was able to calculate the rotation transformation needed. 
+This is outlined within the update method of the gate class.
 
 ###### Gate detection not consistent
 
-In initial development only 1 hit marker was used to clear the gate, its location was at the dead center of the sprite. This caused some inconsistencies during gameplay as the user would sometimes not pass through the gate precisely enough and the gate sprite would remain on screen.
+In initial development only 1 hit marker was used to clear the gate, its location was at the dead center of the sprite. This caused some inconsistencies during gameplay as the user would sometimes not pass through the hit marker precisely enough and the gate sprite would remain on screen instead of successfully detonating.
 A second hit marker was added to make it easier for the user to clear the gates. This was a crucial implementation as it significantly helped the gameplay feeling and made gates more consistent. 
 
 ###### Frame rate slowing down
@@ -384,14 +393,11 @@ The code was then streamlined to remove any unnecessary nesting and a significan
 When working with a touch screen, developers will always encounter the same problem, touch drag in the y-axis will lead to either unwanted scrolling or a page reload.
 In order to overcome this, we need to prevent default events from happening.
 
-###### Gates not rotating after timer was added
-
 ###### Memory Leaks
 
 During early stages of development, low frame rate & random crashed were significant factors. 
 After consulting with my mentor, it was advised that I refactor my game loop function to avoid any unnecessary nesting while being mindful of how garbage collection is being taken care of.
 
-#### Solved bugs
 
 ## Deployment
 
