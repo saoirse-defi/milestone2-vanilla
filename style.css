@@ -1,15 +1,29 @@
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v7.0.29,
+* Autoprefixer: v9.7.6
+* Browsers: last 4 version
+*/
+
 *{
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
 }
 
 body{
     height: 98vh;
     width: 98vw;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
     margin: 0;
     background-color: black;
     font-family: 'Orbitron', sans-serif;
@@ -21,12 +35,17 @@ body{
     position: fixed;
     bottom: 0px;
     left: 0px;
-    max-width: 175px;
+    max-width: 150px;
 }
 
 #difficulty-container{
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-direction: column;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
     width: 120px;
 }
 
@@ -53,11 +72,17 @@ body{
 
 #tutorialIcon{
     color: green;
+    max-width: 50px;
 }
 
 #mobileBtnContainer{
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-direction: column;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
     max-width: 175px;
     position: fixed;
 }
@@ -124,10 +149,19 @@ body{
     left: 0;
     margin: auto;
     background-image: url('./sprites/nebula10.jpg');
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
     text-align: center;
     max-width: 35%;
     max-height: 60%;
@@ -172,10 +206,12 @@ body{
     color: black;
     width: 55%;
     height: 10%;
-    margin-bottom: 10px;
+    margin-bottom: 3px;
     border-radius: 16px;
     font-weight: 600;
     font-family: 'Orbitron', sans-serif;
+    position: relative;
+    top: 0px;
 }
 
 #homeButton{
@@ -186,6 +222,8 @@ body{
     border-radius: 16px;
     font-weight: 600;
     font-family: 'Orbitron', sans-serif;
+    position: relative;
+    top: 10px;
 }
 
 /* End of modal styling */
@@ -202,8 +240,8 @@ body{
     }
 
     #modal{
-        max-width: 90%;
-        max-height: 60%;
+        max-width: 60%;
+        max-height: 50%;
     }
 
     #modalScore{
@@ -225,12 +263,13 @@ body{
     }
 
     #restartButton{
-        width: 85%;
+        width: 65%;
         height: 10%;
+        margin-bottom: 0px;
     }
 
     #homeButton{
-        width: 85%;
+        width: 65%;
         height: 10%;
     }
 
@@ -238,32 +277,38 @@ body{
 
 @media screen and (max-width: 480px) {
     #iplayer{
-        max-width: 125px;
+        max-width: 100px;
     }
 
     #highscore{
-        max-width: 100px;
-        font-size: small;
+        max-width: 150px;
+        font-size: x-small;
     }
 
     #difficulty-container{
-        max-width: 100px;
-    }
-
-    #speedLabel{
-        font-size: small;
-    }
-
-    #speedOutput{
-        font-size: small;
-    }
-
-    #speedSlider{
         max-width: 75px;
     }
 
-    #tutorial{
+    #speedLabel{
+        font-size: x-small;
+    }
+
+    #speedOutput{
+        font-size: x-small;
+    }
+
+    #speedSlider{
+        max-width: 50px;
+    }
+
+    #tutorialIcon{
         max-width: 15px;
+        right: 30px;
+    }
+
+     #modal{
+        max-width: 100%;
+        max-height: 100%;
     }
 
 }
