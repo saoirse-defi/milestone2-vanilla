@@ -143,12 +143,12 @@ It was chosen for it's arcade-like sound while also being satisfying to listen t
 
 This section will outline the technologies & processes used in the design & implementation of this application.
 
-#### HTML Canvas
+###### HTML Canvas
 
 The Canvas is an HTML element used to draw graphics via scripting. In this case, our scripting language will be JavaScript.
 The JavaScript code can access the drawable area of the canvas allowing for dynamically generated graphics. Many things can be applied to the canvas including graphs, animations, image composition & video games. 
 
-#### Animation Loop
+###### Animation Loop
 
 In order to create animation through JavaScript & HTML5 Canvas, the animation function must call itself recursively using requestAnimationFrame.
 This principle of recursion refers to a function which calls itself creating a loop, in this case an animation loop. Each time the animation function is called, a single frame is drawn on screen.
@@ -159,12 +159,12 @@ For this milestone project, I have implemented 2 separate elements of customisat
 Also, they have the ability to increase or decrease the game's difficulty by having control over the speed of enemy sprites.
 The states of these custom elements are then saved for later sessions using local storage.
 
-#### Background
+###### Background
 
 A collection of backdrops have been prepared and strings of their file locations have been stored within an array. 
 At the start screen, this array is then used for user customisation in order to change the background image.
 
-#### Difficulty
+###### Difficulty
 
 At the start screen, a slider is provided to the user to allow for some further customisation. The difficulty variable is linked to the enemy speed. The user has the ability to choose from 5 different difficulty levels.
 In order to prevent users selecting the lowest difficulty in order to get a high score, points generated from each game event are directly correlated to the difficulty variable.
@@ -172,12 +172,12 @@ In order to prevent users selecting the lowest difficulty in order to get a high
 
 ### Design Choices
 
-##### Physics Engine Choices
+###### Physics Engine Choices
 
 Originally I had chosen to create this application using a purpose built JavaScript library (ie. PixiJS). Although after seeking advice from my mentor, he advised me that using vanilla JavaScript would be a better option as a learning exercise.
 Looking back on this decision, I believe it was a great choice. It has allowed me to better study the intricacies of the JavaScript call stack & the HTML5 Canvas.
 
-##### Hit box (Hit marker) Detection
+###### Hit box (Hit marker) Detection
 
 Hit Detection is probably the most crucial element of a satisfying video game. Below you can see an image of how the hit detection has been implemented within this application.
 For the gate sprites, four points are used to implement hit detection. Two inboard hit markers which are used by the player to clear the gate & two outboard markers, one on either side of the sprite which will kill the player upon contact.
@@ -189,14 +189,14 @@ Once per frame, the distance between the player and these four hit markers are c
 
 During the design process of a video game, choosing the correct control scheme is an essential as it's the only physical connection that the user has with the application.
 
-##### Desktop Controls
+###### Desktop Controls
 
 Due to the nature of JavaScript's event listening system, a choice between 2 player input methods on desktop had to be made. 
 The decision was between the traditional WASD directional input or using the mouse click to move to position. Between these two, the 'point and click' was chosen due to its ease of use.
 Unfortunately after user testing, it was found that this directional input from the user didn't have the correct gameplay feel due to the lack of accuracy & predictability.
 In the final implementation, the JavaScript event listener 'mousemove' was used. This directional input allows for greater control as the player sprite smoothly follows the cursor.
 
-##### Mobile/Tablet Controls
+###### Mobile/Tablet Controls
 
 For mobile & tablet implementation, a new method of user input was needed to account for the touch screen. When thinking of possible options, touch drag was the only one that stood out as enjoyable to use.
 It was a logical transition to use the JavaScript 'touchmove' event listener as 'mousemove' was implemented successfully on the desktop application.
@@ -219,24 +219,24 @@ Featured in the bottom right corner of the screen, I will see an icon shaped wit
 
 ###### Difficulty Output
 
-##### Game Over Modal Design
+###### Game Over Modal Design
 
 #### Fonts
 
 Two fonts were chosen for this project; hero font & secondary font. Both of these fonts look very different but were chosen for their science fiction design attributes.
 
-##### Hero Title Font
+###### Hero Title Font
 
 The hero font selected is name Orbitron. It was chosen as it fit nicely within the theme of science fiction and space exploration. 
 It's similar to certain fonts used for corporation logos in old sci-fi movies.
 
-##### Secondary Font
+###### Secondary Font
 
 The secondary font chosen is called Dot Gothic 16. It was designed to be pixelated in order to mimic how text used to look on older CRT monitors such as those found in vintage arcade cabinets.
 
 #### Icons
 
-##### Tutorial Icon
+###### Tutorial Icon
 
 When a user tries a game for the first time, the rules maybe unclear at first. This is why in addition to the explanation underneath the hero title, a link to a tutorial video has been provided.
 This link will open a new tab displaying a short YouTube video of the game being played. When choosing an icon for this tutorial link, it was essential to pick something that is universally known.
@@ -244,12 +244,11 @@ I decided to use a graduation cap in the final implementation as it is widely kn
 
 #### Colours
 
-##### HSL Colour Change Effect
+###### HSL Colour Change Effect
 
 After learning about the HSL colour wheel, I decided to use the animation loop to further effect. By creating a variable called hue, I was able to increment it with each animation frame which in turn would cycle through the colour wheel.
 This caused a beautiful colour change effect which I have applied to the hero title and other elements.
 
-#### Styling
 
 ## Key Elements (Classes & Functions)
 
@@ -257,41 +256,41 @@ This caused a beautiful colour change effect which I have applied to the hero ti
 
 This project consists of three distinct classes which allow us to create instances of different types of sprites.
 
-#### Player Class
+###### Player Class
 
 The Player class will only ever create one instance per game. Upon game start, the instance of the player class is positioned in the center of the canvas.
 
-#### Enemy Class
+###### Enemy Class
 
 Instances of the enemy class are created once per second at a randomly selected corner of the canvas. As the game progresses, the number of enemy sprites generated increases.
 
-#### Gate Class
+###### Gate Class
 
 Instances of the gate class are positioned randomly on the canvas, this allows the game to stay fresh as no two games are the same.
 
 ### Functions
 
-#### Initial Spawn Function
+###### Initial Spawn Function
 
 This essential function allows for a large amount of enemy & gate sprites to be created before the game ever begins. It is called as soon as the DOM has been loaded successfully.
 It creates 500 instances of both enemy & gate sprites then places them into their respective arrays for later use.
 
-#### Game Loop Function
+###### Game Loop Function
 
 This function is called every time the animate function is called recursively. It is responsible for the spawning of enemy & gate sprites on screen. It also looks after hit detection.
 
-#### Check Record Function
+###### Check Record Function
 
 Upon player death, this function is called in order to compare their score with the highest score recorded in their local storage.
 If they have successfully achieved a high score, the user will be notified within the game over modal.
 
 ## Performance
 
-#### Image Resizing & Compression
+###### Image Resizing & Compression
 
 All background images were compressed using the website outlined below. This significantly reduces load times when the user calls the changeBackground function as each image takes less time to load.
 
-#### Autoprefixing
+###### Autoprefixing
 
 ## Technologies Used
 
@@ -301,7 +300,7 @@ All background images were compressed using the website outlined below. This sig
 
 #### User Testing
 
-##### Gate Hit Marker Testing
+###### Gate Hit Marker Testing
 
 Accurate hit detection is essential for any game worth it's salt. Without it, the user cannot trust the application to perform predictability.
 In order to test this in isolation, enemy spawning was disabled. This allows the tester to accurately map each hit marker without having to avoid enemy sprites.
@@ -322,47 +321,47 @@ This developer used W3C HTML, W3C CSS & JSHint validation services in order to c
   
 #### Common paths though the website
 
-##### Start Screen > Game > Start Screen
+###### Start Screen > Game > Start Screen
 
 * A back button represented by a white leftwards arrow was added to each product page to ensure that site visitors can easily return to the shop page. A link in the navbar also has this functionality, the second button was added as it follows modern online shopping conventions.
 
-#### Testing client's stories outlined in the UX section:
+##### Testing client's stories outlined in the UX section:
 
 
 
 
 ## Bugs Discovered:
 
-##### Overlap detection for swarm behavior
+###### Overlap detection for swarm behavior
 
 At the start of the project when designing sprite behavior, I wanted to implement overlap detection. Each enemy sprite in the swarm would calculate the distance to the enemy closest to them.
 This distance would be used to move the 2 enemy sprites apart preventing any sprite overlap from happening. This feature was removed from the final implementation as it put too much strain on the call stack per animation frame.
 Enemy sprite movement looked jittery and frame rate would drop significantly as the amount of enemies on the screen increased.
 
-##### Hit box not following gate rotation 
+###### Hit box not following gate rotation 
 
 When implementing rotational movement for gate sprites, I noticed that the position of certain hit markers were mistranslated. Using some simple trigonometry, I was able to calculate the positioning needed. 
 
-##### Gate detection not consistent
+###### Gate detection not consistent
 
 In initial development only 1 hit marker was used to clear the gate, its location was at the dead center of the sprite. This caused some inconsistencies during gameplay as the user would sometimes not pass through the gate precisely enough and the gate sprite would remain on screen.
 A second hit marker was added to make it easier for the user to clear the gates. This was a crucial implementation as it significantly helped the gameplay feeling and made gates more consistent. 
 
-##### Frame rate slowing down
+###### Frame rate slowing down
 
 Animation in JavaScript uses a function called requestAnimationFrame in combination with a process called recursion to generate each frame seen on screen.
 Due to this, too much complex logic required within each frame will cause the frame rate to drop. The JavaScript call stack can only handle so many calls per frame.
 When designing the main game loop, it is essential to reduce nesting as much as is practical. In the early development stages, this application suffered significantly from this issue.
 The code was then streamlined to remove any unnecessary nesting and a significant increase in frame rate was observed.
 
-##### Prevent Default Behavior During Touch Event
+###### Prevent Default Behavior During Touch Event
 
 When working with a touch screen, developers will always encounter the same problem, touch drag in the y-axis will lead to either unwanted scrolling or a page reload.
 In order to overcome this, we need to prevent default events from happening.
 
-##### Gates not rotating after timer was added
+###### Gates not rotating after timer was added
 
-##### Memory Leaks
+###### Memory Leaks
 
 During early stages of development, low frame rate & random crashed were significant factors. 
 After consulting with my mentor, it was advised that I refactor my game loop function to avoid any unnecessary nesting while being mindful of how garbage collection is being taken care of.
