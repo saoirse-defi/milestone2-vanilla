@@ -379,7 +379,7 @@ This is outlined within the update method of the gate class.
 ###### Gate detection not consistent
 
 In initial development only 1 hit marker was used to clear the gate, its location was at the dead center of the sprite. This caused some inconsistencies during gameplay as the user would sometimes not pass through the hit marker precisely enough and the gate sprite would remain on screen instead of successfully detonating.
-A second hit marker was added to make it easier for the user to clear the gates. This was a crucial implementation as it significantly helped the gameplay feeling and made gates more consistent. 
+A second hit marker was added to make it easier for the user to clear the gates. This was a crucial improvement as it significantly helped the gameplay feeling and made gates more consistent. 
 
 ###### Frame rate slowing down
 
@@ -391,11 +391,11 @@ The code was then streamlined to remove any unnecessary nesting and a significan
 ###### Prevent Default Behavior During Touch Event
 
 When working with a touch screen, developers will always encounter the same problem, touch drag in the y-axis will lead to either unwanted scrolling or a page reload.
-In order to overcome this, we need to prevent default events from happening.
+In order to overcome this issue, we needed to prevent default browser events from being initiated.
 
 ###### Memory Leaks
 
-During early stages of development, low frame rate & random crashed were significant factors. 
+During early stages of development, low frame rate & random application crashes were significant factors. 
 After consulting with my mentor, it was advised that I refactor my game loop function to avoid any unnecessary nesting while being mindful of how garbage collection is being taken care of.
 
 
