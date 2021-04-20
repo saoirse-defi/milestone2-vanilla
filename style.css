@@ -231,12 +231,18 @@ body{
 /* Start of Media Queries*/
 
 @media screen and (max-width: 768px){
+    #mobileBtnContainer{
+        max-width: 225px;
+    }
+
     #mobileStart{
         visibility: visible;
+        width: 175px;
     }
 
     #mobileBackground{
         visibility: visible;
+        width: 175px;
     }
 
     #modal{
