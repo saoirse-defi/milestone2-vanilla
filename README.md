@@ -212,14 +212,22 @@ I have allowed the user control the player sprite within the start menu. This gi
 
 Featured in the bottom right corner of the screen, I will see an icon shaped with a graduation cap. When the user clicks the icon, a new tab will bring the user to YouTube in order to watch a short demo video of how the game is designed to played.
 
-
 ###### High Score Element
+
+Located in the top right corner of the canvas element, this element checks local storage for high score upon page load and after each player death.
 
 ###### Bandcamp Player
 
+This is an embedded iframe which streams a playlist from Bandcamp. When choosing the correct method for providing the user with a background track, the embedded Bandcamp player was the only logical choice due to the sound file's size.
+Applying too much compression to the audio would result in a terrible listening experience.
+
 ###### Difficulty Output
 
+In the top left corner of the canvas, the user is able to select from one of five difficulties. Each difficulty has a specific string which it displayed to the user describing each level of difficulty taking inspiration from game such as Halo & Doom.
+
 ###### Game Over Modal Design
+
+In order to notify the user of death, a modal has been designed to display user points, the cause of death & whether a high score was achieved. Here, the user can click one of two buttons, one to restart the game & one to return to the start screen.
 
 #### Fonts
 
@@ -284,6 +292,11 @@ This function is called every time the animate function is called recursively. I
 Upon player death, this function is called in order to compare their score with the highest score recorded in their local storage.
 If they have successfully achieved a high score, the user will be notified within the game over modal.
 
+###### Add Commas To number
+
+Some scores achieved in this application can reach into the billions hence a function was needed to add commas into large numbers.
+This function uses template literals and was sourced from Stack Overflow.
+
 ## Performance
 
 ###### Image Resizing & Compression
@@ -292,13 +305,14 @@ All background images were compressed using the website outlined below. This sig
 
 ###### Autoprefixing
 
-## Technologies Used
-
-
+The CSS style rules have been [Autoprefixed](https://autoprefixer.github.io/) to maintain uniformity of style rules across all browsers.
 
 ## Testing
 
 #### User Testing
+
+A large amount of repeated user testing is carried out to ensure that every element, class or function is providing the intended result.
+This is done by isolating the intended piece of code you would like to test and interacting with it in as many ways as possible.
 
 ###### Gate Hit Marker Testing
 
@@ -317,7 +331,11 @@ This developer used W3C HTML, W3C CSS & JSHint validation services in order to c
 
 #### Performance Testing
 
+###### Cached Sprites
 
+###### Compressed images
+
+###### Reusing sprites once they have left the screen
   
 #### Common paths though the website
 
@@ -327,7 +345,15 @@ This developer used W3C HTML, W3C CSS & JSHint validation services in order to c
 
 ##### Testing client's stories outlined in the UX section:
 
+### Screenshots of finished project
 
+###### Homepage
+
+![Homepage](wireframes/screenshot-homepage)
+
+###### Game Over Modal
+
+![Modal](wireframes/screenshot-modal)
 
 
 ## Bugs Discovered:
@@ -436,6 +462,8 @@ Further reading and troubleshooting on cloning a repository can be found here [G
 [Enemy AI Movement](https://www.youtube.com/watch?v=I5dARpAPlNk&list=PLOPo1bGrV4htxbQCS3CPZ59O1kpPdE7PK)
 
 [Prototypical Inheritance](https://www.youtube.com/watch?v=HR1g-JXMdh4&list=PLOPo1bGrV4htxbQCS3CPZ59O1kpPdE7PK)
+
+[Function that adds commas to large numbers](https://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript)
 
 ### Media
 
