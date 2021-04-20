@@ -120,8 +120,6 @@ speedSlider.addEventListener('change', () => { //check for user interaction with
 let hue = 0; //used in conjunction with requestionAnimationFrame to create hsl color change effect
 let menuActive = true; //tracks whether startscreen is active
 let gameOver = false; //tracks whether player has been killed by enemy
-let killedByMine1 = false; //tracks which mine killed player
-let killedByMine2 = false; //1 (top) 2 (bottom)
 let gameFrame = 0; //tracks number of frames that pass
 let score = 0; //user's current score without multiplier
 let multiplier = 1; //user's multiplier
@@ -424,7 +422,6 @@ const game = { //thinking of changing object name to game due to it's interactio
             if(this.gateArray[i].delta > 2000 && this.gateArray[i].distanceMine1 < player.width / 2){
             //The gate's mines are safe for 2 seconds after spawn
                 gameOver = true;
-                killedByMine1 = true; //killed by mine 1 
                 modal.style.visibility = 'visible'; //modal popup upon death
                 deathInfo.innerHTML = "KILLED BY MINE 1"; //death info pop up upon death
                 deathInfo.style.visibility = 'visible';
@@ -433,7 +430,6 @@ const game = { //thinking of changing object name to game due to it's interactio
 
             if(this.gateArray[i].delta > 2000 && this.gateArray[i].distanceMine2 < player.width / 2){
                 gameOver = true;
-                killedByMine2 = true; //killed by mine 2
                 modal.style.visibility = 'visible'; //modal popup upon death
                 deathInfo.innerHTML = "KILLED BY MINE 2"; //death info pop up upon death
                 deathInfo.style.visibility = 'visible';
@@ -548,14 +544,14 @@ const startScreen = () => {
 
             drawBackground();
 
-            ctx.font = canvas.width / 60 +'px DotGothic16';
+            ctx.font = canvas.width / 30 +'px DotGothic16';
             ctx.fillStyle = 'white';
             ctx.textAlign = "center";
-            ctx.fillText('Best experienced on a larger screen.', canvas.width / 2, canvas.height / 2 - 25, 900);
+            ctx.fillText('Best experienced on a larger screen.', canvas.width / 2, canvas.height / 2, 900);
 
             player.update(); //player methods placed here to create z-index effect
 
-            ctx.font = canvas.width / 20 + 'px Orbitron'; //player sprite is hidden behind title but not other text hence why it is coded here
+            ctx.font = canvas.width / 15 + 'px Orbitron'; //player sprite is hidden behind title but not other text hence why it is coded here
             ctx.fillStyle = `hsl(${hue}, 100%, 35%)`; //hsl colour change effect
             ctx.textAlign = "center";
             ctx.fillText('AGAINST ALL ODDS', canvas.width / 2, canvas.height / 2 - 50, 800, 200);
@@ -569,14 +565,14 @@ const startScreen = () => {
 
             drawBackground();
 
-            ctx.font = canvas.width / 60 +'px DotGothic16';
+            ctx.font = canvas.width / 30 +'px DotGothic16';
             ctx.fillStyle = 'white';
             ctx.textAlign = "center";
             ctx.fillText('Best experience on a larger screen', canvas.width / 2, canvas.height / 2 - 75, 900);
             
             player.update(); //player methods placed here to create z-index effect
 
-            ctx.font = canvas.width / 20 + 'px Orbitron'; //player sprite is hidden behind title but not other text hence why it is coded here
+            ctx.font = canvas.width / 15 + 'px Orbitron'; //player sprite is hidden behind title but not other text hence why it is coded here
             ctx.fillStyle = `hsl(${hue}, 100%, 35%)`; //hsl colour change effect
             ctx.textAlign = "center";
             ctx.fillText('AGAINST ALL ODDS', canvas.width / 2, canvas.height / 2 - 150, 800, 200);
