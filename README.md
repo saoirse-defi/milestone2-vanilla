@@ -420,11 +420,33 @@ git clone https://www.Github.com/USERNAME/REPOSITORY
 Further reading and troubleshooting on cloning a repository can be found here [Github](https://docs.Github.com/en/free-pro-team@latest/Github/creating-cloning-and-archiving-repositories/cloning-a-repository).
 
 
-
 ## Credit
+
+[Using Local Storage](https://www.youtube.com/watch?v=tyJelsUG-z4&list=PLOPo1bGrV4htxbQCS3CPZ59O1kpPdE7PK&index=93&t=6s)
+
+[General HTML5 Canvas Knowledge](https://www.youtube.com/watch?v=Yvz_axxWG4Y&list=PLOPo1bGrV4htxbQCS3CPZ59O1kpPdE7PK)
+
+[Manipulating Canvas Elements](https://www.youtube.com/watch?v=5vxygxshTQ4&list=PLOPo1bGrV4htxbQCS3CPZ59O1kpPdE7PK)
+
+[General JavaScript Event Loop Knowledge](https://www.youtube.com/watch?v=cCOL7MC4Pl0&list=PLOPo1bGrV4htxbQCS3CPZ59O1kpPdE7PK)
+
+[General JavaScript Event Loop Knowledge](https://www.youtube.com/watch?v=8aGhZQkoFbQ&list=PLOPo1bGrV4htxbQCS3CPZ59O1kpPdE7PK)
+
+[JavaScript Import/Export](https://www.youtube.com/watch?v=ananPWEdfDA&list=PLOPo1bGrV4htxbQCS3CPZ59O1kpPdE7PK&index=105&t=46s)
+
+[Enemy AI Movement](https://www.youtube.com/watch?v=I5dARpAPlNk&list=PLOPo1bGrV4htxbQCS3CPZ59O1kpPdE7PK)
+
+[Prototypical Inheritance](https://www.youtube.com/watch?v=HR1g-JXMdh4&list=PLOPo1bGrV4htxbQCS3CPZ59O1kpPdE7PK)
 
 ### Media
 
+###### Music & SFX created by DJ Green
+
+###### Gem Collected SFX from [Free Sound](https://freesound.org/)
+
+###### Player & Enemy Sprites sourced from [Game Dev Marketplace](https://www.gamedevmarket.net/)
+
+###### [Tutorial video](https://www.youtube.com/watch?v=HVIbuHl9hpM) created & uploaded by Saoirse Frawley
 
 ## Wireframes
 
