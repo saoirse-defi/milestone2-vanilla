@@ -21,7 +21,7 @@ body{
     position: fixed;
     bottom: 0px;
     left: 0px;
-    max-width: 110px;
+    max-width: 175px;
 }
 
 #difficulty-container{
@@ -56,20 +56,29 @@ body{
 }
 
 #mobileBtnContainer{
-    position: fixed;
     display: flex;
+    flex-direction: column;
+    max-width: 175px;
+    position: fixed;
 }
 
 #mobileStart{
     visibility: hidden;
     background-color: orangered;
     color: black;
+    position: relative;
+    border-radius: 10px;
 }
 
 #mobileBackground{
     visibility: hidden;
     background-color: orangered;
     color: black;
+    font-size: xx-small;
+    position: relative;
+    border-radius: 8px;
+    margin-top: 5px;
+    min-height: 25px;
 }
 
 
