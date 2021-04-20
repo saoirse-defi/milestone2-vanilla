@@ -82,6 +82,8 @@ const checkDevice = () => {
     }
     if(window.screen.width < 479){
         isMobile = true; //checking for mobile
+        difficulty = 4; //difficulty needs to be limited due to the reduce screen real estate
+        difficultyElem.style.visibility = 'hidden'; //hide the difficulty slider so the user cannot change it
     }
 };
 
@@ -521,6 +523,11 @@ const game = { //thinking of changing object name to game due to it's interactio
 
         menuActive = true;
         gameOver = false;
+
+        if(isMobile || isTablet){
+            mobileStart.style.visibility = 'visible';
+            mobileBackground.style.visibility = 'visible';
+        }
     }
 };
 
@@ -537,7 +544,6 @@ const startScreen = () => {
         
         if(isMobile){
             mobileBtnContainer.style.top = `${canvas.height / 2 + 50}px`;
-            //mobileBtnContainer.style.left = `${canvas.width / 2}px`;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             drawBackground();
@@ -545,9 +551,7 @@ const startScreen = () => {
             ctx.font = canvas.width / 60 +'px DotGothic16';
             ctx.fillStyle = 'white';
             ctx.textAlign = "center";
-            ctx.fillText('Energy weapons are down!', canvas.width / 2, canvas.height / 2 - 25, 900);
-            ctx.fillText('Best experienced on a larger screen.', canvas.width / 2, canvas.height / 2, 900);
-            ctx.fillText('Beware of deadly mines at the edge of gates!', canvas.width / 2, canvas.height / 2 + 25, 900);
+            ctx.fillText('Best experienced on a larger screen.', canvas.width / 2, canvas.height / 2 - 25, 900);
 
             player.update(); //player methods placed here to create z-index effect
 
@@ -568,16 +572,14 @@ const startScreen = () => {
             ctx.font = canvas.width / 60 +'px DotGothic16';
             ctx.fillStyle = 'white';
             ctx.textAlign = "center";
-            ctx.fillText('Energy weapons are down!', canvas.width / 2, canvas.height / 2, 900);
-            ctx.fillText('Pass through the center of gates to manage the enemy horde.', canvas.width / 2, canvas.height / 2 + 50, 900);
-            ctx.fillText('Beware of deadly mines at the edge of gates!', canvas.width / 2, canvas.height / 2 + 100, 900);
-
+            ctx.fillText('Best experience on a larger screen', canvas.width / 2, canvas.height / 2 - 75, 900);
+            
             player.update(); //player methods placed here to create z-index effect
 
             ctx.font = canvas.width / 20 + 'px Orbitron'; //player sprite is hidden behind title but not other text hence why it is coded here
             ctx.fillStyle = `hsl(${hue}, 100%, 35%)`; //hsl colour change effect
             ctx.textAlign = "center";
-            ctx.fillText('AGAINST ALL ODDS', canvas.width / 2, canvas.height / 2 - 100, 800, 200);
+            ctx.fillText('AGAINST ALL ODDS', canvas.width / 2, canvas.height / 2 - 150, 800, 200);
 
             hue++; //changes hsl value every animation frame
 
@@ -657,6 +659,11 @@ window.addEventListener('resize', () => {
     checkDevice();
 });
 
+window.addEventListener('deviceorientation', () => {
+    canvas.width = document.documentElement.clientWidth - 5; //adjust canvas width if phone is turned on its side
+    canvas.height = document.documentElement.clientHeight - 5; //adjust canvas height if the phone is turned on its side
+});
+
 document.addEventListener('fullscreenchange', () => {
     canvas.width = document.documentElement.clientWidth - 5; //adjust canvas width if browser is resized
     canvas.height = document.documentElement.clientHeight - 5; //adjust canvas height if browser is resized
@@ -693,13 +700,18 @@ document.getElementById('restartButton').addEventListener('click', () => {
     game.restart(); //restarts game loop for the user
     animate(); //restart animation loop
     playSFX(effects[3]); //play game start SFX
+
+    if(isMobile || isTablet){
+        mobileStart.style.visibility = 'hidden';
+        mobileBackground.style.visibility = 'hidden';
+    }
 });
 
 document.getElementById('homeButton').addEventListener('click', () => {
     game.return(); //returns the user to the start screen
     startScreen(); //renders start screen instead of game loop
     
-    if(mobile || tablet){
+    if(isMobile || isTablet){
         mobileStart.style.visibility = 'visible';
         mobileBackground.style.visibility = 'visible';
     }
