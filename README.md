@@ -349,12 +349,11 @@ This developer used W3C HTML, W3C CSS & JSHint validation services in order to c
 
 ###### Homepage
 
-![Homepage](wireframes/screenshot-homepage)
+![Homepage](wireframes/screenshot-homepage.PNG)
 
 ###### Game Over Modal
 
-![Modal](wireframes/screenshot-modal)
-
+![Modal](wireframes/screenshot-modal.PNG)
 
 ## Bugs Discovered:
 
