@@ -99,7 +99,7 @@ body{
     visibility: hidden;
     background-color: orangered;
     color: black;
-    font-size: xx-small;
+    font-size: medium;
     position: relative;
     border-radius: 8px;
     margin-top: 5px;
@@ -251,13 +251,13 @@ body{
     }
 
     #modalScore{
-    font-weight: 900;
-    font-size: xx-large;
-    color: white;
+        font-weight: 900;
+        font-size: xx-large;
+        color: white;
     }   
 
     #highScoreLabel{
-    font-size: x-large;
+        font-size: x-large;
     }
 
     #deathInfo{
@@ -307,14 +307,25 @@ body{
         max-width: 50px;
     }
 
+    #tutorial{
+        right: 40px;
+    }
+
     #tutorialIcon{
         max-width: 15px;
-        right: 30px;
     }
 
      #modal{
         max-width: 100%;
         max-height: 100%;
+    }
+
+    #score{
+        font-size: x-small;
+    }
+
+    #multiplier{
+        font-size: x-small;
     }
 
 }
