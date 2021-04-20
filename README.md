@@ -23,7 +23,7 @@ In order to appreciate this game as it was intended, it is recommended to play t
 ### Project Goals
 
 My main goal for this Code Institute milestone project was to authentically emulate a video game from my childhood (Geometry Wars 2: Pacifism) within the browser using vanilla JavaScript.
-Another goal of mine was to successfully capture the gameplay feeling from the original.
+I also wanted to successfully capture the gameplay feeling from the original with learning about vanilla JavaScript & HTML5 canvas.
 
 #### Player Goals
 
@@ -78,7 +78,8 @@ Against All Odds has achieved these player needs by:
 ### Sprites
 
 When designing UX for a game, selecting the correct sprite image is essential as it can dramatically change the appearance & feel of your finished application.
-I decided to browse several game development marketplaces to see which sprite images were available for free.
+For my search, I decided to browse several game development marketplaces to see which sprite images were available for free. 
+As the theme of the game is science fiction, it naturally limited my search.
 
 ###### Player Sprite (Human Mining Station)
 
@@ -91,6 +92,7 @@ This allows the sprite to appear the same, no matter the angle or direction of u
 ###### Enemy Sprite (Alien Drone Ship)
 
 When choosing the enemy sprite, I wanted the design to give the user a sense of mortality and dread. The ship had to look like it belonged to a terrifying alien race hellbent on conquering human civilisation.
+As the enemy sprites travel in hoards, the sprite design needed to look good with multiple sprites close together or overlapping.
 
 ![Enemy Sprite](sprites/enemy.png)
 
@@ -144,7 +146,7 @@ This section will outline the technologies & processes used in the design & impl
 #### HTML Canvas
 
 The Canvas is an HTML element used to draw graphics via scripting. In this case, our scripting language will be JavaScript.
-The JavaScript code can access the drawable area of the canvas allowing for dynamically generated graphics. 
+The JavaScript code can access the drawable area of the canvas allowing for dynamically generated graphics. Many things can be applied to the canvas including graphs, animations, image composition & video games. 
 
 #### Animation Loop
 
@@ -160,8 +162,7 @@ The states of these custom elements are then saved for later sessions using loca
 #### Background
 
 A collection of backdrops have been prepared and strings of their file locations have been stored within an array. 
-At the start screen, this array is used for user customisation in order to change the background image.
-
+At the start screen, this array is then used for user customisation in order to change the background image.
 
 #### Difficulty
 
@@ -186,6 +187,8 @@ Once per frame, the distance between the player and these four hit markers are c
 
 #### User Input Choices
 
+During the design process of a video game, choosing the correct control scheme is an essential as it's the only physical connection that the user has with the application.
+
 ##### Desktop Controls
 
 Due to the nature of JavaScript's event listening system, a choice between 2 player input methods on desktop had to be made. 
@@ -201,6 +204,20 @@ It was a logical transition to use the JavaScript 'touchmove' event listener as 
 #### Visual Choices
 
 ##### Start Menu Design
+
+In order to reduce latency from the perspective of the user, the start screen and the game are both drawn on the same canvas but at different times.
+I have allowed the user control the player sprite within the start menu. This gives them time to get accustom to the controls before the game starts.
+
+###### Tutorial Element
+
+Featured in the bottom right corner of the screen, I will see an icon shaped with a graduation cap. When the user clicks the icon, a new tab will bring the user to YouTube in order to watch a short demo video of how the game is designed to played.
+
+
+###### High Score Element
+
+###### Bandcamp Player
+
+###### Difficulty Output
 
 ##### Game Over Modal Design
 
@@ -353,6 +370,12 @@ After consulting with my mentor, it was advised that I refactor my game loop fun
 #### Solved bugs
 
 ## Deployment
+
+#### Hosted Domain
+
+[Against All Odds](http://www.againstallodds.space) was deployed using a domain name purchased from namecheap.com and uses their dedicated hosting subscription.
+
+#### Github Pages Deployment Procedure
 
 This project was developed using Gitpod, committed to git and pushed to Github using the built-in function with Gitpod.
 
