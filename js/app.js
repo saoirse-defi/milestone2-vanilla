@@ -70,6 +70,7 @@ const iplayer = document.getElementById('iplayer');
 const tutorial = document.getElementById('tutorial');
 const mobileStart = document.getElementById('mobileStart');
 const mobileBackground = document.getElementById('mobileBackground');
+const mobileBtnContainer = document.getElementById('mobileBtnContainer');
 
 let difficulty; //stores difficulty
 let isMobile = false;
@@ -535,8 +536,8 @@ const startScreen = () => {
     if(menuActive){
         
         if(isMobile){
-            mobileStart.style.top = canvas.width / 2;
-            mobileStart.style.left = canvas.height / 2;
+            mobileBtnContainer.style.top = `${canvas.height / 2 + 50}px`;
+            //mobileBtnContainer.style.left = `${canvas.width / 2}px`;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             drawBackground();
@@ -544,16 +545,16 @@ const startScreen = () => {
             ctx.font = canvas.width / 60 +'px DotGothic16';
             ctx.fillStyle = 'white';
             ctx.textAlign = "center";
-            ctx.fillText('Energy weapons are down!', canvas.width / 2, canvas.height / 2 + 50, 900);
-            ctx.fillText('Pass through the center of gates to manage the enemy horde.', canvas.width / 2, canvas.height / 2 + 75, 900);
-            ctx.fillText('Beware of deadly mines at the edge of gates!', canvas.width / 2, canvas.height / 2 + 100, 900);
+            ctx.fillText('Energy weapons are down!', canvas.width / 2, canvas.height / 2 - 25, 900);
+            ctx.fillText('Best experienced on a larger screen.', canvas.width / 2, canvas.height / 2, 900);
+            ctx.fillText('Beware of deadly mines at the edge of gates!', canvas.width / 2, canvas.height / 2 + 25, 900);
 
             player.update(); //player methods placed here to create z-index effect
 
             ctx.font = canvas.width / 20 + 'px Orbitron'; //player sprite is hidden behind title but not other text hence why it is coded here
             ctx.fillStyle = `hsl(${hue}, 100%, 35%)`; //hsl colour change effect
             ctx.textAlign = "center";
-            ctx.fillText('AGAINST ALL ODDS', canvas.width / 2, canvas.height / 2 - 25, 800, 200);
+            ctx.fillText('AGAINST ALL ODDS', canvas.width / 2, canvas.height / 2 - 50, 800, 200);
 
             hue++; //changes hsl value every animation frame
 
