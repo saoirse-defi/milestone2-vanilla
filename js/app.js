@@ -90,22 +90,22 @@ const checkDevice = () => {
 const gameMode = (diff) => {
     //displays difficulty to the user at start screen
     switch(diff){
-            case "4":
+            case "3":
                 speedOutput.innerHTML = "Amateur";
             break;
-            case "5":
+            case "4":
                 speedOutput.innerHTML = "Semi-Pro";
             break;
-            case "6":
+            case "5":
                 speedOutput.innerHTML = "Professional";
             break;
-            case "7":
+            case "6":
                 speedOutput.innerHTML = "Veteran";
             break;
-            case "8":
+            case "7":
                 speedOutput.innerHTML = "Legendary";
             break;    
-            case "9":
+            case "8":
                 speedOutput.innerHTML = "God Mode";
             break;
         }
@@ -230,6 +230,7 @@ class Enemy{
         this.distance; //distance from the player
         this.speed = difficulty; //speed set to user input
         this.isParticle = false; //is the object being displayed as an enemy or particle
+        this.particleTimeout = 7000 //Particle dissapears after 7 secs
         this.img = new Image();
     }
 
@@ -297,81 +298,151 @@ class Gate{
         this.startTime; //time at spawn
         this.currTime; //current time
         this.delta; //current time - start time
-        this.width = 75;
-        this.height = 133;
+        this.respawnCooldown = 2000; // 2 seconds cooldown
+        this.lastRespawnTime = 0;
+        this.width = 37;
+        this.height = 148;
         this.theta; //rotational angle in degrees
-        this.rotation = Math.floor(Math.random() * 180); //rotational angle in radians
-        this.rotationSpeed = 0.05; //rotational velocity
+        this.rotation = Math.floor(Math.random() * 180) * (Math.PI / 180); //rotational angle in radians
+        this.rotationSpeed = 0.005; //rotational velocity
         this.img = new Image();
+        this.img.src = "sprites/gate5.png";
     }
 
     respawn(){ //when reusing objects you have to reset the spawn location
         let me = this;
 
-        me.x = random(500, 1200); //assigning random x, y co-ordinates
-        me.y = random(50, 450);
+        // me.x = random(500, 1200); //assigning random x, y co-ordinates
+        // me.y = random(50, 450);
+
+        me.x = random(0, window.innerWidth); // Example: x between 500 and window width - 200
+        me.y = random(0, window.innerHeight); // Example: y between 50 and window height - 100
 
         me.startTime = performance.now(); //create timestamp using computer's internal clock
+        console.log(me.y);
     }
 
-    update(){
+    // update(){
+    //     let me = this;
+
+    //     //rotational velocity added to rotation angle (radians)
+    //     me.rotation += me.rotationSpeed;
+
+    //     //rotation angle in degrees
+    //     // me.theta = me.rotation * Math.PI / 180;
+
+    //     //radius of rotation equals the rectangle's hypotenus 
+    //     me.hypotenus = Math.sqrt(me.x * me.x + me.y * me.y);
+        
+    //     //using linear rotational transformation to find x,y after rotation
+    //     me.x = me.hypotenus * Math.cos(me.theta);
+    //     me.y = me.hypotenus * Math.sin(me.theta);
+        
+    //     //distance from player to ClearGate1
+    //     let dx = player.x - me.x; //sprite hitbox relocation fixed
+    //     let dy = player.y - me.y - 65;    
+
+    //     me.distanceClearGate1 = Math.sqrt(dx*dx + dy*dy);
+
+    //     //distance from player to ClearGate2
+    //     let dx4 = player.x - me.x; //sprite hitbox relocation fixed
+    //     let dy4 = player.y - me.y - 80;    
+
+    //     me.distanceClearGate2 = Math.sqrt(dx4*dx4 + dy4*dy4);
+
+    //     //distance from player to mine 1
+    //     let dx1 = player.x - me.x - 25; 
+    //     let dy1 = player.y - me.y - 30;    
+
+    //     me.distanceMine1 = Math.sqrt(dx1*dx1 + dy1*dy1);
+
+    //     //distance from player to mine 2
+    //     let dx2 = player.x - me.x - 25 + 115 * Math.sin(me.rotation); //fixes mine location bug by add rotational transformation
+    //     let dy2 = player.y - me.y - 105;    
+
+    //     me.distanceMine2 = Math.sqrt(dx2*dx2 + dy2*dy2);
+
+    //     me.currTime = performance.now(); //creating another timestamp
+
+    //     me.delta = me.currTime - me.startTime; //calculating time elapsed
+
+    //     me.draw();
+    // } 
+
+    update() {
         let me = this;
-
-        //rotational velocity added to rotation angle (radians)
+    
+        // Rotate the gate
         me.rotation += me.rotationSpeed;
-
-        //rotation angle in degrees
-        me.theta = me.rotation * Math.PI / 180;
-
-        //radius of rotation equals the rectangle's hypotenus 
-        me.hypotenus = Math.sqrt(me.x * me.x + me.y * me.y);
-        
-        //using linear rotational transformation to find x,y after rotation
-        me.x = me.hypotenus * Math.cos(me.theta);
-        me.y = me.hypotenus * Math.sin(me.theta);
-        
-        //distance from player to ClearGate1
-        let dx = player.x - me.x; //sprite hitbox relocation fixed
-        let dy = player.y - me.y - 65;    
-
-        me.distanceClearGate1 = Math.sqrt(dx*dx + dy*dy);
-
-        //distance from player to ClearGate2
-        let dx4 = player.x - me.x; //sprite hitbox relocation fixed
-        let dy4 = player.y - me.y - 80;    
-
-        me.distanceClearGate2 = Math.sqrt(dx4*dx4 + dy4*dy4);
-
-        //distance from player to mine 1
-        let dx1 = player.x - me.x - 25; 
-        let dy1 = player.y - me.y - 30;    
-
-        me.distanceMine1 = Math.sqrt(dx1*dx1 + dy1*dy1);
-
-        //distance from player to mine 2
-        let dx2 = player.x - me.x - 25 + 115 * Math.sin(me.theta); //fixes mine location bug by add rotational transformation
-        let dy2 = player.y - me.y - 105;    
-
-        me.distanceMine2 = Math.sqrt(dx2*dx2 + dy2*dy2);
-
-        me.currTime = performance.now(); //creating another timestamp
-
-        me.delta = me.currTime - me.startTime; //calculating time elapsed
-
+    
+        // Random movement (velocity)
+        if (!me.velocityX) {
+            me.velocityX = (Math.random() - 0.5) * 2; // Random between -1 and 1
+        }
+        if (!me.velocityY) {
+            me.velocityY = (Math.random() - 0.5) * 2; // Random between -1 and 1
+        }
+    
+        // Update position
+        me.x += me.velocityX;
+        me.y += me.velocityY;
+    
+        // Boundary checks (prevent going off-screen)
+        if (me.x < 0) {
+            me.x = 0;
+            me.velocityX *= -1; // Reverse direction
+        } else if (me.x > window.innerWidth - me.width) {
+            me.x = window.innerWidth - me.width;
+            me.velocityX *= -1;
+        }
+    
+        if (me.y < 0) {
+            me.y = 0;
+            me.velocityY *= -1;
+        } else if (me.y > window.innerHeight - me.height) {
+            me.y = window.innerHeight - me.height;
+            me.velocityY *= -1;
+        }
+    
+        // Distance from player to ClearGate1
+        let dx = player.x - (me.x + 25);
+        let dy = player.y - (me.y + 150);
+        me.distanceClearGate1 = Math.sqrt(dx * dx + dy * dy);
+    
+        // Distance from player to ClearGate2
+        // let dx4 = player.x - me.x;
+        // let dy4 = player.y - me.y - 80;
+        // me.distanceClearGate2 = Math.sqrt(dx4 * dx4 + dy4 * dy4);
+    
+        // Distance from player to mine 1
+        let dx1 = player.x - (me.x + 15);
+        let dy1 = player.y - me.y - 100;
+        me.distanceMine1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+    
+        // Distance from player to mine 2
+        // let dx2 = player.x - me.x - 25 + 115 * Math.sin(me.rotation);
+        let dx2 = player.x - (me.x + 15);
+        let dy2 = player.y - me.y - 200;
+        me.distanceMine2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+    
+        // Time tracking
+        me.currTime = performance.now();
+        me.delta = me.currTime - me.startTime;
+    
         me.draw();
-    } 
+    }
 
     draw(){
         let me = this;
 
         ctx.save();
-        ctx.translate(me.x, me.y);
-        ctx.rotate(Math.sin(me.theta)); //switch to neg rotation for better movement, edit to translation needed though
-        ctx.drawImage(me.img, 0, 0, me.width, me.height);
-        ctx.rotate(-me.rotation * Math.PI / 180);
-        ctx.translate(-me.x, -me.y);
+        ctx.translate(me.x + me.width / 2, me.y + me.height / 2);
+        //ctx.rotate(me.rotation); //switch to neg rotation for better movement, edit to translation needed though
+        ctx.drawImage(me.img, -me.width / 2, 0, me.width, me.height);
+        // ctx.rotate(-me.rotation * Math.PI / 180);
+        // ctx.translate(-me.x, -me.y);
         ctx.restore();
-        me.img.src = 'sprites/gate5.png';
+        // me.img.src = 'sprites/gate5.png';
     }
 }
 
@@ -387,7 +458,7 @@ const game = { //thinking of changing object name to game due to it's interactio
 
         player.update();
 
-        if(gameFrame % 50 == 0){
+        if(gameFrame % 100 == 0){
             //every 50 frames a new enemy spawns at a random corner
             let randomCorner = Math.floor(Math.random() * 4);
 
@@ -414,6 +485,14 @@ const game = { //thinking of changing object name to game due to it's interactio
             this.gateArray.push(newGate); 
         }
 
+        function handleGameOver(deathMessage) {
+            gameOver = true;
+            modal.style.visibility = 'visible';
+            deathInfo.innerHTML = deathMessage;
+            deathInfo.style.visibility = 'visible';
+            multiplierElement.style.visibility = 'hidden';
+        }
+
         for(let i = 0; i < this.gateArray.length; i++){
             this.gateArray[i].update();
 
@@ -421,19 +500,11 @@ const game = { //thinking of changing object name to game due to it's interactio
 
             if(this.gateArray[i].delta > 2000 && this.gateArray[i].distanceMine1 < player.width / 2){
             //The gate's mines are safe for 2 seconds after spawn
-                gameOver = true;
-                modal.style.visibility = 'visible'; //modal popup upon death
-                deathInfo.innerHTML = "KILLED BY MINE 1"; //death info pop up upon death
-                deathInfo.style.visibility = 'visible';
-                multiplierElement.style.visibility = 'hidden';
+                handleGameOver("KILLED BY MINE 1");
             }
 
             if(this.gateArray[i].delta > 2000 && this.gateArray[i].distanceMine2 < player.width / 2){
-                gameOver = true;
-                modal.style.visibility = 'visible'; //modal popup upon death
-                deathInfo.innerHTML = "KILLED BY MINE 2"; //death info pop up upon death
-                deathInfo.style.visibility = 'visible';
-                multiplierElement.style.visibility = 'hidden';
+                handleGameOver("KILLED BY MINE 2");
             }
 
             if(this.gateArray[i].distanceClearGate1 < player.width / 2 || this.gateArray[i].distanceClearGate2 < player.width / 2){ //when player passes through gate, enemies with distance < 200 are killed
@@ -460,11 +531,7 @@ const game = { //thinking of changing object name to game due to it's interactio
                 if(!this.enemyArray[k].isParticle && 
                     this.enemyArray[k].delta > 1000 && //allows for 1 second after spawn before becoming deadly
                     this.enemyArray[k].distance < this.enemyArray[k].radius / 2 + player.width / 2){
-                    gameOver = true; //if enemy gets too close, game over!
-                    modal.style.visibility = 'visible';
-                    deathInfo.innerHTML = "KILLED BY ALIEN";
-                    deathInfo.style.visibility = 'visible';
-                    multiplierElement.style.visibility = 'hidden';
+                        handleGameOver("KILLED BY ALIEN");
                 }
 
                 if(this.enemyArray[k].isParticle && this.enemyArray[k].distance < 20){
